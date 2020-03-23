@@ -53,12 +53,12 @@ class UserController extends AbstractController
 	          "password": "'.$password.'"
 	         }
 	     }';
-	     print_r($data1);
+	     /*print_r($data1);
 	     $httpClient = HttpClient::create();
-		   /*$response = $httpClient->request('POST', 'http://13.88.11.67:8080/api/jsonws/invoke', [
+		   $response = $httpClient->request('POST', 'http://13.88.11.67:8080/api/jsonws/invoke', [
 		           'body' => $data1
-		   ]);*/
-		 /*$status = $response->getContent();
+		   ]);
+		 $status = $response->getContent();
 		  if($status !=''){
 		   	$user->setReferenceId("12346");
 		   }else {

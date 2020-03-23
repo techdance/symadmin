@@ -106,4 +106,22 @@ class UserController extends AbstractController
 	{
 	  // return $this->json(['result' => true]);
 	}
+	/**
+	 * @Route("/profile", name="api_profile")
+	 */
+	public function profile()
+	{
+	   return $this->json([
+		   'user' => $this->getUser()
+	   ]);
+	}
+	
+
+	/**
+	 * @Route("/", name="api_home")
+	 */
+	public function home()
+	{
+	   return $this->json(['result' => true]);
+	}
 }

@@ -15,6 +15,7 @@ class LoginAuthenticator extends AbstractGuardAuthenticator
 {
 
    private $passwordEncoder;
+   private $login_user_id;
    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
    {
        $this->passwordEncoder = $passwordEncoder;
@@ -40,6 +41,8 @@ class LoginAuthenticator extends AbstractGuardAuthenticator
 
    public function checkCredentials($credentials, UserInterface $user)
    {
+	//	$this->login_user_id = $user->getReferenceId()
+//		var_dump($this->login_user_id);die();
        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
    }
 

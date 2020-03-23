@@ -56,7 +56,7 @@ class LoginAuthenticator extends AbstractGuardAuthenticator
    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
    {
        return new JsonResponse([
-           'institutionEmail' => $request->request->get("institutionEmail"),
+           'user' => base64_encode(rand(1000000000,9999999999).$request->request->get("institutionEmail")),
      	   'status' => true
        ]);
    }
@@ -72,4 +72,9 @@ class LoginAuthenticator extends AbstractGuardAuthenticator
    {
        return false;
    }
+
+//   public function createAuthenticatedToken(UserInterface $user, $providerKey)
+//   {
+//
+//   }
 }

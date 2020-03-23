@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpClient\HttpClient;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class UserController extends AbstractController
 {
@@ -24,7 +26,7 @@ class UserController extends AbstractController
     }
 
 	/**
-	 * @Route("/register", name="api_register", methods={"POST"}, schemes={"https"})
+	 * @Route("/register", name="api_register", methods={"POST"})
 	 */
 	public function register(UserPasswordEncoderInterface $passwordEncoder, Request $request)
 	{
@@ -43,27 +45,6 @@ class UserController extends AbstractController
 		{
 		   $errors[] = "Password should be at least 6 characters.";
 		}
-		$data1 = '{
-	       "/collaborated.commonwebsserviceapi/create-user":{
-	          "prefix": "'.$prefix.'",
-	          "firstName": "'.$firstName.'",
-	          "lastName": "'.$lastName.'",
-	          "institutionEmail": "'.$institutionEmail.'",
-	          "institutionName":"'.$institutionName.'",
-	          "password": "'.$password.'"
-	         }
-	     }';
-	     /*print_r($data1);
-	     $httpClient = HttpClient::create();
-		   $response = $httpClient->request('POST', 'http://13.88.11.67:8080/api/jsonws/invoke', [
-		           'body' => $data1
-		   ]);
-		 $status = $response->getContent();
-		  if($status !=''){
-		   	$user->setReferenceId("12346");
-		   }else {
-		   	$errors[] = "External DB not stored.";
-		  }*/		
 		if(!$errors)
 		{
 			// $data = json_decode($request->getContent(), true);
@@ -108,6 +89,7 @@ class UserController extends AbstractController
 	}
 	/**
 	 * @Route("/profile", name="api_profile")
+     * @IsGranted("ROLE_USER")
 	 */
 	public function profile()
 	{
@@ -124,4 +106,29 @@ class UserController extends AbstractController
 	{
 	   return $this->json(['result' => true]);
 	}
+
+    /**
+     * @Route("/getUserDetails", name="api_getUserDetails", methods={"GET"})
+     */
+    public function getUserDetails(Request $request)
+    {
+        $institutionEmail         = substr(base64_decode($request->query->get("user")), 10);
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        return $this->json([
+            'user' => $repository->findOneByInstitutionEmail($institutionEmail)
+        ]);
+    }
+
+	/**
+     * @Route("/listUsers", name="api_listUsers", methods={"GET"})
+     */
+    public function listUsers(Request $request)
+    {
+
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        return $this->json([
+            'user' => $repository->findAll()
+        ]);
+    }
+
 }

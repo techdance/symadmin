@@ -13,7 +13,7 @@ use Symfony\Component\HttpClient\HttpClient;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user", name="user")
+     * @Route("/user", name="user", schemes={"https"})
      */
     public function index()
     {

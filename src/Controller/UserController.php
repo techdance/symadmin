@@ -10,7 +10,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpClient\HttpClient;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class UserController extends AbstractController
 {
@@ -28,7 +29,7 @@ class UserController extends AbstractController
 	/**
 	 * @Route("/register", name="api_register", methods={"POST"})
 	 */
-	public function register(UserPasswordEncoderInterface $passwordEncoder, Request $request)
+	public function register(UserPasswordEncoderInterface $passwordEncoder, Request $request, MailerInterface $mailer)
 	{
 
 		$user = new User();
@@ -74,6 +75,18 @@ class UserController extends AbstractController
 			{
 			   $errors[] = "Unable to save new user at this time.";
 			}
+            $name = $prefix.'.'.$firstName.' '.$lastName;
+            $content = '<h1>Welcome '.$name.'</h1><p>You signed up with the following email:</p>';
+            $content.= '<p><code>'.$institutionEmail.'</code></p>';
+
+            $email = (new Email())
+                ->from('aprince@toweredtech.com')
+                ->to($institutionEmail)
+                ->subject('Thanks for signing up!')
+                ->html($content);
+
+            $mailer->send($email);
+
 		}
 	   	return $this->json([
 			   'errors' => $errors

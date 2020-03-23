@@ -24,7 +24,7 @@ class UserController extends AbstractController
     }
 
 	/**
-	 * @Route("/register", name="api_register", methods={"POST"})
+	 * @Route("/register", name="api_register", methods={"POST"}, schemes={"https"})
 	 */
 	public function register(UserPasswordEncoderInterface $passwordEncoder, Request $request)
 	{

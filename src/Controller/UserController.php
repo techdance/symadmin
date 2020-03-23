@@ -8,6 +8,7 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Symfony\Component\HttpClient\HttpClient;
 
 class UserController extends AbstractController
 {
@@ -41,9 +42,31 @@ class UserController extends AbstractController
 		if(strlen($password) < 6)
 		{
 		   $errors[] = "Password should be at least 6 characters.";
-		}		
+		}
+		$data1 = '{
+	       "/collaborated.commonwebsserviceapi/create-user":{
+	          "prefix": "'.$prefix.'",
+	          "firstName": "'.$firstName.'",
+	          "lastName": "'.$lastName.'",
+	          "institutionEmail": "'.$institutionEmail.'",
+	          "institutionName":"'.$institutionName.'",
+	          "password": "'.$password.'"
+	         }
+	     }';
+	     print_r($data1);
+	     $httpClient = HttpClient::create();
+		   /*$response = $httpClient->request('POST', 'http://13.88.11.67:8080/api/jsonws/invoke', [
+		           'body' => $data1
+		   ]);*/
+		 /*$status = $response->getContent();
+		  if($status !=''){
+		   	$user->setReferenceId("12346");
+		   }else {
+		   	$errors[] = "External DB not stored.";
+		  }*/		
 		if(!$errors)
 		{
+			// $data = json_decode($request->getContent(), true);
 		   	$encodedPassword = $passwordEncoder->encodePassword($user, $password);
 		   	$user->setInstitutionEmail($institutionEmail);
 		   	$user->setPassword($encodedPassword);
@@ -81,6 +104,6 @@ class UserController extends AbstractController
 	 */
 	public function login()
 	{
-	   return $this->json(['result' => true]);
+	  // return $this->json(['result' => true]);
 	}
 }

@@ -59,14 +59,26 @@ class UserController extends AbstractController
 		   	$user->setInstitutionName($institutionName);
 			$user->setReferenceId("12346");
 			$em = $this->getDoctrine()->getManager();
-			try
-			{
+			//try
+			//{
 		        $em->persist($user);
 		        $em->flush();
+                $name = trim($prefix).'.'.$firstName.' '.$lastName;
+                $content = '<h1>Welcome '.$name.'</h1><p>You signed up with the following email:</p>';
+                $content.= '<p><code>'.$institutionEmail.'</code></p>';
+
+                //->from('aprince@toweredtech.com')
+                $email = (new Email())
+                    ->from('aprince@toweredtech.com')
+                    ->to($institutionEmail)
+                    ->subject('Thanks for signing up!')
+                    ->html($content);
+                $mailer->send($email);
 				return $this->json([
 		    	   'user' => $user
 		   		]);
-			}
+
+			/*}
 			catch(UniqueConstraintViolationException $e)
 			{
 			   $errors[] = "The email provided already has an account!";
@@ -74,18 +86,8 @@ class UserController extends AbstractController
 			catch(\Exception $e)
 			{
 			   $errors[] = "Unable to save new user at this time.";
-			}
-            $name = $prefix.'.'.$firstName.' '.$lastName;
-            $content = '<h1>Welcome '.$name.'</h1><p>You signed up with the following email:</p>';
-            $content.= '<p><code>'.$institutionEmail.'</code></p>';
-
-            $email = (new Email())
-                ->from('aprince@toweredtech.com')
-                ->to($institutionEmail)
-                ->subject('Thanks for signing up!')
-                ->html($content);
-
-            $mailer->send($email);
+			}*/
+            
 
 		}
 	   	return $this->json([

@@ -1,26 +1,32 @@
 security:
     encoders:
-        App\Entity\User:
-            algorithm: auto
-
+        FOS\UserBundle\Model\UserInterface: auto
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: institutionEmail
+        # #users_in_memory: { memory: null }
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            pattern: ^/
+            user_checker: security.user_checker
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+
+            logout:       true
+            anonymous:    true
             guard:
                 authenticators:
-                    - App\Security\LoginAuthenticator
-            logout:
-                path: api_logout
+                    - App\Security\CustomAuthAuthenticator
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -30,5 +36,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN requires_channel: https }
-        # - { path: ^/profile, roles: ROLE_USER requires_channel: https }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/apilogin$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/registerUser, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/getUserDetails, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_USER }

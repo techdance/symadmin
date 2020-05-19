@@ -1,42 +1,40 @@
 <?php
+// src/Entity/User.php
 
 namespace App\Entity;
 
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="fos_user")
  */
-class User implements UserInterface
+class User extends BaseUser
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\ManyToMany(targetEntity="App\Entity\Group")
+     * @ORM\JoinTable(name="fos_user_user_group",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="cascade")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id", onDelete="cascade")}
+     * )
      */
-    private $institutionEmail;
+    protected $groups;
 
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
 
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
+    public function __construct()
+    {
+        parent::__construct();
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
-    private $prefix;
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -49,91 +47,25 @@ class User implements UserInterface
     private $lastName;
 
     /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $prefix;
+
+    /**
      * @ORM\Column(type="string", length=150)
      */
     private $institutionName;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $referenceId;
-
-    public function getId(): ?int
+    public function getFirstName(): ?string
     {
-        return $this->id;
+        return $this->firstName;
     }
 
-    public function getInstitutionEmail(): ?string
+    public function setFirstName(string $firstName): self
     {
-        return $this->institutionEmail;
-    }
-
-    public function setInstitutionEmail(string $institutionEmail): self
-    {
-        $this->institutionEmail = $institutionEmail;
+        $this->firstName = $firstName;
 
         return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUsername(): string
-    {
-        return (string) $this->institutionEmail;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getPassword(): string
-    {
-        return (string) $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getSalt()
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getPrefix(): ?string
@@ -144,18 +76,6 @@ class User implements UserInterface
     public function setPrefix(string $prefix): self
     {
         $this->prefix = $prefix;
-
-        return $this;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): self
-    {
-        $this->firstName = $firstName;
 
         return $this;
     }
@@ -172,6 +92,14 @@ class User implements UserInterface
         return $this;
     }
 
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+        return $this;
+    }
+
     public function getInstitutionName(): ?string
     {
         return $this->institutionName;
@@ -184,15 +112,35 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getReferenceId(): ?int
+    public function getRoles()
     {
-        return $this->referenceId;
+     
+        $roles = $this->roles;
+
+        foreach ($this->getGroups() as $group) {
+          
+            $roles = array_merge($roles, [$group->getName()]);
+        }
+
+        // we need to make sure to have at least one role
+        if (!in_array(static::ROLE_DEFAULT, $roles)) {
+            $roles[] = static::ROLE_DEFAULT;
+        }
+    
+        return array_unique($roles);
     }
 
-    public function setReferenceId(int $referenceId): self
+    public function getActiveRoles() 
     {
-        $this->referenceId = $referenceId;
+        $roles = $this->roles;
 
-        return $this;
+        foreach ($this->getGroups() as $group) {
+        
+            $roles = array_merge($roles, [$group->getName()]);
+        }
+
+        return $roles;
     }
+
+
 }

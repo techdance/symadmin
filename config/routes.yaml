@@ -1,11 +1,3 @@
-api_logout:
-    path: /logout
-
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-
-register:
-    path: /
-    controller: App\Controller\UserController::register
-    schemes: [https]

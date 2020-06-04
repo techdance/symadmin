@@ -18,6 +18,7 @@ easy_admin:
     menu:
       - {label: "Entities"}
       - { entity: 'User', label: 'Users', icon: 'users', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list' }
       - { entity: 'Group', label: 'Role Permissions', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Entitygroup', label: 'Module', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
      

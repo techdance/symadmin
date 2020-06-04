@@ -1,0 +1,68 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+
+{% block content_header %}
+    <h5>Form Builder</h5>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+
+      
+
+        <div id="alert_placeholder" style="margin-top:10px;"></div>
+
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div id="formNameEdit" class="form-group">
+                    <div class="input-group">
+                        
+                        <input type="text" class="form-control" name="formName" value="{% if formEntity.name is defined and formEntity.name is not empty %}{{ formEntity.name }}{% endif %}" placeholder="Form Name">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding:13px;">
+                {# <button class="btn btn-primary" id="clearFormBuilderBtn" title="Clear">Clear</button> #}
+                <button class="btn btn-primary" id="saveFormBuilderBtn" title="Save">Save</button>
+            </div>
+        </div>
+
+        <div id="stage1" style="margin-top:20px" class="build-wrap"></div>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+{# <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> #}
+    {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> #}
+    <script src="{{ asset('js/formbuilder/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/formbuilder/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('js/formbuilder/form-builder.min.js') }}"></script>
+    <script src="{{ asset('js/formbuilder/form-render.min.js') }}"></script>
+    <script src="{{ asset('js/formbuilder/main.js') }}"></script>
+   
+    <script>
+        var urlSaveForm = "{{ path('form_builder_save') }}",
+            urlDeleteForm = "{{ path('form_builder_delete') }}";
+        var id = null,
+            formDataEntity = null,
+            urlShowForm = null,
+            orderAvailableFields = {{ getAvailableBuilderFields()|json_encode()|raw }},
+            disabledFields = {{ getDisabledFields()|raw }};
+
+        {% if formEntity is defined %}
+            id = {{ formEntity.id }};
+            {# formDataEntity = '{{ formEntity.json|filterJson()|json_encode()|raw }}'; #}
+            formDataEntity = '{{ formEntity.json|json_encode()|raw }}';
+            urlShowForm = "{{ path('get_form', {'id': formEntity.id}) }}";
+        {% endif %}
+
+        $(document).ready(function () {
+            formBuilder(id, formDataEntity, urlShowForm, orderAvailableFields, disabledFields);
+        });
+
+      
+       
+
+    </script>
+{% endblock %}

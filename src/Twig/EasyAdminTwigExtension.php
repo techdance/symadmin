@@ -521,9 +521,12 @@ class EasyAdminTwigExtension extends AbstractExtension
     public function getEntityRoles($item) 
     {
         if (!isset($item['entity'])) {
-            return [false];
+            if (isset($item['module'])) {
+                $item['entity'] = $item['module'];
+            }
         }
 
+       
         if ($item['entity'] == 'Entitygroup' && !in_array(RoleModel::ROLE_DEVELOPER, $this->rolePermissionManager->getUserRoles())) {
             return [];
         }

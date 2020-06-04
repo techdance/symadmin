@@ -101,6 +101,7 @@ class UserController extends AbstractController
                 $errors[] = "The email provided already has an account!";
             } catch (\Exception $e) {
                 $errors[] = "Unable to save new user at this time.";
+                $errors[] = $e->getMessage();
             }
         }
         return $this->json([

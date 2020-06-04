@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    background: #f0f0f0;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0;
+}
+.loginContainer {
+    margin: 30px auto;
+    width: 400px;
+}
+.loginSpacing {
+    padding: 40px;
+    background: #fff;
+    border-radius: 7px;
+}
+.logo{
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.FooterSection {
+    text-align: center;
+    margin-top: 35px;
+}
+.form-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+.form-group .form-control-icon {
+    width: 16px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    left: 15px;
+}
+.form-group .form-control {
+    color: #97a1aa;
+    padding: 12px 12px 12px 40px;
+    position: relative;
+    width: 100%;
+    border: 1px solid #e9ebed;
+    border-radius: 4px;
+}
+.btn-primary {
+    color: white;
+    background: #299eff;
+    padding: 12px;
+    border: 0;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: bold;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+.btn-primary:hover {
+    background: #299eff;
+}

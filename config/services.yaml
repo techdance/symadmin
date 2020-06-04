@@ -6,6 +6,35 @@
 parameters:
     environment: prod
     debug: false
+    upload_directory: '%kernel.project_dir%/public/uploads/'
+    available_builder_fields:
+        - text
+        - textarea
+        - number
+        - select
+        - radio-group
+        - checkbox-group
+        - date
+        - file
+        - button
+    disabled_builder_fields:
+        - autocomplete
+        - paragraph
+        - header
+        - hidden
+    allowed_types:
+        - 'text'
+        - 'email'
+        - 'textarea'
+        - 'number'
+        - 'select'
+        - 'checkbox-group'
+        - 'radio-group'
+        - 'date'
+        - 'file'
+        - 'button'
+        - 'submit'
+        - 'reset'
 
 services:
     # default configuration for services in *this* file
@@ -42,7 +71,22 @@ services:
     easyadmin.rolepermission.manager:
         class: App\Manager\RolePermissionManager
         autowire: true
-      
+    
+    App\Form\FormType:
+        arguments:
+            $allowedTypes: '%allowed_types%'
+
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%upload_directory%'
+
+    App\Twig\BuilderExtension:
+        arguments:
+            $availableBuilderFields: '%available_builder_fields%'
+            $allowedTypes: '%allowed_types%'
+            $disabledBuilderFields: '%disabled_builder_fields%'
+        tags:
+            - { name: twig.extension }
     
     # easyadmin.twig.extension:
     #     class: App\Twig\EasyAdminBundleTwigExtension

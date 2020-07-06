@@ -17,5 +17,27 @@
         </service>
         <service id="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" alias="easyadmin.router" />
         <!-- <service id="App\Manager\RolePermissionManager" alias="easyadmin.role.permission" /> -->
+
+        <service id="fos_user.command.create_user" class="App\Command\CreateUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:create" />
+        </service>
+
+        <service id="fos_user.command.demote_user" class="App\Command\DemoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:demote" />
+        </service>
+
+        <service id="fos_user.command.promote_user" class="App\Command\PromoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:promote" />
+        </service>
+
+        <service id="fos_user.util.user_manipulator" class="App\Util\UserManipulator">
+            <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="service_container" />
+        </service>
     </services>
 </container>

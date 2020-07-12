@@ -322,4 +322,14 @@ class FormBuilderController extends EasyAdminController
 
         return $data;
     }
+
+    /**
+     * @Route("/upload", name="form-upload", methods={"POST"})
+     */
+    public function fileUpload() 
+    {
+        return  new JsonResponse([
+            'success'   => true
+        ]);
+    }
 }

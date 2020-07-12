@@ -83,18 +83,32 @@ $('#saveFormBuilderBtn').click(function() {
 
 // })
 
-function saveBuilderForm(formData, id) {
+function saveBuilderForm(formBuilderData, id) {
 
+    var inputFile = $('[name="formBuilderImage"]')[0];
+
+    var file = inputFile.files[0];
+        
+    var formData = new FormData();
+    formData.append('formBuilderImage', file);
+    formData.append('formData', formBuilderData);
+    formData.append('formName', $('#formNameEdit input').val());
+    formData.append('id', id);
+    
     $.ajax({
         type: 'POST',
         url: urlSaveForm,
-        data: {
-            formData: formData,
-            formName: $('#formNameEdit input').val(),
-            id: id
-        },
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: formData,
+        // data: {
+        //     formData: formBuilderData,
+        //     formName: $('#formNameEdit input').val(),
+        //     id: id
+        // },
         success: function(data) {
-            console.log(data);
+           
             if (data.success && data.redirect) {
                 window.location.href = data.redirect;
             } else if (!data.success && data.msg) {

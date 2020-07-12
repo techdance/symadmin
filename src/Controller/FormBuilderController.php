@@ -17,15 +17,25 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class FormBuilderController extends EasyAdminController
 {
+
+    private $paramBag;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->paramBag = $params;
+    }
+
+
     /**
      * @Route("/form-builder-list", name="form_builder_list", methods={"GET","HEAD"})
      */
@@ -189,14 +199,17 @@ class FormBuilderController extends EasyAdminController
      */
     public function builderFormSaveAction(Request $request)
     {
+
         $em = $this->getDoctrine()->getManager();
         $json = $request->request->get('formData');
       
+     
         if ($id = $request->request->get('id')) {
             $form = $em->getRepository('App:Form')->findOneBy(['id' => $id]);
         }
 
-       
+        $file = $request->files->get('formBuilderImage');
+
         if (empty($request->request->get('formName'))) {
              return new JsonResponse([
                 'success'   => false,
@@ -204,11 +217,32 @@ class FormBuilderController extends EasyAdminController
                 'msg'       => 'Form Name is required.',
             ]);
         }
+       
+        if (!empty($form)) {
+            if (!$form->getFormImage() && !$file) {
+                return new JsonResponse([
+                    'success'   => false,
+                    'redirect'  => false,
+                    'msg'       => 'Form Image is required.',
+                ]);
+            }
+        }
+
+         if (empty($form) && !$file) {
+             return new JsonResponse([
+                'success'   => false,
+                'redirect'  => false,
+                'msg'       => 'Form Image is required.',
+            ]);
+        }
+
+       
+
         if (empty(json_decode($json))) {
             return new JsonResponse([
                 'success'   => false,
                 'redirect'  => false,
-                'msg'       => 'Form created successfully',
+                'msg'       => 'Form builder is required',
             ]);
         }
 
@@ -216,7 +250,38 @@ class FormBuilderController extends EasyAdminController
             $form = new Form();
         }
 
+        $file = $request->files->get('formBuilderImage');
+
+        if ( $file) {
+            $newFilename = md5(uniqid()).'.'.$file->guessExtension();
+        }
+        
+        if ($id && $file) {
+            if ($form->getFormImage()) {
+                 $file_to_delete = $this->paramBag->get('upload_directory')."/formbuilder/". $form->getFormImage();
+
+                if (file_exists($file_to_delete)) {
+                    unlink($file_to_delete);
+                }
+            }
+        }
+
+        if ( $file) {
+            // Move the file to the directory where your form images are stored
+            try {
+                $file->move(
+                    $this->paramBag->get('upload_directory')."/formbuilder/",
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                //Handle error
+            }
+        }
+      
         $form->setName($request->request->get('formName'));
+        if ( $file) {
+            $form->setFormImage($newFilename);
+        }
         $form->setJson(json_decode($json, true));
         $em->persist($form);
         $em->flush();
@@ -251,6 +316,15 @@ class FormBuilderController extends EasyAdminController
         }
        
         if ($form) {
+
+            if ($form->getFormImage()) {
+                 $file_to_delete = $this->paramBag->get('upload_directory')."/formbuilder/". $form->getFormImage();
+
+                if (file_exists($file_to_delete)) {
+                    unlink($file_to_delete);
+                }
+            }
+            
             $em->remove($form);
             $em->flush();
             $success = true;
@@ -324,7 +398,7 @@ class FormBuilderController extends EasyAdminController
     }
 
     /**
-     * @Route("/upload", name="form-upload", methods={"POST"})
+     * @Route("/upload/{id?}", name="form-upload", methods={"POST", "GET", "DELETE"})
      */
     public function fileUpload() 
     {
@@ -332,4 +406,6 @@ class FormBuilderController extends EasyAdminController
             'success'   => true
         ]);
     }
+
+  
 }

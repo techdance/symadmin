@@ -87,4 +87,19 @@ class AdminUserController extends EasyAdminController
 
         return $this->redirectToRoute('easyadmin', $request->query->all());
     }
+
+    /**
+     * @Route("/migration/migrate-form-image", name="migrate_form_image", methods={"GET"})
+     */
+    public function migrateFormImage()
+    {
+        $conn = $this->getDoctrine()->getConnection();
+
+        $sql = "ALTER TABLE form ADD form_image VARCHAR(255) NOT NULL";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $this->redirectToRoute('easyadmin');
+    }
+
 }

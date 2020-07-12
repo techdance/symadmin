@@ -43,6 +43,11 @@ class Form
      */
     private $values;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $formImage;
+
 
     /**
      * Form constructor.
@@ -115,6 +120,25 @@ class Form
     public function setValues($values)
     {
         $this->values = $values;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function getFormImage()
+    {
+        return $this->formImage;
+    }
+
+    /**
+     * @param string $formImage
+     */
+    public function setFormImage($formImage)
+    {
+        $this->formImage = $formImage;
+
+        return $this;
     }
 }
 

@@ -1,0 +1,27 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% block main %}
+    <div class="content">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    {% for field in formEntity.json|filterJson() %}
+                        <th>{{ field.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for valueObject in values %}
+                    <tr>
+                        <td><a href="{{ path('get_value', {'id': valueObject.id}) }}">{{ valueObject.id }}</a></td>
+                        {% for field in formEntity.json|filterJson() %}
+                            {% set value = attribute(valueObject.json, field.name) is defined ? attribute(valueObject.json, field.name) : '' %}
+                            <td>{% if value is iterable %}{{ value|join(', ') }}{% else %}{{ value }}{% endif %}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

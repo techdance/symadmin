@@ -1,0 +1,26 @@
+{% extends 'easyadmin-bundle/src/Resources/views/default/list.html.twig' %}
+
+
+
+
+
+{% block body_javascript %}
+    {{ parent() }}
+   
+    <script type="text/javascript">
+        $(function() {
+           $('td[data-label="Name"]').each(function(i, el){
+                var roleTitle = $(el).find('span').attr('title');
+                if (roleTitle == 'ROLE_SUPER_ADMIN' || roleTitle == 'ROLE_DEVELOPER') {
+                    $('tbody tr').eq($(el).closest('tr').index()).find('td[data-label="Actions"]>.action-delete,.action-edit').hide();
+                    $('tbody tr').eq($(el).closest('tr').index()).find('input.form-batch-checkbox').removeClass('form-batch-checkbox').attr('disabled', true);
+                }
+           }); 
+
+           $('.action-show').click(function(e) {
+                e.preventDefault();
+                window.location.href = $(e.target).closest('tr').find('.action-edit').attr('href') + '&overrideAction="show"';
+           });
+        })
+    </script>
+{% endblock %}

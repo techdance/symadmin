@@ -1,0 +1,121 @@
+{% extends 'easyadmin-bundle/src/Resources/views/default/list.html.twig' %}
+
+
+{% block import_action %}
+
+    {% set _action = easyadmin_get_action_for_list_view('import', _entity_config.name) %}
+
+    {% set _list_item_import = easyadmin_get_actions_for_list_item(_entity_config.name) %}
+
+    {% for  metadata in _list_item_create %}
+        {% if metadata.name == 'import' %}
+        
+            {% if metadata.roles is not defined or in_array(metadata.roles, easyadmin_app_roles()) %}
+               
+                <div class="button-action">
+                    <a class="{{ _action.css_class|default('') }} btn btn-primary" href="#">
+                    {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                    {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endblock import_action %} 
+
+{% block content_header %}
+    {{ parent() }}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import Users</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% set queryParams = app.request.query.all  %}
+            {% set queryParams = queryParams|merge({'referer': 'admin'})  %}
+         
+            <form method='post' action='/admin/import-users?{{ queryParams|url_encode }}' enctype="multipart/form-data">
+                <div class="modal-body">
+                    Select file : <input type='file' name='userFile' id='userFile' class='form-control' ><br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id='btn_upload'>Import</button>
+                </div>
+             </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+  {% block table_body %}
+
+        {% for item in paginator.currentPageResults %}
+          {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+          {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
+            <tr data-id="{{ _item_id }}">
+           
+            {% if _has_batch_actions and in_array('BATCH', easyadmin_app_roles()) %}
+                <td><input type="checkbox" class="form-batch-checkbox" value="{{ _item_id }}"></td>
+            {% endif %}
+            {% for field, metadata in fields %}
+              {% set isSortingField = metadata.property == app.request.get('sortField') %}
+              {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
+
+              {# Check role based permission for current user #}
+              {% if metadata.roles is not defined or in_array(metadata.roles, easyadmin_app_roles()) %}
+                {% if _column_label == 'Roles' %}
+                    <td data-label="{{ _column_label }}"
+                        class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                        {% set rolesArr = item.activeRoles|join(', ', ', ') %}
+                        {{ rolesArr }}
+                    </td>
+                {% else %}
+                    <td data-label="{{ _column_label }}"
+                        class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                    {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
+                    </td>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            {% if _list_item_actions|length > 0 %}
+              {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
+              <td data-label="{{ _column_label }}" class="actions">
+                {% block item_actions %}
+                  {{ include('//easyadmin-bundle/src/Resources/views/default/includes/_actions.html.twig', {
+                    actions: _list_item_actions,
+                    request_parameters: _request_parameters,
+                    translation_domain: _entity_config.translation_domain,
+                    trans_parameters: _trans_parameters,
+                    item_id: _item_id
+                  }, with_context = false) }}
+                {% endblock item_actions %}
+              </td>
+            {% endif %}
+          </tr>
+        {% else %}
+          <tr>
+            <td class="no-results" colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+              {{ 'search.no_results'|trans(_trans_parameters, 'EasyAdminBundle') }}
+            </td>
+          </tr>
+        {% endfor %}
+      {% endblock table_body %}
+
+
+{% block body_javascript %}
+    {{ parent() }}
+   
+    <script type="text/javascript">
+        $(function() {
+            $('.action-import').click(function() {
+                console.log($('#exampleModal').modal('show'))
+            })
+        })
+    </script>
+{% endblock %}

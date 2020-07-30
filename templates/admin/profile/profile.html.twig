@@ -1,0 +1,249 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+
+{% block content_header %}
+    <h5>Form Builder</h5>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+
+        {{ form_start(form) }}
+            
+            {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+
+    <script>
+        
+
+        // setup an "add a tag" link
+        
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            collegeAndSchools();
+            accrediations();
+            recognitions();
+            degrees();
+            socialMeidas();
+        });
+
+        function collegeAndSchools() {
+            let collegeSchoolsHolder = $('#institution_profile_collegeSchools');
+
+            let addButton = $('<button type="button" class="add_college_school">Add a tag</button>');
+            let newLinkLi = $('<div></div>').append(addButton);
+
+            $('#institution_profile_collegeSchools > div').each(function() {
+                let schoolChild = $(this);
+                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
+                schoolChild.append(removeBtn);
+                removeBtn.on('click', function(e) {
+                    schoolChild.remove();
+                });
+            });
+
+            collegeSchoolsHolder.append(newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+
+            addButton.on('click', function(e) {
+                // add a new tag form (see next code block)
+              
+
+                    // Get the data-prototype explained earlier
+                let prototype = collegeSchoolsHolder.data('prototype');
+
+                // get the new index
+                let index = collegeSchoolsHolder.data('index');
+
+                let newForm = prototype;
+               
+                newForm = newForm.replace(/__name__/g, index);
+
+                collegeSchoolsHolder.data('index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                let newFormLi = $('<div></div>').append(newForm);
+                newLinkLi.before(newFormLi);
+            });
+        }
+
+        function accrediations() {
+            let collegeSchoolsHolder = $('#institution_profile_accrediations');
+
+            let addButton = $('<button type="button" class="add_accrediation">Add a tag</button>');
+            let newLinkLi = $('<div></div>').append(addButton);
+
+            $('#institution_profile_accrediations > div').each(function() {
+                let schoolChild = $(this);
+                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
+                schoolChild.append(removeBtn);
+                removeBtn.on('click', function(e) {
+                    schoolChild.remove();
+                });
+            });
+
+            collegeSchoolsHolder.append(newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+
+            addButton.on('click', function(e) {
+                // add a new tag form (see next code block)
+              
+
+                    // Get the data-prototype explained earlier
+                let prototype = collegeSchoolsHolder.data('prototype');
+
+                // get the new index
+                let index = collegeSchoolsHolder.data('index');
+
+                let newForm = prototype;
+               
+                newForm = newForm.replace(/__name__/g, index);
+
+                collegeSchoolsHolder.data('index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                let newFormLi = $('<div></div>').append(newForm);
+                newLinkLi.before(newFormLi);
+            });
+        }
+
+        function recognitions() {
+            let collegeSchoolsHolder = $('#institution_profile_recognitions');
+
+            let addButton = $('<button type="button" class="add_recognition">Add a tag</button>');
+            let newLinkLi = $('<div></div>').append(addButton);
+
+            $('#institution_profile_recognitions > div').each(function() {
+                let schoolChild = $(this);
+                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
+                schoolChild.append(removeBtn);
+                removeBtn.on('click', function(e) {
+                    schoolChild.remove();
+                });
+            });
+
+            collegeSchoolsHolder.append(newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+
+            addButton.on('click', function(e) {
+                // add a new tag form (see next code block)
+              
+
+                    // Get the data-prototype explained earlier
+                let prototype = collegeSchoolsHolder.data('prototype');
+
+                // get the new index
+                let index = collegeSchoolsHolder.data('index');
+
+                let newForm = prototype;
+               
+                newForm = newForm.replace(/__name__/g, index);
+
+                collegeSchoolsHolder.data('index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                let newFormLi = $('<div></div>').append(newForm);
+                newLinkLi.before(newFormLi);
+            });
+        }
+
+        function degrees() {
+            let collegeSchoolsHolder = $('#institution_profile_degrees');
+
+            let addButton = $('<button type="button" class="add_degree">Add a tag</button>');
+            let newLinkLi = $('<div></div>').append(addButton);
+
+            $('#institution_profile_degrees > div').each(function() {
+                let schoolChild = $(this);
+                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
+                schoolChild.append(removeBtn);
+                removeBtn.on('click', function(e) {
+                    schoolChild.remove();
+                });
+            });
+
+            collegeSchoolsHolder.append(newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+
+            addButton.on('click', function(e) {
+                // add a new tag form (see next code block)
+              
+
+                    // Get the data-prototype explained earlier
+                let prototype = collegeSchoolsHolder.data('prototype');
+
+                // get the new index
+                let index = collegeSchoolsHolder.data('index');
+
+                let newForm = prototype;
+               
+                newForm = newForm.replace(/__name__/g, index);
+
+                collegeSchoolsHolder.data('index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                let newFormLi = $('<div></div>').append(newForm);
+                newLinkLi.before(newFormLi);
+            });
+        }
+
+        function socialMeidas() {
+            let collegeSchoolsHolder = $('#institution_profile_socialMedias');
+
+            let addButton = $('<button type="button" class="add_socialMedia">Add a tag</button>');
+            let newLinkLi = $('<div></div>').append(addButton);
+
+            $('#institution_profile_socialMedias > div').each(function() {
+                let schoolChild = $(this);
+                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
+                schoolChild.append(removeBtn);
+                removeBtn.on('click', function(e) {
+                    schoolChild.remove();
+                });
+            });
+
+            collegeSchoolsHolder.append(newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+
+            addButton.on('click', function(e) {
+                // add a new tag form (see next code block)
+              
+
+                    // Get the data-prototype explained earlier
+                let prototype = collegeSchoolsHolder.data('prototype');
+
+                // get the new index
+                let index = collegeSchoolsHolder.data('index');
+
+                let newForm = prototype;
+               
+                newForm = newForm.replace(/__name__/g, index);
+
+                collegeSchoolsHolder.data('index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                let newFormLi = $('<div></div>').append(newForm);
+                newLinkLi.before(newFormLi);
+            });
+        }
+
+    </script>
+{% endblock %}
+

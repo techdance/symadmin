@@ -68,10 +68,12 @@
 
               {# Check role based permission for current user #}
               {% if metadata.roles is not defined or in_array(metadata.roles, easyadmin_app_roles()) %}
+
+                
                 {% if _column_label == 'Roles' %}
                     <td data-label="{{ _column_label }}"
                         class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ easyadmin_config('design.rtl') ? 'dir="rtl"' }}>
-                        {% set rolesArr = item.activeRoles|join(', ', ', ') %}
+                        {% set rolesArr = item.activeRoles|filter(v => v != 'ROLE_USER')|join(', ', ', ') %}
                         {{ rolesArr }}
                     </td>
                 {% else %}

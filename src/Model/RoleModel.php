@@ -7,6 +7,9 @@ class RoleModel
     const ROLE_DEVELOPER = 'ROLE_DEVELOPER';
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_USER = 'ROLE_USER';
+    const ROLE_STUDENT = 'ROLE_STUDENT';
+    const ROLE_FACULTY = 'ROLE_FACULTY';
+    const ROLE_ADMINISTRATOR = 'ROLE_ADMINISTRATOR';
 
     const ACTION_ALL_PERMISSIONS = [
         'CAN_SHOW',

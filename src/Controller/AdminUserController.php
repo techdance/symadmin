@@ -16,27 +16,77 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminUserController extends EasyAdminController
 {
-   
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+
+    }
+    
     public function updateEntity($entity)
     {
+       
+       
+        if ($entity->getPlainPassword()) {
+            $encodedPassword = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
+            $entity->setPlainPassword($entity->getPlainPassword());
+            $entity->setPassword($encodedPassword);
+        }
+        
         parent::updateEntity($entity);
+
+        $this->addFlash('success', 'User updated successfully');
     }
 
     protected function persistEntity($entity)
     {
-        $defaultUserRole = $this->getDoctrine()->getRepository(Group::class)->findOneBy([
+
+       
+        $userRole = $this->getDoctrine()->getRepository(Group::class)->findOneBy([
             'name' => RoleModel::ROLE_USER
         ]);
         
+        if (!is_null($userRole)) {
+            $entity->addGroup($userRole);
+        }
+
+
+        $defaultUserRole = $this->getDoctrine()->getRepository(Group::class)->findOneBy([
+            'name' => RoleModel::ROLE_STUDENT
+        ]);
+
         if (!is_null($defaultUserRole)) {
             $entity->addGroup($defaultUserRole);
         }
+       
+        if(!$entity->getId() && !$entity->getPlainPassword()) {
+            $entity->setPlainPassword(base64_encode(rand(1000000000,9999999999)));
+        }
 
+        if ($entity->getPlainPassword()) {
+            $encodedPassword = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
+            $entity->setPlainPassword($entity->getPlainPassword());
+            $entity->setPassword($encodedPassword);
+        }
+
+
+        // if (is_null($entity->getMiddleName())) {
+        //     $entity->setMiddleName('');
+        // }
+
+       
+       
         $this->em->persist($entity);
         $this->em->flush();
+
+        $this->addFlash('success', 'User created successfully');
+
+        
     }
 
     /**
@@ -57,25 +107,61 @@ class AdminUserController extends EasyAdminController
         ]);
 
         $existsUser = [];
+
+        
+         
         foreach ($rowArray as $key => $row) {
             
-            // $row[3] = 'test1@test.com';
+            if (!$row[5]) {
+                continue;
+            }
 
-            if ($userManager->findUserByEmail($row[3])) {
+            if ($userManager->findUserByEmail($row[5])) {
                $existsUser[] = $row;
                continue;
             }
             
             $user = $userManager->createUser();
 
-            $user->setPrefix($row[0]);
-            $user->setFirstName($row[1]);
-            $user->setLastName($row[2]);
-            $user->setUsername($row[3]);
-            $user->setEmail($row[3]);
-            $user->setEmailCanonical($row[3]);
+            $row[0] && $user->setPrefix($row[0]);
+            $row[1] && $user->setFirstName($row[1]);
+            $row[2] && $user->setMiddleName($row[2]);
+            $row[3] && $user->setLastName($row[3]);
+            $row[4] && $user->setUsername($row[4]);
+            $row[5] && $user->setEmail($row[5]);
+            $row[5] && $user->setEmailCanonical($row[5]);
             $user->setEnabled(1);
-            $user->setInstitutionName($row[4]);
+            $row[6] && $user->setInstitutionName($row[6]);
+            $row[7] && $user->setPhone($row[7]);
+            $row[8] && $user->setSsn($row[8]);
+            if ($row[9]) {
+                $user->setVetran((strtolower($row[9]) == 'yes' || $row[9] == 1) ? 1 : 0);
+            }
+            
+           
+            $row[10] && $user->setEthinicity($row[10]);
+            $row[11] && $user->setDateOfBirth(\DateTime::createFromFormat('d/m/Y', $row[11]));
+            $row[12] && $user->setGender(ucfirst($row[12]));
+            $row[13] && $user->setEmergencyContactPerson($row[13]);
+            $row[14] && $user->setEmergencyContactPhone($row[14]);
+            $row[15] && $user->setAddress1($row[15]);
+            $row[16] && $user->setAddress2($row[16]);
+            $row[17] && $user->setCity($row[17]);
+            $row[18] && $user->setState($row[18]);
+            $row[19] && $user->setZip($row[19]);
+
+            if ($row[20]) {
+
+                $userRole = $this->getDoctrine()->getRepository(Group::class)->findOneBy([
+                    'name' => $row[20]
+                ]);
+
+                if (!is_null($userRole)) {
+                    $user->addGroup($userRole);
+                }
+            }
+            $row[21] && $user->setPosition($row[21]);
+
             $user->setPlainPassword(base64_encode(rand(1000000000,9999999999)));
 
             if (!is_null($defaultUserRole)) {
@@ -101,5 +187,4 @@ class AdminUserController extends EasyAdminController
 
         return $this->redirectToRoute('easyadmin');
     }
-
 }

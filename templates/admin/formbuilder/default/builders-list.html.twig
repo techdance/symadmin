@@ -43,6 +43,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Logo</th>
                     <th>Fields</th>
                     <th colspan="2">Actions</th>
                 </tr>
@@ -52,6 +53,15 @@
                     <tr data-row-id="{{ builder.id }}">
                         <td>
                             {{ builder.name }}
+                        </td>
+                        <td>
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set formImage = noImage %}
+                            {% if builder.formImage is defined and builder.formImage %}
+                                {% set formImage = asset('uploads/formbuilder/' ~ builder.formImage) %}
+                            {% endif %}
+                            
+                            <img src="{{ formImage }}" width="100" height="100">
                         </td>
                         <td>
                             {% for array in builder.json %}

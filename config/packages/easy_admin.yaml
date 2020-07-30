@@ -18,7 +18,7 @@ easy_admin:
     menu:
       - {label: "Entities"}
       - { entity: 'User', label: 'Users', icon: 'users', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
-      - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list' }
+      - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Group', label: 'Role Permissions', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Entitygroup', label: 'Module', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
      
@@ -44,7 +44,9 @@ easy_admin:
         fields:
           - prefix
           - firstName
+          - middleName
           - lastName
+          - userName
           - email
           - institutionName
           - roles
@@ -52,22 +54,39 @@ easy_admin:
         actions:
           - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER'] }          
           - { name: 'import',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }          
-          - { name: 'show',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
-          - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
-          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'show', icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'edit', icon: 'edit', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'trash',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
         batch_actions: ['delete' ]
         item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
       form:
         fields:
           - prefix
           - firstName
+          - { property: 'middleName', type: 'text', type_options: { required: false,  empty_data : '' } }
           - lastName
+          - { property: 'userName', label: 'UserName', type: 'text', type_options: { required: true } }
+          - { property: 'plainPassword', type: 'text', type_options: { required: true } }
           - email
           - institutionName
-          - enabled
+          - phone
+          - position
+          - ssn
+          - { property: 'vetran', label: 'Veteran', type: 'text', type_options: { required: false }  }
+          - { property: 'ethinicity', label: 'Ethnicity', type: 'text' }
+          - { property: 'dateOfBirth', type: 'date', type_options : { widget : 'single_text', html5: false, format : 'yyyy-MM-dd',  attr: {class: 'js-datepicker'} } }
+          - { property: 'gender', type: 'choice', type_options: { choices: { 'Male': 'Male', 'Female' : 'Male' } } }
+          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text' }
+          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text' }
+          - address1
+          - address2
+          - city
+          - state
+          - zip
           # - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN':'ROLE_SUPER_ADMIN'} } }
-          - { property: 'groups', label: 'Roles', type: 'entity', type_options: { multiple: true, expanded: false, choice_label: 'name', class: 'App\Entity\Group' } }
-          - { property: 'plainPassword', type: 'text', type_options: { required: false } }
+          - { property: 'groups', label: 'Roles', type: 'entity', type_options: { multiple: true, expanded: false, required: true, choice_label: 'name', class: 'App\Entity\Group' } }
+          - enabled
+          
       edit:
         actions:          
           - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
@@ -76,11 +95,25 @@ easy_admin:
         fields:
           - prefix
           - firstName
+          - middleName
           - lastName
+          - { property: 'userName', label: 'UserName', type: 'text' }
           - email
           - institutionName
           - roles
           - enabled
+          - phone
+          - { property: 'vetran', label: 'Veteran', type: 'text' }
+          - { property: 'ethinicity', label: 'Ethnicity', type: 'text' }
+          - { property: 'dateOfBirth', type: 'date' }
+          - { property: 'gender', type: 'choice', type_options: { choices: { 'Male': 'Male', 'Female' : 'Male' } } }
+          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text' }
+          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text' }
+          - address1
+          - address2
+          - city
+          - state
+          - zip
         actions:          
           - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER'] }
           - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }

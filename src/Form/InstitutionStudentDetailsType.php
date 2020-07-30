@@ -22,19 +22,19 @@ class InstitutionStudentDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('term')
-            ->add('year')
-            ->add('totalStudents')
-            ->add('femaleStudents')
-            ->add('maleStudents')
-            ->add('undergradStudents')
-            ->add('gradStudents')
-            ->add('otherStudents')
-            ->add('fullTimeStudents')
-            ->add('inStateStudents')
-            ->add('outOfStateStudents')
-            ->add('partTimeStudents')
-            ->add('interNationalStudents')
+            ->add('term',null, ['empty_data' => ''])
+            ->add('year',null, ['empty_data' => ''])
+            ->add('totalStudents',null, ['empty_data' => ''])
+            ->add('femaleStudents',null, ['empty_data' => ''])
+            ->add('maleStudents',null, ['empty_data' => ''])
+            ->add('undergradStudents',null, ['empty_data' => ''])
+            ->add('gradStudents',null, ['empty_data' => ''])
+            ->add('otherStudents',null, ['empty_data' => ''])
+            ->add('fullTimeStudents',null, ['empty_data' => ''])
+            ->add('inStateStudents',null, ['empty_data' => ''])
+            ->add('outOfStateStudents',null, ['empty_data' => ''])
+            ->add('partTimeStudents',null, ['empty_data' => ''])
+            ->add('interNationalStudents',null, ['empty_data' => ''])
         ;
     }
 

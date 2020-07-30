@@ -372,11 +372,21 @@
                     <div class="row">
                         <div class="col-md-6 mt-2">
                             <label for="campus-name"><strong>Campus Name</strong></label>
-                            <input type="text" class="form-control" id="campus-name" placeholder="Campus Name">
+                            <input type="text" class="form-control" 
+                                id="{{ form.campusName.vars.id }}" 
+                                name="{{ form.campusName.vars.full_name }}" 
+                                value="{{ form.campusName.vars.value }}" 
+                                maxlength="{{ form.campusName.vars.attr.maxlength }}"
+                                placeholder="Campus Name">
                         </div>
                         <div class="col-md-6 mt-2">
                             <label for="ins-name"><strong>Institution Name</strong></label>
-                            <input type="text" class="form-control" id="ins-name" placeholder="Institution Name">
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionName.vars.id }}" 
+                                name="{{ form.institutionName.vars.full_name }}" 
+                                value="{{ form.institutionName.vars.value }}" 
+                                maxlength="{{ form.institutionName.vars.attr.maxlength }}" 
+                                placeholder="Institution Name">
                         </div>
 
                         <div class="col-md-6 mt-2">
@@ -423,6 +433,15 @@
                                 value="{{ form.institutionLocation.vars.form.postalCode.vars.value }}" 
                                 maxlength="{{ form.institutionLocation.vars.form.postalCode.vars.attr.maxlength }}" 
                                 placeholder="Postal Code">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="postal-code"><strong>Region</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.region.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.region.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.region.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.region.vars.attr.maxlength }}" 
+                                placeholder="Region">
                         </div>
                     </div>
                     

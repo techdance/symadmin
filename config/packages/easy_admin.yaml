@@ -70,19 +70,19 @@ easy_admin:
           - email
           - institutionName
           - phone
-          - position
-          - ssn
-          - { property: 'vetran', label: 'Veteran', type: 'text', type_options: { required: false }  }
-          - { property: 'ethinicity', label: 'Ethnicity', type: 'text' }
+          - { property: 'position', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'ssn', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'vetran', label: 'Veteran', type: 'text', type_options: { required: false, empty_data : '' }  }
+          - { property: 'ethinicity', label: 'Ethnicity', type: 'text', type_options: { required: false,  empty_data : '' } }
           - { property: 'dateOfBirth', type: 'date', type_options : { widget : 'single_text', html5: false, format : 'yyyy-MM-dd',  attr: {class: 'js-datepicker'} } }
           - { property: 'gender', type: 'choice', type_options: { choices: { 'Male': 'Male', 'Female' : 'Male' } } }
-          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text' }
-          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text' }
-          - address1
-          - address2
-          - city
-          - state
-          - zip
+          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'address1', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'address2', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'city', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'state', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'zip', type: 'text', type_options: { required: false,  empty_data : '' } }
           # - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN':'ROLE_SUPER_ADMIN'} } }
           - { property: 'groups', label: 'Roles', type: 'entity', type_options: { multiple: true, expanded: false, required: true, choice_label: 'name', class: 'App\Entity\Group' } }
           - enabled

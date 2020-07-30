@@ -22,11 +22,12 @@ class InstitutionLocationInfoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('address1')
-            ->add('address2')
-            ->add('city')
-            ->add('state')
-            ->add('postalCode')
+            ->add('address1',null, ['empty_data' => ''])
+            ->add('address2',null, ['empty_data' => ''])
+            ->add('city',null, ['empty_data' => ''])
+            ->add('state',null, ['empty_data' => ''])
+            ->add('postalCode',null, ['empty_data' => ''])
+            ->add('region',null, ['empty_data' => ''])
         ;
     }
 

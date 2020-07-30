@@ -21,18 +21,18 @@ class InstitutionContactInfoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('officeNumber')
-            ->add('mailingName')
-            ->add('faxNumber')
-            ->add('department')
-            ->add('website')
-            ->add('email')
-            ->add('address1')
-            ->add('address2')
-            ->add('city')
-            ->add('state')
-            ->add('postalCode')
-            ->add('new')
+            ->add('officeNumber',null, ['empty_data' => ''])
+            ->add('mailingName',null, ['empty_data' => ''])
+            ->add('faxNumber',null, ['empty_data' => ''])
+            ->add('department',null, ['empty_data' => ''])
+            ->add('website',null, ['empty_data' => ''])
+            ->add('email',null, ['empty_data' => ''])
+            ->add('address1',null, ['empty_data' => ''])
+            ->add('address2',null, ['empty_data' => ''])
+            ->add('city',null, ['empty_data' => ''])
+            ->add('state',null, ['empty_data' => ''])
+            ->add('postalCode',null, ['empty_data' => ''])
+            ->add('new',null, ['empty_data' => ''])
         ;
     }
 

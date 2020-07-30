@@ -23,12 +23,12 @@ class InstitutionFacultyDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('term')
-            ->add('year')
-            ->add('fullTimeFaculty')
-            ->add('studentFacultyRatio')
-            ->add('facultyHigherDegree')
-            ->add('avgUGClassSize')
+            ->add('term',null, ['empty_data' => ''])
+            ->add('year',null, ['empty_data' => ''])
+            ->add('fullTimeFaculty',null, ['empty_data' => ''])
+            ->add('studentFacultyRatio',null, ['empty_data' => ''])
+            ->add('facultyHigherDegree',null, ['empty_data' => ''])
+            ->add('avgUGClassSize',null, ['empty_data' => ''])
             
         ;
     }

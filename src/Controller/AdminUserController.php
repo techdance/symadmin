@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Form\Type\UserType;
+use App\Manager\UserManager;
 use App\Model\RoleModel;
 use Doctrine\DBAL\Types\DateType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
@@ -22,15 +23,18 @@ class AdminUserController extends EasyAdminController
 {
     private $passwordEncoder;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    private $userManager;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, UserManager $userManager)
     {
         $this->passwordEncoder = $passwordEncoder;
+
+        $this->userManager = $userManager;
 
     }
     
     public function updateEntity($entity)
     {
-       
        
         if ($entity->getPlainPassword()) {
             $encodedPassword = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
@@ -39,6 +43,13 @@ class AdminUserController extends EasyAdminController
         }
         
         parent::updateEntity($entity);
+        
+        $response = $this->userManager->updateUserToExternalApi($entity->getUserName());
+
+
+        if ($response['statusCode'] !== 200) {
+            $this->addFlash('warning', 'Update user to external api have some issue.');
+        }
 
         $this->addFlash('success', 'User updated successfully');
     }
@@ -74,15 +85,14 @@ class AdminUserController extends EasyAdminController
             $entity->setPassword($encodedPassword);
         }
 
-
-        // if (is_null($entity->getMiddleName())) {
-        //     $entity->setMiddleName('');
-        // }
-
-       
-       
         $this->em->persist($entity);
         $this->em->flush();
+
+        $response = $this->userManager->updateUserToExternalApi($entity->getUserName());
+
+        if ($response['statusCode'] !== 200) {
+            $this->addFlash('warning', 'Update user to external api have some issue.');
+        }
 
         $this->addFlash('success', 'User created successfully');
 
@@ -110,7 +120,7 @@ class AdminUserController extends EasyAdminController
 
         
          
-        foreach ($rowArray as $key => $row) {
+        foreach ($rowArray as $row) {
             
             if (!$row[5]) {
                 continue;
@@ -169,6 +179,9 @@ class AdminUserController extends EasyAdminController
             }
 
             $userManager->updateUser($user);
+            
+            $this->userManager->updateUserToExternalApi($user->getUserName());
+
         }
 
         return $this->redirectToRoute('easyadmin', $request->query->all());

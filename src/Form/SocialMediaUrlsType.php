@@ -24,8 +24,8 @@ class SocialMediaUrlsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('socialMedia')
-            ->add('url')
+            ->add('socialMedia',null, ['empty_data' => ''])
+            ->add('url',null, ['empty_data' => ''])
         ;
     }
 

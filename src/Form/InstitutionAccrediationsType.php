@@ -23,7 +23,7 @@ class InstitutionAccrediationsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('accrediation')
+            ->add('accrediation',null, ['empty_data' => ''])
         ;
     }
 

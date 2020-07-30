@@ -22,7 +22,7 @@ class InstitutionCollegeSchoolsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('collegeSchoolName')
+            ->add('collegeSchoolName',null, ['empty_data' => ''])
         ;
     }
 

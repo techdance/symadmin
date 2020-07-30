@@ -18,26 +18,29 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 
 class InstitutionProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('institutionName')
-            ->add('campusName')
+            ->add('institutionName', null, ['empty_data' => ''])
+            ->add('campusName', null, ['empty_data' => ''])
             ->add('insProfileImage', FileType::class, [
                 'data_class' => null
             ])
-            ->add('founded')
-            ->add('insType')
-            ->add('language')
-            ->add('president')
-            ->add('academicCalendar')
-            ->add('otherLanguages')
-            ->add('totalEmployees')
-            ->add('alumini')
-            ->add('overview', TextareaType::class)
+            ->add('founded', null, ['empty_data' => ''])
+            ->add('insType', null, ['empty_data' => ''])
+            ->add('language', null, ['empty_data' => ''])
+            ->add('president', null, ['empty_data' => ''])
+            ->add('academicCalendar', null, ['empty_data' => ''])
+            ->add('otherLanguages', null, ['empty_data' => ''])
+            ->add('totalEmployees', null, ['empty_data' => ''])
+            ->add('alumini', null, ['empty_data' => ''])
+            ->add('overview', null, ['empty_data' => ''] )
             ->add('institutionContact', InstitutionContactInfoType::class)
             ->add('institutionLocation', InstitutionLocationInfoType::class)
             ->add('studentDetails', InstitutionStudentDetailsType::class)
@@ -79,9 +82,10 @@ class InstitutionProfileType extends AbstractType
                 'allow_delete' => true,
             ])
             ->add('save', SubmitType::class, ['label' => 'Save Profile'])
-
         ;
     }
+
+  
 
     public function configureOptions(OptionsResolver $resolver)
     {

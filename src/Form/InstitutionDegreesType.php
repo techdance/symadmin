@@ -23,7 +23,7 @@ class InstitutionDegreesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('degreeName')
+            ->add('degreeName',null, ['empty_data' => ''])
         ;
     }
 

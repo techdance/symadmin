@@ -24,7 +24,7 @@ class InstitutionRecognitioinsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('recognition')
+            ->add('recognition', null, ['empty_data' => ''])
         ;
     }
 

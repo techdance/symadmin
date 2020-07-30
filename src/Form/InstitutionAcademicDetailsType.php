@@ -24,15 +24,15 @@ class InstitutionAcademicDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
          $builder
-            ->add('term')
-            ->add('year')
-            ->add('academicYear')
-            ->add('associateDegrees')
-            ->add('bachelorsDegrees')
-            ->add('masterDegrees')
-            ->add('doctorateDegrees')
-            ->add('underGraduate')
-            ->add('graduate')
+            ->add('term',null, ['empty_data' => ''])
+            ->add('year',null, ['empty_data' => ''])
+            ->add('academicYear',null, ['empty_data' => ''])
+            ->add('associateDegrees',null, ['empty_data' => ''])
+            ->add('bachelorsDegrees',null, ['empty_data' => ''])
+            ->add('masterDegrees',null, ['empty_data' => ''])
+            ->add('doctorateDegrees',null, ['empty_data' => ''])
+            ->add('underGraduate',null, ['empty_data' => ''])
+            ->add('graduate',null, ['empty_data' => ''])
             
             
         ;

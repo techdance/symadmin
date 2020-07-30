@@ -8,12 +8,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Manager\UserManager;
 use App\Model\RoleModel;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpClient\HttpClient;
+
 // use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -26,6 +28,13 @@ class UserController extends AbstractController
      * @var integer HTTP status code - 200 (OK) by default
      */
     protected $statusCode = 200;
+
+    protected $userManager;
+
+    public function __construct(UserManager $userManager)
+    {
+        $this->userManager = $userManager;
+    }
 
     /**
      * Gets the value of statusCode.
@@ -48,11 +57,11 @@ class UserController extends AbstractController
      */
     public function registerUser(UserPasswordEncoderInterface $passwordEncoder, Request $request, MailerInterface $mailer)
     {
-
         $user = new User();
         $prefix                  = $request->request->get("prefix");
         $firstName               = $request->request->get("firstName");
         $lastName                 = $request->request->get("lastName");
+        $username                 = $request->request->get("username");
         $institutionEmail        = $request->request->get("institutionEmail");
         $institutionName         = $request->request->get("institutionName");
         $password                 = $request->request->get("password");
@@ -66,9 +75,11 @@ class UserController extends AbstractController
             $encodedPassword = $passwordEncoder->encodePassword($user, $password);
             $user->setEmail($institutionEmail);
             $user->setPassword($encodedPassword);
+            $user->setUsername($username);
             //$user->setPassword($encodedPassword);
             $user->setPrefix($prefix);
             $user->setFirstName($firstName);
+            $user->setMiddleName('');
             $user->setLastName($lastName);
             $user->setInstitutionName($institutionName);
             $user->setEnabled(true);
@@ -83,6 +94,7 @@ class UserController extends AbstractController
 
             $em = $this->getDoctrine()->getManager();
             try {
+
                 $em->persist($user);
                 $em->flush();
                 $name = trim($prefix) . '.' . $firstName . ' ' . $lastName;
@@ -94,11 +106,11 @@ class UserController extends AbstractController
                     ->subject('Thanks for signing up!')
                     ->html($content);
 		        $mailer->send($email);
-                return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUsername()));
-                // return $this->json([
-                //   	   'user' => $user
-                //  		]);
 
+                $this->userManager->updateUserToExternalApi($user->getUserName());
+
+                return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUserName()));
+                
             } catch (UniqueConstraintViolationException $e) {
                 $errors[] = "The email provided already has an account!";
             } catch (\Exception $e) {
@@ -111,6 +123,8 @@ class UserController extends AbstractController
             'errors' => $errors
         ], 400);
     }
+
+
 
     /**
      * @Route("/api/login", name="api_login", methods={"POST"})
@@ -473,7 +487,10 @@ class UserController extends AbstractController
 
                 $em->persist($user);
                 $em->flush();
-               
+
+
+                $this->userManager->updateUserToExternalApi($user->getUserName());
+
                 return $this->respondWithSuccess(sprintf('User profile %s successfully updated', $user->getUsername()));
                
 
@@ -569,7 +586,23 @@ class UserController extends AbstractController
             return $this->json([
                 'errors' => [ 'Reset password link not found.' ]
             ], 400);
-        }   
+        } 
+
+        if ($user) {
+
+            $datetime1 = $user->getPasswordRequestedAt(); 
+      
+            $datetime2 = new DateTime("now");
+
+            $diff = $datetime2->diff($datetime1)->format("%a");
+
+            if ($diff > 5) {
+                return $this->json([
+                    'errors' => [ 'Reset password link was expired.' ]
+                ], 400);
+            }
+        } 
+
 
         $password = $request->request->get('password');
         $confirmPassword = $request->request->get('confirm_password');

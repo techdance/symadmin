@@ -73,13 +73,19 @@ class InstitutionProfileController extends EasyAdminController
 
 
                 if ($profile && $file) {
-    
+                    
+                   
                     if ($existingProfile && $existingProfile->getInsProfileImage()) {
                         $file_to_delete = $this->get('kernel')->getProjectDir(). '/public/' . $existingProfile->getInsProfileImage();
                     
                         if (file_exists($file_to_delete)) {
                             unlink($file_to_delete);
                         }
+                    }
+                } else {
+                   
+                    if ($existingProfile && $existingProfile->getInsProfileImage()) {
+                        $profile->setInsProfileImage($existingProfile->getInsProfileImage());
                     }
                 }
 
@@ -98,8 +104,9 @@ class InstitutionProfileController extends EasyAdminController
 
                 if ( $file) {
                     $profile->setInsProfileImage("uploads/admin/profile/" . $newFilename);
-                }
+                } 
 
+               
                 $em->persist($profile);
                 $em->flush();
 

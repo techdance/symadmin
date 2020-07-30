@@ -39,7 +39,7 @@ class InstitutionProfileController extends EasyAdminController
     }
 
     /**
-     * @Route("/insitution-profile", name="insitution_profile")
+     * @Route("/institution-profile", name="institution_profile")
      */
     public function institutionProfile(Request $request, FileUploader $fileUploader)
     {
@@ -60,55 +60,59 @@ class InstitutionProfileController extends EasyAdminController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+
+            if ($form->isValid()) {
            
-            $file = $form['insProfileImage']->getData();
+                $file = $form['insProfileImage']->getData();
 
 
-            if ( $file) {
-                $newFilename = md5(uniqid()).'.'.$file->guessExtension();
-            }
+                if ( $file) {
+                    $newFilename = md5(uniqid()).'.'.$file->guessExtension();
+                }
 
 
-            if ($profile && $file) {
- 
-                if ($existingProfile && $existingProfile->getInsProfileImage()) {
-                    $file_to_delete = $this->get('kernel')->getProjectDir(). '/public/' . $existingProfile->getInsProfileImage();
-                   
-                    if (file_exists($file_to_delete)) {
-                        unlink($file_to_delete);
+                if ($profile && $file) {
+    
+                    if ($existingProfile && $existingProfile->getInsProfileImage()) {
+                        $file_to_delete = $this->get('kernel')->getProjectDir(). '/public/' . $existingProfile->getInsProfileImage();
+                    
+                        if (file_exists($file_to_delete)) {
+                            unlink($file_to_delete);
+                        }
                     }
                 }
-            }
 
-     
-            if ( $file) {
-                // Move the file to the directory where your form images are stored
-                try {
-                    $file->move(
-                        $this->paramBag->get('upload_directory')."/admin/profile/",
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    //Handle error
+        
+                if ( $file) {
+                    // Move the file to the directory where your form images are stored
+                    try {
+                        $file->move(
+                            $this->paramBag->get('upload_directory')."/admin/profile/",
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        //Handle error
+                    }
                 }
+
+                if ( $file) {
+                    $profile->setInsProfileImage("uploads/admin/profile/" . $newFilename);
+                }
+
+                $em->persist($profile);
+                $em->flush();
+
+                $this->addFlash(
+                    'success',
+                    "Institution Profile Saved Successfully"
+                );
+
+                return $this->redirect($this->generateUrl('institution_profile'));
+            } else {
+               dump($form->getErrors());die;
             }
-
-            if ( $file) {
-                $profile->setInsProfileImage("uploads/admin/profile/" . $newFilename);
-            }
-
-            $em->persist($profile);
-            $em->flush();
-
-            $this->addFlash(
-                'success',
-                'Success mail'. $profile->getId()
-            );
-
-            return $this->redirect($this->generateUrl('insitution_profile'));
         }
-
 
         return $this->render('admin/profile/profile.html.twig', [
                'form' => $form->createView()

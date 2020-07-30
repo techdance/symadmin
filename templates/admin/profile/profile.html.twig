@@ -2,20 +2,890 @@
 
 
 {% block content_header %}
-    <h5>Form Builder</h5>
+    <h5>Institution Profile</h5>
 {% endblock %}
 
-{% block main %}
-    <div class="container">
+{% import _self as formMacros %}
+{% macro collegeSchoolsForm(collegeSchoolForm) %}
+    <div class="row my-2">
+        <div class="col-md-10">
+             <input type="text" class="form-control" 
+                id="{{ collegeSchoolForm.collegeSchoolName.vars.id }}" 
+                name="{{ collegeSchoolForm.collegeSchoolName.vars.full_name }}" 
+                value="{{ collegeSchoolForm.collegeSchoolName.vars.value }}" 
+                maxlength="{{ collegeSchoolForm.collegeSchoolName.vars.attr.maxlength }}" 
+                placeholder="College and Schools">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-sm btn-warning remove-college-school {{ collegeSchoolForm.collegeSchoolName.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+{% endmacro %}
 
-        {{ form_start(form) }}
-            
-            {{ form_widget(form) }}
-        {{ form_end(form) }}
+{% macro accreditationForm(accrediationForm) %}
+    <div class="row my-2">
+        <div class="col-md-10">
+             <input type="text" class="form-control" 
+                id="{{ accrediationForm.accrediation.vars.id }}" 
+                name="{{ accrediationForm.accrediation.vars.full_name }}" 
+                value="{{ accrediationForm.accrediation.vars.value }}" 
+                maxlength="{{ accrediationForm.accrediation.vars.attr.maxlength }}" 
+                placeholder="College and Schools">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-sm btn-warning remove-accrediation {{ accrediationForm.accrediation.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro recognitionsForm(recognitionForm) %}
+    <div class="row my-2">
+        <div class="col-md-10">
+             <input type="text" class="form-control" 
+                id="{{ recognitionForm.recognition.vars.id }}" 
+                name="{{ recognitionForm.recognition.vars.full_name }}" 
+                value="{{ recognitionForm.recognition.vars.value }}" 
+                maxlength="{{ recognitionForm.recognition.vars.attr.maxlength }}" 
+                placeholder="Recognitations">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-sm btn-warning remove-recognition {{ recognitionForm.recognition.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro degreesForm(degreeForm) %}
+    <div class="row my-2">
+        <div class="col-md-10">
+             <input type="text" class="form-control" 
+                id="{{ degreeForm.degreeName.vars.id }}" 
+                name="{{ degreeForm.degreeName.vars.full_name }}" 
+                value="{{ degreeForm.degreeName.vars.value }}" 
+                maxlength="{{ degreeForm.degreeName.vars.attr.maxlength }}" 
+                placeholder="Degree Name">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-sm btn-warning remove-degree {{ degreeForm.degreeName.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro socialMediaForm(socialMediaForm) %}
+     <div class="row my-2">
+        <div class="col-md-5">
+            <label for="socialmedia"><strong>Social Media</strong></label>
+            <input type="text" class="form-control" 
+                id="{{ socialMediaForm.socialMedia.vars.id }}" 
+                name="{{ socialMediaForm.socialMedia.vars.full_name }}" 
+                value="{{ socialMediaForm.socialMedia.vars.value }}" 
+                maxlength="{{ socialMediaForm.socialMedia.vars.attr.maxlength }}" 
+                placeholder="Social Media">
+        </div>
+        <div class="col-md-5">
+            <label for="socialmediaUrl"><strong>Url</strong></label>
+            <input type="text" class="form-control" 
+                id="{{ socialMediaForm.url.vars.id }}" 
+                name="{{ socialMediaForm.url.vars.full_name }}" 
+                value="{{ socialMediaForm.url.vars.value }}"  
+                placeholder="Social Media URL">
+        </div>
+        <div class="col-md-1 pt-4 mt-2">
+            <button type="button" class="btn btn-sm btn-warning remove-social-media {{ socialMediaForm.socialMedia.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+{% endmacro %}
+
+{% block main %}
+    <style>
+        .form-group label, .form-group legend.col-form-label {
+            align-self: self-start !important;
+            color: var(--text-color) !important;
+            flex: 0 0 0 !important;
+            font-size: var(--font-size-base) !important;
+            font-weight: 400 !important;
+            margin: 5px 5px 0 0 !important;
+            text-align: right !important;
+        }
+
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+
+        #profileImagePreview{
+            width: 100%;
+        }
+    </style>
+    <div class="container">
+        <form name="institution_profile" method="post" enctype="multipart/form-data">
+            {{ form_row(form._token) }}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row"><h3>Institution Overview</h3></div>
+                    
+                </div>
+                <div class="col-md-9">
+                    <div class="row my-3">
+                        <div class="col-md-12">
+                            <label for="overview"><strong>Institution Overview</strong></label>
+                            <textarea class="form-control" id="{{ form.overview.vars.id }}" name="{{ form.overview.vars.full_name }}" rows="5">
+                                {{ form.overview.vars.value }}
+                            </textarea>
+                        </div>
+                    </div>
+                        
+                    <div class="row my-3">
+                        <div class="col-md-3">
+                            <label for="founded"><strong>Founded</strong></label>
+                            <input type="text" class="form-control" id="{{ form.founded.vars.id }}" name="{{ form.founded.vars.full_name }}" value="{{ form.founded.vars.value }}" placeholder="Founded">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="founded"><strong>Ins Type</strong></label>
+                            <input type="text" class="form-control" id="{{ form.insType.vars.id }}" name="{{ form.insType.vars.full_name }}" value="{{ form.insType.vars.value }}" placeholder="Type">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="primary-language"><strong>Language</strong></label>
+                            <input type="text" class="form-control" id="{{ form.language.vars.id }}" name="{{ form.language.vars.full_name }}" value="{{ form.language.vars.value }}" placeholder="Primary Language">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="president"><strong>President</strong></label>
+                            <input type="text" class="form-control" id="{{ form.president.vars.id }}" name="{{ form.president.vars.full_name }}" value="{{ form.president.vars.value }}" placeholder="President">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-md-3">
+                            <label for="academic-calendar"><strong>Academic Calendar</strong></label>
+                            <input type="text" class="form-control" id="{{ form.academicCalendar.vars.id }}" name="{{ form.academicCalendar.vars.full_name }}" value="{{ form.academicCalendar.vars.value }}" placeholder="Academic Calendar">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="other-language"><strong>Other Language</strong></label>
+                            <input type="text" class="form-control" id="{{ form.otherLanguages.vars.id }}" name="{{ form.otherLanguages.vars.full_name }}" value="{{ form.otherLanguages.vars.value }}" placeholder="Other Language">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="total-employees"><strong>Total Employees</strong></label>
+                            <input type="text" class="form-control" id="{{ form.totalEmployees.vars.id }}" name="{{ form.totalEmployees.vars.full_name }}" value="{{ form.totalEmployees.vars.value }}" placeholder="otal Employees">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="alumini"><strong>Alumini </strong></label>
+                            <input type="text" class="form-control" id="{{ form.alumini.vars.id }}" name="{{ form.alumini.vars.full_name }}" value="{{ form.alumini.vars.value }}" placeholder="Alumini">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="row my-3">
+                        <div class="col-md-12">
+                            <label><strong>Upload Image </strong></label>
+                            
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set insProfileImage = noImage %}
+                            {% if form.insProfileImage is defined and form.insProfileImage.vars.data %}
+                                {% set insProfileImage = asset('/' ~ form.insProfileImage.vars.data) %}
+                            {% endif %}
+                            <img id='profileImagePreview' src="{{ insProfileImage }}" onerror="this.src='{{ noImage }}'" class="rounded-circle border" alt="Institution Profile Image" style="height:250px !important;">
+                            <div class="input-group">
+                                <input type="file" id="{{ form.insProfileImage.vars.id }}" name="{{ form.insProfileImage.vars.full_name }}" accept="image/*" onchange="readImagePreview(event)" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="row"><h3>Social Media</h3></div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="" id="{{ form.socialMedias.vars.id }}" 
+                                data-prototype="{{ formMacros.socialMediaForm(form.socialMedias.vars.prototype)|e('html_attr') }}"
+                                data-index="{{ form.socialMedias|length }}" >
+                        {% for socialMedia in form.socialMedias %}
+                            <div class="row my-2">
+                                <div class="col-md-5">
+                                    <label for="socialmedia"><strong>Social Media</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ socialMedia.socialMedia.vars.id }}" 
+                                        name="{{ socialMedia.socialMedia.vars.full_name }}" 
+                                        value="{{ socialMedia.socialMedia.vars.value }}" 
+                                        maxlength="{{ socialMedia.socialMedia.vars.attr.maxlength }}" 
+                                        placeholder="Social Media">
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="socialmediaUrl"><strong>Url</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ socialMedia.url.vars.id }}" 
+                                        name="{{ socialMedia.url.vars.full_name }}" 
+                                        value="{{ socialMedia.url.vars.value }}" 
+                                        placeholder="Social Media URL">
+                                </div>
+                                <div class="col-md-1 pt-4 mt-2">
+                                    <button type="button" class="btn btn-sm btn-warning remove-social-media {{ socialMedia.socialMedia.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                     <div class="row mt-4 my-2">
+                        <div class="col-md-10">
+                        </div>
+                        <div class="col-md-1 pt-4 mt-2">
+                            <button type="button" class="btn btn-sm btn-warning add-social-media"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="row"><h3>Contact Info</h3></div>
+                    <div class="row">
+                            <div class="col-md-6 mt-2">
+                            <label for="office-number"><strong>Office Number</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.officeNumber.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.officeNumber.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.officeNumber.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.officeNumber.vars.attr.maxlength }}"
+                                placeholder="Office Number">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="Mailing Name"><strong>Mailing Name</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.mailingName.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.mailingName.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.mailingName.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.mailingName.vars.attr.maxlength }}"
+                                placeholder="Mailing Name">
+                        </div>
+                            <div class="col-md-6 mt-2">
+                            <label for="fax-number"><strong>Fax</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.faxNumber.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.faxNumber.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.faxNumber.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.faxNumber.vars.attr.maxlength }}"
+                                placeholder="Fax Number">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="Department"><strong>Department</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.department.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.department.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.department.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.department.vars.attr.maxlength }}"
+                                placeholder="Department">
+                        </div>
+                            <div class="col-md-6 mt-2">
+                            <label for="website"><strong>Website</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.website.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.website.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.website.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.website.vars.attr.maxlength }}"
+                                placeholder="Website">
+                        </div>
+                            <div class="col-md-6 mt-2">
+                            <label for="email"><strong>Email</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.email.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.email.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.email.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.email.vars.attr.maxlength }}"
+                                placeholder="Email">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="address1"><strong>Address1</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.address1.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.address1.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.address1.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.address1.vars.attr.maxlength }}" 
+                                placeholder="Address1">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="address2"><strong>Address2</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.address2.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.address2.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.address2.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.address2.vars.attr.maxlength }}" 
+                                placeholder="Address2">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="city"><strong>City</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.city.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.city.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.city.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.city.vars.attr.maxlength }}"
+                                placeholder="City">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="state"><strong>State</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.state.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.state.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.state.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.state.vars.attr.maxlength }}"
+                                placeholder="State">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="postal-code"><strong>Postal Code</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.postalCode.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.postalCode.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.postalCode.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.postalCode.vars.attr.maxlength }}"
+                                placeholder="Postal Code">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="new"><strong>New</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionContact.vars.form.new.vars.id }}" 
+                                name="{{ form.institutionContact.vars.form.new.vars.full_name }}" 
+                                value="{{ form.institutionContact.vars.form.new.vars.value }}" 
+                                maxlength="{{ form.institutionContact.vars.form.new.vars.attr.maxlength }}"
+                                placeholder="New">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-6">
+                    <div class="row"><h3>Location</h3></div>
+                    <div class="row">
+                        <div class="col-md-6 mt-2">
+                            <label for="campus-name"><strong>Campus Name</strong></label>
+                            <input type="text" class="form-control" id="campus-name" placeholder="Campus Name">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="ins-name"><strong>Institution Name</strong></label>
+                            <input type="text" class="form-control" id="ins-name" placeholder="Institution Name">
+                        </div>
+
+                        <div class="col-md-6 mt-2">
+                            <label for="address1"><strong>Address1</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.address1.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.address1.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.address1.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.address1.vars.attr.maxlength }}" 
+                                placeholder="Address1">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="address2"><strong>Address2</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.address2.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.address2.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.address2.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.address2.vars.attr.maxlength }}" 
+                                placeholder="Address2">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="city"><strong>City</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.city.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.city.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.city.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.city.vars.attr.maxlength }}" 
+                                placeholder="City">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="state"><strong>State</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.state.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.state.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.state.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.state.vars.attr.maxlength }}" 
+                                placeholder="State">
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <label for="postal-code"><strong>Postal Code</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.institutionLocation.vars.form.postalCode.vars.id }}" 
+                                name="{{ form.institutionLocation.vars.form.postalCode.vars.full_name }}" 
+                                value="{{ form.institutionLocation.vars.form.postalCode.vars.value }}" 
+                                maxlength="{{ form.institutionLocation.vars.form.postalCode.vars.attr.maxlength }}" 
+                                placeholder="Postal Code">
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+
+
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="row"><h3>Student Body</h3></div>
+                    <div class="row">
+                            <div class="col-md-3 mt-2">
+                            <label for="term"><strong>Term</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.term.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.term.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.term.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.term.vars.attr.maxlength }}" 
+                                placeholder="Term">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="Mailing Name"><strong>Year</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.year.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.year.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.year.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.year.vars.attr.maxlength }}" 
+                                placeholder="Year">
+                        </div>
+                            <div class="col-md-3 mt-2">
+                            <label for="fax-number"><strong>Total Students</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.totalStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.totalStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.totalStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.totalStudents.vars.attr.maxlength }}" 
+                                placeholder="Total Students">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="Department"><strong>Male Students</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.maleStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.maleStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.maleStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.maleStudents.vars.attr.maxlength }}" 
+                                placeholder="Male Students">
+                        </div>
+                            <div class="col-md-3 mt-2">
+                            <label for="website"><strong>Female Students</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.femaleStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.femaleStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.femaleStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.femaleStudents.vars.attr.maxlength }}" 
+                                placeholder="Female Students">
+                        </div>
+                            <div class="col-md-3 mt-2">
+                            <label for="email"><strong>Under Graduate</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.undergradStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.undergradStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.undergradStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.undergradStudents.vars.attr.maxlength }}" 
+                                placeholder="Under Students">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="address1"><strong>Graduate</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.gradStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.gradStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.gradStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.gradStudents.vars.attr.maxlength }}" 
+                                placeholder="Graduate">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="address2"><strong>Full-Time</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.fullTimeStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.fullTimeStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.fullTimeStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.fullTimeStudents.vars.attr.maxlength }}" 
+                                placeholder="Full-Time">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="city"><strong>Part-Time</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.partTimeStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.partTimeStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.partTimeStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.partTimeStudents.vars.attr.maxlength }}" 
+                                placeholder="Part-Time">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="state"><strong>In-State</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.inStateStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.inStateStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.inStateStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.inStateStudents.vars.attr.maxlength }}" 
+                                placeholder="In-State">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="postal-code"><strong>Out of State</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.outOfStateStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.outOfStateStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.outOfStateStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.outOfStateStudents.vars.attr.maxlength }}" 
+                                placeholder="Out State">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="new"><strong>International</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.interNationalStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.interNationalStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.interNationalStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.interNationalStudents.vars.attr.maxlength }}" 
+                                placeholder="International">
+                        </div>
+
+                        <div class="col-md-3 mt-2">
+                            <label for="new"><strong>Others</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.studentDetails.vars.form.otherStudents.vars.id }}" 
+                                name="{{ form.studentDetails.vars.form.otherStudents.vars.full_name }}" 
+                                value="{{ form.studentDetails.vars.form.otherStudents.vars.value }}" 
+                                maxlength="{{ form.studentDetails.vars.form.otherStudents.vars.attr.maxlength }}" 
+                                placeholder="Others">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="row"><h3>Faculty</h3></div>
+                    <div class="row">
+                            <div class="col-md-3 mt-2">
+                            <label for="term"><strong>Term</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.term.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.term.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.term.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.term.vars.attr.maxlength }}" 
+                                placeholder="Term">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="Mailing Name"><strong>Year</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.year.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.year.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.year.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.year.vars.attr.maxlength }}" 
+                                placeholder="Year">
+                        </div>
+                          
+                        <div class="col-md-3 mt-2">
+                            <label for="Department"><strong>Full Time Faculty</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.fullTimeFaculty.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.fullTimeFaculty.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.fullTimeFaculty.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.fullTimeFaculty.vars.attr.maxlength }}" 
+                                placeholder="Full Time Faculty">
+                        </div>
+                            <div class="col-md-3 mt-2">
+                            <label for="website"><strong>Student Faculty Ratio</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.studentFacultyRatio.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.studentFacultyRatio.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.studentFacultyRatio.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.studentFacultyRatio.vars.attr.maxlength }}" 
+                                placeholder="Student Faculty Ratio">
+                        </div>
+                            <div class="col-md-3 mt-2">
+                            <label for="email"><strong>Faculty With Highest Degree in Field</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.facultyHigherDegree.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.facultyHigherDegree.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.facultyHigherDegree.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.facultyHigherDegree.vars.attr.maxlength }}" 
+                                placeholder="Faculty With Highest Degree in Field">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="address1"><strong>Avg. Ug Class Size</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.facultyDetails.vars.form.avgUGClassSize.vars.id }}" 
+                                name="{{ form.facultyDetails.vars.form.avgUGClassSize.vars.full_name }}" 
+                                value="{{ form.facultyDetails.vars.form.avgUGClassSize.vars.value }}" 
+                                maxlength="{{ form.facultyDetails.vars.form.avgUGClassSize.vars.attr.maxlength }}" 
+                                placeholder="Avg. Ug Class Size">
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="row"><h3>Academic</h3></div>
+                    <div class="row">
+                            <div class="col-md-3 mt-2">
+                            <label for="term"><strong>Term</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.academicDetails.vars.form.term.vars.id }}" 
+                                name="{{ form.academicDetails.vars.form.term.vars.full_name }}" 
+                                value="{{ form.academicDetails.vars.form.term.vars.value }}" 
+                                maxlength="{{ form.academicDetails.vars.form.term.vars.attr.maxlength }}" 
+                                placeholder="Term">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label for="Mailing Name"><strong>Year</strong></label>
+                            <input type="text" class="form-control" 
+                                id="{{ form.academicDetails.vars.form.year.vars.id }}" 
+                                name="{{ form.academicDetails.vars.form.year.vars.full_name }}" 
+                                value="{{ form.academicDetails.vars.form.year.vars.value }}" 
+                                maxlength="{{ form.academicDetails.vars.form.year.vars.attr.maxlength }}" 
+                                placeholder="Year">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>College and Schools</h3>
+                            </div>
+                            
+                            <div class="college-scools-container" id="{{ form.collegeSchools.vars.id }}" 
+                                data-prototype="{{ formMacros.collegeSchoolsForm(form.collegeSchools.vars.prototype)|e('html_attr') }}"
+                                data-index="{{ form.collegeSchools|length }}" >
+                                {% for collegeSchoolForm in form.collegeSchools %}
+                                    <div class="row mt-2">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" 
+                                                id="{{ collegeSchoolForm.collegeSchoolName.vars.id }}" 
+                                                name="{{ collegeSchoolForm.collegeSchoolName.vars.full_name }}" 
+                                                value="{{ collegeSchoolForm.collegeSchoolName.vars.value }}" 
+                                                maxlength="{{ collegeSchoolForm.collegeSchoolName.vars.attr.maxlength }}" 
+                                                placeholder="College and Schools">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm btn-warning remove-college-school {{ collegeSchoolForm.collegeSchoolName.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-10">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-warning add-college-school"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>Degree Programs</h3>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <label for="term"><strong>Under Graduate</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.underGraduate.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.underGraduate.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.underGraduate.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.underGraduate.vars.attr.maxlength }}" 
+                                        placeholder="Under Graduate">
+                                </div>
+                                <div class="col-md-12 my-2">
+                                    <label for="Mailing Name"><strong>Graduate</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.graduate.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.graduate.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.graduate.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.graduate.vars.attr.maxlength }}" 
+                                        placeholder="Graduate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>Degrees Granted During</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <label for="term"><strong>Academic Year</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.academicYear.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.academicYear.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.academicYear.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.academicYear.vars.attr.maxlength }}" 
+                                        placeholder="Academic Year">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="Mailing Name"><strong>Associate Degree</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.associateDegrees.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.associateDegrees.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.associateDegrees.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.associateDegrees.vars.attr.maxlength }}" 
+                                        placeholder="Associate Degree">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="Mailing Name"><strong>Bachelor's Degree</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.bachelorsDegrees.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.bachelorsDegrees.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.bachelorsDegrees.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.bachelorsDegrees.vars.attr.maxlength }}" 
+                                        placeholder="Bachelor's Degree">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="Mailing Name"><strong>Master's Degree</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.masterDegrees.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.masterDegrees.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.masterDegrees.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.masterDegrees.vars.attr.maxlength }}" 
+                                        placeholder="Master's Degree">
+                                </div>
+                                <div class="col-md-12 my-2">
+                                    <label for="Mailing Name"><strong>Doctorate Degree</strong></label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.academicDetails.vars.form.doctorateDegrees.vars.id }}" 
+                                        name="{{ form.academicDetails.vars.form.doctorateDegrees.vars.full_name }}" 
+                                        value="{{ form.academicDetails.vars.form.doctorateDegrees.vars.value }}" 
+                                        maxlength="{{ form.academicDetails.vars.form.doctorateDegrees.vars.attr.maxlength }}" 
+                                        placeholder="Doctorate Year">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>Accreditation</h3>
+                            </div>
+                            <div class="accreditation-container" id="{{ form.accrediations.vars.id }}" 
+                                data-prototype="{{ formMacros.accreditationForm(form.accrediations.vars.prototype)|e('html_attr') }}"
+                                data-index="{{ form.accrediations|length }}" >
+                                {% for accreditationForm in form.accrediations %}
+                                    <div class="row mt-2">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" 
+                                                id="{{ accreditationForm.accrediation.vars.id }}" 
+                                                name="{{ accreditationForm.accrediation.vars.full_name }}" 
+                                                value="{{ accreditationForm.accrediation.vars.value }}" 
+                                                maxlength="{{ accreditationForm.accrediation.vars.attr.maxlength }}" 
+                                                placeholder="Accreditation">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm btn-warning remove-accreditation {{ accreditationForm.accrediation.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="row mt-4 my-2">
+                                <div class="col-md-10">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-warning add-accreditation"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>Recognitions</h3>
+                            </div>
+                            <div class="recognition-container" id="{{ form.recognitions.vars.id }}" 
+                                data-prototype="{{ formMacros.recognitionsForm(form.recognitions.vars.prototype)|e('html_attr') }}"
+                                data-index="{{ form.recognitions|length }}" >
+                                {% for recognitionsForm in form.recognitions %}
+                                    <div class="row mt-2">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" 
+                                                id="{{ recognitionsForm.recognition.vars.id }}" 
+                                                name="{{ recognitionsForm.recognition.vars.full_name }}" 
+                                                value="{{ recognitionsForm.recognition.vars.value }}" 
+                                                maxlength="{{ recognitionsForm.recognition.vars.attr.maxlength }}" 
+                                                placeholder="Accreditation">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm btn-warning remove-recognition {{ recognitionsForm.recognition.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="row mt-4 my-2">
+                                <div class="col-md-10">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-warning add-recognition"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 border">
+                            <div class="col-md-12 mt-2">
+                                <h3>Degree's Offered</h3>
+                            </div>
+                            <div class="degree-container" id="{{ form.degrees.vars.id }}" 
+                                data-prototype="{{ formMacros.degreesForm(form.degrees.vars.prototype)|e('html_attr') }}"
+                                data-index="{{ form.degrees|length }}" >
+                                {% for degreeForm in form.degrees %}
+                                    <div class="row mt-2">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" 
+                                                id="{{ degreeForm.degreeName.vars.id }}" 
+                                                name="{{ degreeForm.degreeName.vars.full_name }}" 
+                                                value="{{ degreeForm.degreeName.vars.value }}" 
+                                                maxlength="{{ degreeForm.degreeName.vars.attr.maxlength }}" 
+                                                placeholder="Degree Name">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm btn-warning remove-degree {{ degreeForm.degreeName.vars.id ~ '_remove'}}"><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-10">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-warning add-degree"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-12 float-right">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save </button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <script>
         
+        function readImagePreview(input) {
+            
+            var filePath = input.target.value; 
+
+            // Allowing file type 
+            var allowedExtensions =  
+                    /(\.jpg|\.jpeg|\.png)$/i; 
+              
+            if (!allowedExtensions.exec(filePath)) { 
+                alert('Uploaded file is not a valid image. Only JPG, PNG and JPEG files are allowed.'); 
+                input.target.value = ''; 
+                return false; 
+            }  
+            
+            if (input.target.files && input.target.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    $('#profileImagePreview').attr('src', e.target.result);
+                    $('#profileImagePreview').attr('style', 'display:block;height:250px;');
+                }
+                reader.readAsDataURL(input.target.files[0]); // convert to base64 string
+            }
+        }
 
         // setup an "add a tag" link
         
@@ -29,35 +899,23 @@
             socialMeidas();
         });
 
+
+        function removeItem(clsName) {
+            $(clsName).on('click', function(e) {
+                $(this).closest('.row').remove()
+            });
+        }
+
         function collegeAndSchools() {
             let collegeSchoolsHolder = $('#institution_profile_collegeSchools');
 
-            let addButton = $('<button type="button" class="add_college_school">Add a tag</button>');
-            let newLinkLi = $('<div></div>').append(addButton);
-
-            $('#institution_profile_collegeSchools > div').each(function() {
-                let schoolChild = $(this);
-                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
-                schoolChild.append(removeBtn);
-                removeBtn.on('click', function(e) {
-                    schoolChild.remove();
-                });
-            });
-
-            collegeSchoolsHolder.append(newLinkLi);
-
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
             collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
 
-            addButton.on('click', function(e) {
-                // add a new tag form (see next code block)
-              
+            removeItem('.remove-college-school');
 
-                    // Get the data-prototype explained earlier
+            $('.add-college-school').on('click', function(e) {
                 let prototype = collegeSchoolsHolder.data('prototype');
 
-                // get the new index
                 let index = collegeSchoolsHolder.data('index');
 
                 let newForm = prototype;
@@ -66,181 +924,124 @@
 
                 collegeSchoolsHolder.data('index', index + 1);
 
-                // Display the form in the page in an li, before the "Add a tag" link li
-                let newFormLi = $('<div></div>').append(newForm);
-                newLinkLi.before(newFormLi);
+                collegeSchoolsHolder.append(newForm);
+
+                $('.remove-college-school').unbind('click')
+
+                removeItem('.remove-college-school');
+               
             });
         }
 
         function accrediations() {
-            let collegeSchoolsHolder = $('#institution_profile_accrediations');
+            
+            let accrediationsHolder = $('#institution_profile_accrediations');
 
-            let addButton = $('<button type="button" class="add_accrediation">Add a tag</button>');
-            let newLinkLi = $('<div></div>').append(addButton);
+            removeItem('.remove-accreditation');
 
-            $('#institution_profile_accrediations > div').each(function() {
-                let schoolChild = $(this);
-                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
-                schoolChild.append(removeBtn);
-                removeBtn.on('click', function(e) {
-                    schoolChild.remove();
-                });
-            });
+            accrediationsHolder.data('index', accrediationsHolder.find('input').length);
 
-            collegeSchoolsHolder.append(newLinkLi);
+            $('.add-accreditation').on('click', function(e) {
+               
+                let prototype = accrediationsHolder.data('prototype');
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
-
-            addButton.on('click', function(e) {
-                // add a new tag form (see next code block)
-              
-
-                    // Get the data-prototype explained earlier
-                let prototype = collegeSchoolsHolder.data('prototype');
-
-                // get the new index
-                let index = collegeSchoolsHolder.data('index');
+                let index = accrediationsHolder.data('index');
 
                 let newForm = prototype;
                
                 newForm = newForm.replace(/__name__/g, index);
 
-                collegeSchoolsHolder.data('index', index + 1);
+                accrediationsHolder.data('index', index + 1);
 
-                // Display the form in the page in an li, before the "Add a tag" link li
-                let newFormLi = $('<div></div>').append(newForm);
-                newLinkLi.before(newFormLi);
+                accrediationsHolder.append(newForm);
+
+                $('.remove-accreditation').unbind('click')
+
+                removeItem('.remove-accreditation');
             });
         }
 
         function recognitions() {
-            let collegeSchoolsHolder = $('#institution_profile_recognitions');
 
-            let addButton = $('<button type="button" class="add_recognition">Add a tag</button>');
-            let newLinkLi = $('<div></div>').append(addButton);
+            let recognitionsHolder = $('#institution_profile_recognitions');
 
-            $('#institution_profile_recognitions > div').each(function() {
-                let schoolChild = $(this);
-                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
-                schoolChild.append(removeBtn);
-                removeBtn.on('click', function(e) {
-                    schoolChild.remove();
-                });
-            });
+            removeItem('.remove-recognition');
 
-            collegeSchoolsHolder.append(newLinkLi);
+            recognitionsHolder.data('index', recognitionsHolder.find('input').length);
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+            $('.add-recognition').on('click', function(e) {
+               
+                let prototype = recognitionsHolder.data('prototype');
 
-            addButton.on('click', function(e) {
-                // add a new tag form (see next code block)
-              
-
-                    // Get the data-prototype explained earlier
-                let prototype = collegeSchoolsHolder.data('prototype');
-
-                // get the new index
-                let index = collegeSchoolsHolder.data('index');
+                let index = recognitionsHolder.data('index');
 
                 let newForm = prototype;
                
                 newForm = newForm.replace(/__name__/g, index);
 
-                collegeSchoolsHolder.data('index', index + 1);
+                recognitionsHolder.data('index', index + 1);
 
-                // Display the form in the page in an li, before the "Add a tag" link li
-                let newFormLi = $('<div></div>').append(newForm);
-                newLinkLi.before(newFormLi);
+                recognitionsHolder.append(newForm);
+
+                $('.remove-recognition').unbind('click')
+
+                removeItem('.remove-recognition');
             });
         }
 
         function degrees() {
-            let collegeSchoolsHolder = $('#institution_profile_degrees');
+            
+            let degreesHolder = $('#institution_profile_degrees');
 
-            let addButton = $('<button type="button" class="add_degree">Add a tag</button>');
-            let newLinkLi = $('<div></div>').append(addButton);
+            removeItem('.remove-degree');
 
-            $('#institution_profile_degrees > div').each(function() {
-                let schoolChild = $(this);
-                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
-                schoolChild.append(removeBtn);
-                removeBtn.on('click', function(e) {
-                    schoolChild.remove();
-                });
-            });
+            degreesHolder.data('index', degreesHolder.find('input').length);
 
-            collegeSchoolsHolder.append(newLinkLi);
+            $('.add-degree').on('click', function(e) {
+               
+                let prototype = degreesHolder.data('prototype');
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
-
-            addButton.on('click', function(e) {
-                // add a new tag form (see next code block)
-              
-
-                    // Get the data-prototype explained earlier
-                let prototype = collegeSchoolsHolder.data('prototype');
-
-                // get the new index
-                let index = collegeSchoolsHolder.data('index');
+                let index = degreesHolder.data('index');
 
                 let newForm = prototype;
                
                 newForm = newForm.replace(/__name__/g, index);
 
-                collegeSchoolsHolder.data('index', index + 1);
+                degreesHolder.data('index', index + 1);
 
-                // Display the form in the page in an li, before the "Add a tag" link li
-                let newFormLi = $('<div></div>').append(newForm);
-                newLinkLi.before(newFormLi);
+                degreesHolder.append(newForm);
+
+                $('.remove-degree').unbind('click')
+
+                removeItem('.remove-degree');
             });
         }
 
         function socialMeidas() {
-            let collegeSchoolsHolder = $('#institution_profile_socialMedias');
 
-            let addButton = $('<button type="button" class="add_socialMedia">Add a tag</button>');
-            let newLinkLi = $('<div></div>').append(addButton);
+            let socialMediaContainer = $('#institution_profile_socialMedias');
 
-            $('#institution_profile_socialMedias > div').each(function() {
-                let schoolChild = $(this);
-                let removeBtn =  $(`<button type="button">Delete this tag</button>`);
-                schoolChild.append(removeBtn);
-                removeBtn.on('click', function(e) {
-                    schoolChild.remove();
-                });
-            });
+            removeItem('.remove-social-media');
 
-            collegeSchoolsHolder.append(newLinkLi);
+            socialMediaContainer.data('index', socialMediaContainer.find('input').length);
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collegeSchoolsHolder.data('index', collegeSchoolsHolder.find('input').length);
+            $('.add-social-media').on('click', function(e) {
+               
+                let prototype = socialMediaContainer.data('prototype');
 
-            addButton.on('click', function(e) {
-                // add a new tag form (see next code block)
-              
-
-                    // Get the data-prototype explained earlier
-                let prototype = collegeSchoolsHolder.data('prototype');
-
-                // get the new index
-                let index = collegeSchoolsHolder.data('index');
+                let index = socialMediaContainer.data('index');
 
                 let newForm = prototype;
                
                 newForm = newForm.replace(/__name__/g, index);
 
-                collegeSchoolsHolder.data('index', index + 1);
+                socialMediaContainer.data('index', index + 1);
 
-                // Display the form in the page in an li, before the "Add a tag" link li
-                let newFormLi = $('<div></div>').append(newForm);
-                newLinkLi.before(newFormLi);
+                socialMediaContainer.append(newForm);
+
+                $('.remove-social-media').unbind('click')
+
+                removeItem('.remove-social-media');
             });
         }
 

@@ -85,6 +85,9 @@
                         </div>
 
                         {% block user_menu %}
+                            <div class="popover-content-section user-menu">
+                                <a class="user-action user-action-logout" href="{{ path('institution_profile') }}">Institution Profile Setting</a>
+                            </div>
                             {% if _user_has_logout or _user_is_impersonated %}
                                 <div class="popover-content-section user-menu">
                                     {% if _user_has_logout %}
@@ -142,6 +145,7 @@
 
                 {% block content %}
                     <div class="content">
+                   
                         {% block content_header_wrapper %}
                         {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                         <section class="content-header {{ _has_content_help ? 'has-content-help' }}">

@@ -36,20 +36,28 @@ class AdminUserController extends EasyAdminController
     public function updateEntity($entity)
     {
        
+       
         if ($entity->getPlainPassword()) {
             $encodedPassword = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
             $entity->setPlainPassword($entity->getPlainPassword());
             $entity->setPassword($encodedPassword);
+            $entity->setDummyPassword($entity->getPlainPassword());
         }
+
+        
         
         parent::updateEntity($entity);
+
+
+        $this->userManager->curSendPost($entity);
         
-        $response = $this->userManager->updateUserToExternalApi($entity->getUserName());
+        //$response = $this->userManager->updateUserToExternalApi($entity->getUserName());
 
+       
 
-        if ($response['statusCode'] !== 200) {
-            $this->addFlash('warning', 'Update user to external api have some issue.');
-        }
+        // if ($response['statusCode'] !== 200) {
+        //     $this->addFlash('warning', 'Update user to external api have some issue.');
+        // }
 
         $this->addFlash('success', 'User updated successfully');
     }
@@ -83,16 +91,19 @@ class AdminUserController extends EasyAdminController
             $encodedPassword = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
             $entity->setPlainPassword($entity->getPlainPassword());
             $entity->setPassword($encodedPassword);
+            $entity->setDummyPassword($entity->getPlainPassword());
         }
 
         $this->em->persist($entity);
         $this->em->flush();
 
-        $response = $this->userManager->updateUserToExternalApi($entity->getUserName());
+        $this->userManager->curSendPost($entity);
 
-        if ($response['statusCode'] !== 200) {
-            $this->addFlash('warning', 'Update user to external api have some issue.');
-        }
+        // $response = $this->userManager->updateUserToExternalApi($entity->getUserName());
+
+        // if ($response['statusCode'] !== 200) {
+        //     $this->addFlash('warning', 'Update user to external api have some issue.');
+        // }
 
         $this->addFlash('success', 'User created successfully');
 
@@ -180,7 +191,7 @@ class AdminUserController extends EasyAdminController
 
             $userManager->updateUser($user);
             
-            $this->userManager->updateUserToExternalApi($user->getUserName());
+            //$this->userManager->curSendPost($user);
 
         }
 
@@ -200,4 +211,42 @@ class AdminUserController extends EasyAdminController
 
         return $this->redirectToRoute('easyadmin');
     }
+
+     /**
+     * @Route("/curl/test", name="curl_test", methods={"GET"})
+     */
+    public function curlTest()
+    {
+        $this->userManager->updateUserToExternalApi('testuser_1');
+    }
+
+    /**
+     * @Route("/curl/test2", name="curl_test2", methods={"GET"})
+     */
+    public function curlTest2()
+    {
+        $this->userManager->curlTest2();
+    }
+
+    /**
+     * @Route("/curl/test3", name="curl_test3", methods={"GET"})
+     */
+    public function curlTest3()
+    {
+        $this->userManager->moodleApi('testuser_1');
+    }
+
+
+    /**
+     * @Route("/curl/post", name="curl_post", methods={"GET"})
+     */
+    public function curSendPost()
+    {
+        $username = 'testuser_1';
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($username);
+        $this->userManager->curSendPost($user);
+    }
+
+
 }

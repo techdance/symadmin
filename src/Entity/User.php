@@ -159,6 +159,14 @@ class User extends BaseUser
      */
     private $position;
 
+    /**
+     *
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $dummyPassword;
+
+    
+
     public function getFirstName(): ?string
     {
         return $this->firstName;
@@ -369,6 +377,18 @@ class User extends BaseUser
     public function getPosition() 
     {
         return $this->position;
+    }
+
+    
+
+    public function setDummyPassword($dummyPassword) 
+    {
+        $this->dummyPassword = $dummyPassword;
+    }
+    
+    public function getDummyPassword() 
+    {
+        return $this->dummyPassword;
     }
 
     public function getRoles()

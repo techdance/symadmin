@@ -19,6 +19,7 @@ easy_admin:
       - {label: "Entities"}
       - { entity: 'User', label: 'Users', icon: 'users', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Institution Profile', module: 'InstitutionProfile', icon: 'institution', route: 'institution_profile', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Group', label: 'Role Permissions', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Entitygroup', label: 'Module', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
      
@@ -115,8 +116,8 @@ easy_admin:
           - state
           - zip
         actions:          
-          - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER'] }
-          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'edit', icon: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'delete', roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
         item_permission:  ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2']
       new:
         item_permission:  ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER']
@@ -137,9 +138,9 @@ easy_admin:
         collapse_actions: true
         actions:
           - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER' ] }          
-          - { name: 'show',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
-          - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER'] }
-          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'show', icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'edit', icon: 'edit', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER'] }
+          - { name: 'delete',icon: 'trash', roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
         batch_actions: ['delete' ]
         item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
       show:
@@ -166,9 +167,9 @@ easy_admin:
         collapse_actions: true
         actions:
           - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER' ] }          
-          - { name: 'show',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2'] }
-          - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
-          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_DEVELOPER'] }
+          - { name: 'show',icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2'] }
+          - { name: 'edit',icon: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'trash',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_DEVELOPER'] }
         batch_actions: ['delete' ]
         item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
       form:

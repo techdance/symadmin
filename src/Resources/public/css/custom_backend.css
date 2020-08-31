@@ -60,9 +60,9 @@ body {
 
 
 header.main-header {
-    margin: -20px -20px 0px;
+    /* margin: -20px -20px 0px;
     padding: 20px 20px;
-    background: #2c9dfc;
+    background: #2c9dfc; */
 }
 .main-header #header-logo a {
     color: #fff;
@@ -71,13 +71,13 @@ header.main-header {
     color: #fff;
 }
 .sidebar-menu .header:first-child {
-    margin: 0;
+    /* margin: 0;
     background: #299eff;
     color: #fff;
     text-align: center;
     border-radius: 0;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 15px; */
 }
 .sidebar-menu .header {
     padding: 15px;
@@ -87,11 +87,11 @@ header.main-header {
     font-size: 14px;
 }
 .sidebar-menu .header:not(:first-child):before {
-    content: "\f178";
+    /* content: "\f178";
     font-family: "FontAwesome";
     margin-right: 5px;
     font-size: 16px;
     line-height: 1;
     font-weight: bold;
-    color: #299eff;
+    color: #299eff; */
 }

@@ -76,6 +76,10 @@ services:
     user.manager:
         class: App\Manager\UserManager
         autowire: true
+
+    curl.manager:
+        class: App\Manager\CurlManager
+        autowire: true
     
     App\Form\FormType:
         arguments:

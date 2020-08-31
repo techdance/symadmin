@@ -48,25 +48,203 @@
                 'easyadmin-sidebar-width-' + (localStorage.getItem('easyadmin/sidebar/width') || 'normal')
             );
         </script>
+        <style>
+            body {
+                background: #f0f0f0;
+            }
+            .wrapper {
+                width: 100%;
+                margin-bottom: -20px;
+            }
+            .content-wrapper {
+                grid-template-columns: none;
+                display: flex;
+                flex-flow: column;
+                padding-right: 20px;
+            }
+            .main-header {
+                padding: 0 20px 0 235px;
+            }
+            .main-sidebar {
+                margin-top: -90px;
+                background: #011374;
+                background: -moz-linear-gradient(top, #011374 1%, #014fb2 28%, #008aef 52%, #0099ff 78%, #0099ff 100%);
+                background: -webkit-linear-gradient(top, #011374 1%,#014fb2 28%,#008aef 52%,#0099ff 78%,#0099ff 100%);
+                background: linear-gradient(to bottom, #011374 1%,#014fb2 28%,#008aef 52%,#0099ff 78%,#0099ff 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#011374', endColorstr='#0099ff',GradientType=0 );
+                position: sticky;
+                height: 100vh;
+                max-width: 235px;
+                display: flex;
+                flex-flow: column;
+            }
+            .sidebar-menu .header {
+                align-self: flex-start;
+                margin: 15px auto 15px;
+                text-align: center;
+                padding: 0;
+                font-size: 26px;
+                text-transform: none;
+                color: #f0f0f0;
+                display: none;
+            }
+            .sidebar-menu a {
+                display: block;
+                position: relative;
+                margin: 0;
+                border: 0;
+                border-left: 4px solid transparent;
+                padding: 17px 22px 17px 15px;
+                position: relative;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 14px;
+                color: #fff;
+            }
+            .sidebar-menu a:hover {
+                background: #0092f7;
+                border-left: 4px solid #f09444;
+            }
+            .sidebar-menu a.active,
+            .sidebar-menu li.active a {
+                background: #0b1972;
+                border-left: 4px solid #f09444;
+                color: #fff!important;
+                filter: opacity(1);
+            }
+            .sidebar-menu li.active a .fa {
+                color: #fff!important;
+                filter: opacity(1);
+            }
+            .sidebar-menu .fa {
+                font-size: 20px;
+                color: #fff;
+                filter: opacity(1);
+                margin-right: 10px;
+            }
+            body:not(.easyadmin-content-width-full) .wrapper {
+                max-width: 100%;
+            }
+            .content {
+                grid-area: auto;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .topMenuItems {
+                width: 100%;
+                display: flex;
+                align-items: center;
+            }
+            .topMenuItems a {
+                margin: 0 25px;
+                position: relative;
+            }
+            .topMenuItems a:first-child {
+                margin-left: 0;
+            }
+            .topMenuItems a i {
+                font-size: 37px;
+                color: #0099ff;
+            }
+            .topMenuItems a span {
+                position: absolute;
+                background: #f09444;
+                border: 1px solid #fff;
+                border-radius: 50%;
+                top: 4px;
+                right: -2px;
+                height: 16px;
+                width: 16px;
+                font-size: 10px;
+                line-height: 12px;
+                color: #fff;
+                text-align: center;
+                font-weight: 500;
+            }
+            .content-top.navbar-custom-menu {
+                margin: 0 25px;
+            }
+            .content-top.navbar-custom-menu .user-avatar {
+                font-size: 50px;
+                max-width: 50px;
+                max-height: 50px;
+                margin-right: .5rem!important;
+            }
+            .content-top.navbar-custom-menu span {
+                color: #ff993f !important;
+                font-size: 12px;
+                font-weight: bold;
+                line-height: 12px;
+            }
+            .topMenuItemSearch input {
+                border: 0px;
+                padding: 3px 10px;
+                height: 38px;
+                width: 225px;
+                background: #fff;
+                font-style: italic;
+            }
+            .topMenuItemSearch i {
+                position: absolute;
+                right: 15px;
+                color: #aeaeae;
+                top: 13px;
+            }
+            .topMenuItemQuestion i {
+                border: 2px solid #0099ff;
+                border-radius: 50%;
+                color: #0099ff;
+                padding: 1px;
+                font-size: 27px;
+                margin-left: 8px;
+            }
+            #leftMenuLogo a {
+                margin: 15px 0 0;
+                display: flex;
+                text-align: center;
+                height: 60px;
+                width: 100%;
+                align-items: center;
+                justify-content: center;
+            }
+            #leftMenuBottomLogo {
+                background: #fff;
+                margin-top: auto;
+                padding: 15px;
+                position: sticky;
+                bottom: 0;
+                max-width: 235px;
+            }
+            .moveToBack,
+            .moveToBack:hover {
+                display: block;
+                position: relative;
+                margin: 0;
+                border: 0;
+                border-left: 4px solid transparent;
+                padding: 17px 22px 17px 15px;
+                position: relative;
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 14px;
+                color: #2ca0fc;
+            }
+            header.main-header {
+                margin: -20px 0 0!important;
+                background: transparent!important;
+                padding: 20px 20px 0 235px!important;
+            }
 
+
+
+        </style>
         {% block wrapper_wrapper %}
         <div class="wrapper">
         {% block wrapper %}
             <header class="main-header">
                 {% block header %}
-                    <nav class="navbar" role="navigation">
-                        <button id="navigation-toggler" type="button" aria-label="Toggle navigation">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
-
-                        <div id="header-logo">
-                            {% block header_logo %}
-                                <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
-                                    {{ easyadmin_config('site_name')|raw }}
-                                </a>
-                            {% endblock header_logo %}
-                        </div>
-                    </nav>
+                    
 
                     {% set _user_name = easyadmin_read_property(app.user, easyadmin_config('user.name_property_path'))|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) %}
                     {% set _logout_path = easyadmin_logout_path() %}
@@ -85,9 +263,6 @@
                         </div>
 
                         {% block user_menu %}
-                            <div class="popover-content-section user-menu">
-                                <a class="user-action user-action-logout" href="{{ path('institution_profile') }}">Institution Profile Setting</a>
-                            </div>
                             {% if _user_has_logout or _user_is_impersonated %}
                                 <div class="popover-content-section user-menu">
                                     {% if _user_has_logout %}
@@ -101,28 +276,57 @@
                         {% endblock user_menu %}
                     {% endset %}
 
-                    <div class="content-top navbar-custom-menu">
-                        {% block header_custom_menu %}
-                            <div class="user user-menu-wrapper {{ _user_is_impersonated ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
-                                {% if easyadmin_config('user.display_avatar') %}
-                                    {% set _avatar_image_path = easyadmin_read_property(app.user, easyadmin_config('user.avatar_property_path')) %}
-                                    {% if null == _avatar_image_path %}
-                                        <i class="fa fa-fw {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
-                                    {% else %}
-                                        <img class="user-avatar" src="{{ _avatar_image_path }}" />
+                    <div class="topMenuItems">
+                        <a href="#">
+                            <i class="fas fa-award"></i>
+                            <span class="count">3</span>
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-bell" style="transform: rotate(15deg);"></i>
+                            <span class="count">13</span>
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-comment"></i>
+                            <span class="count">3</span>
+                        </a>
+                        <div class="content-top navbar-custom-menu">
+                            {% block header_custom_menu %}
+                                <div class="user user-menu-wrapper {{ _user_is_impersonated ? 'user-is-impersonated' }}" data-toggle="popover" data-placement="bottom" data-container=".user-menu-wrapper" data-content="{{ _user_menu_content|e('html_attr') }}" data-html="true">
+                                    {% if easyadmin_config('user.display_avatar') %}
+                                        {% set _avatar_image_path = easyadmin_read_property(app.user, easyadmin_config('user.avatar_property_path')) %}
+                                        {% if null == _avatar_image_path %}
+                                            <i class="fa fa-fw {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
+                                        {% else %}
+                                            <img class="user-avatar" src="{{ _avatar_image_path }}" />
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                                {% if easyadmin_config('user.display_name') %}
-                                    <span class="user-name">{{ _user_name }}</span>
-                                {% endif %}
-                            </div>
-                        {% endblock header_custom_menu %}
+                                    {% if easyadmin_config('user.display_name') %}
+                                        <span class="user-name">{{ _user_name }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endblock header_custom_menu %}
+                        </div>
                     </div>
+
+                    <div class="d-flex align-items-center">
+                        <div class="topMenuItemSearch position-relative">
+                            <input type="text" placeholder="Search">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="topMenuItemQuestion">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                    </div>
+                    
                 {% endblock header %}
             </header>
 
             <aside class="main-sidebar">
             {% block sidebar %}
+                <div id="leftMenuLogo">
+					<a href="#"><img src="{{ asset('uploads/images/logo-ahea-white.png') }}" ></a>
+				</div>
+                <a href="#" class="moveToBack"><i class="fas fa-arrow-circle-left"></i></a>
                 <section class="sidebar">
                     {% block main_menu_wrapper %}
                         {{ include([
@@ -132,7 +336,9 @@
                         ]) }}
                     {% endblock main_menu_wrapper %}
                 </section>
-
+                <div id="leftMenuBottomLogo" class="text-center">
+					<a href="#" class="d-block"><img src="{{ asset('uploads/images/logo-tower-education.png') }}" class="mw-100 mh-100" ></a>
+				</div>
             {% endblock sidebar %}
             </aside>
 
@@ -145,7 +351,6 @@
 
                 {% block content %}
                     <div class="content">
-                   
                         {% block content_header_wrapper %}
                         {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
                         <section class="content-header {{ _has_content_help ? 'has-content-help' }}">

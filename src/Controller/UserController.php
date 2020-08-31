@@ -67,8 +67,8 @@ class UserController extends AbstractController
         $password                 = $request->request->get("password");
 
         $errors = [];
-        if (strlen($password) < 6) {
-            $errors[] = "Password should be at least 6 characters.";
+        if (strlen($password) < 8) {
+            $errors[] = "Password should be at least 8 characters.";
         }
         if (!$errors) {
             // $data = json_decode($request->getContent(), true);
@@ -76,6 +76,7 @@ class UserController extends AbstractController
             $user->setEmail($institutionEmail);
             $user->setPassword($encodedPassword);
             $user->setUsername($username);
+            $user->setDummyPassword($password);
             //$user->setPassword($encodedPassword);
             $user->setPrefix($prefix);
             $user->setFirstName($firstName);
@@ -107,7 +108,7 @@ class UserController extends AbstractController
                     ->html($content);
 		        $mailer->send($email);
 
-                $this->userManager->updateUserToExternalApi($user->getUserName());
+                $this->userManager->curSendPost($user);
 
                 return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUserName()));
                 
@@ -193,7 +194,8 @@ class UserController extends AbstractController
             'address2' => $usr->getAddress2(),
             'city' => $usr->getCity(),
             'state' => $usr->getState(),
-            'zip' => $usr->getZip()
+            'zip' => $usr->getZip(),
+            'password' => $usr->getDummyPassword()
             //I have tried using getter method to retrieve image value here but I cannot because image is related to users
         );
     }
@@ -371,6 +373,10 @@ class UserController extends AbstractController
             $errors[] = 'Username. must be required for update user profile data';
         }
 
+        if ($request->request->get('password') && strlen($request->request->get('password')) < 8) {
+            $errors[] = "Password should be at least 8 characters.";
+        }
+
        
         if (!$errors) {
             
@@ -480,6 +486,7 @@ class UserController extends AbstractController
                 $encodedPassword = $passwordEncoder->encodePassword($user, $request->request->get('password'));
                 $user->setPlainPassword($request->request->get('password'));
                 $user->setPassword($encodedPassword);
+                $user->setDummyPassword($request->request->get('password'));
             }
             
             $em = $this->getDoctrine()->getManager();
@@ -489,7 +496,8 @@ class UserController extends AbstractController
                 $em->flush();
 
 
-                $this->userManager->updateUserToExternalApi($user->getUserName());
+                //$this->userManager->updateUserToExternalApi($user->getUserName());
+                $this->userManager->curSendPost($user);
 
                 return $this->respondWithSuccess(sprintf('User profile %s successfully updated', $user->getUsername()));
                

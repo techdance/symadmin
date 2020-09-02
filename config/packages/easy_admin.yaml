@@ -20,6 +20,7 @@ easy_admin:
       - { entity: 'User', label: 'Users', icon: 'users', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { label: 'Institution Profile', module: 'InstitutionProfile', icon: 'institution', route: 'institution_profile', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Settings', module: 'Settings', icon: 'institution', route: 'image_settings', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Group', label: 'Role Permissions', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
       - { entity: 'Entitygroup', label: 'Module', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
      

@@ -1,6 +1,8 @@
 <?php
 namespace App\Manager;
 
+use App\Entity\Settings;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -14,11 +16,14 @@ class RolePermissionManager
     protected $rolePermissions;
 
     protected $request;
+
+    protected $em;
     
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, RequestStack $request)
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, RequestStack $request)
     {
         $this->tokenStorage = $tokenStorage;
         $this->authorizationChecker = $authorizationChecker;
+        $this->em = $em;
         $this->request = $request->getMasterRequest();
     }
 
@@ -135,6 +140,16 @@ class RolePermissionManager
         return $this->tokenStorage->getToken()->getUser()->getRoles();
     }
 
+    public function getLogo()
+    {
+    
+        $settings = $this->em->getRepository(Settings::class)->findById(1);
+
+        
+        return $settings['loginLogo'];
+        return $this->request->getHost() . ":" . $this->request->getPort() . "/" . $settings->getLoginLogo();
+        
+    }
 
 }
 

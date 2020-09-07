@@ -324,7 +324,8 @@
             <aside class="main-sidebar">
             {% block sidebar %}
                 <div id="leftMenuLogo">
-					<a href="#"><img src="{{ asset('uploads/images/logo-ahea-white.png') }}" ></a>
+					{% set easyAdminLogo = easyadmin_logo() %}
+					<a href="#"><img width="176" src="{{ asset(easyAdminLogo) }}" ></a>
 				</div>
                 <a href="#" class="moveToBack"><i class="fas fa-arrow-circle-left"></i></a>
                 <section class="sidebar">

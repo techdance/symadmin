@@ -69,6 +69,7 @@ class EasyAdminTwigExtension extends AbstractExtension
             new TwigFunction('easyadmin_is_granted', [$this, 'isGranted']),
             new TwigFunction('easyadmin_app_roles', [$this, 'appRoles']),
             new TwigFunction('easyadmin_entity_permissions', [$this, 'getEntityRoles']),
+            new TwigFunction('easyadmin_logo', [$this, 'getLogo']),
         ];
     }
 
@@ -533,6 +534,10 @@ class EasyAdminTwigExtension extends AbstractExtension
 
         return $this->rolePermissionManager->getEntityPermissions($item['entity']);
 
+    }
+
+    public function getLogo() {
+        return $this->rolePermissionManager->getLogo();
     }
 
 }

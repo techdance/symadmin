@@ -1,0 +1,88 @@
+{% extends 'easyadmin-bundle/src/Resources/views/default/layout.html.twig' %}
+
+
+{% block content_header %}
+    <h5>Settings</h5>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+
+      
+
+
+        <form name="institution_profile" method="post" enctype="multipart/form-data">
+            {{ form_row(form._token) }}
+            <div class="row">
+                <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="loginLogo" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set loginLogo = noImage %}
+                            {% if form.loginLogo is defined and form.loginLogo.vars.data %}
+                                {% set loginLogo = asset('/' ~ form.loginLogo.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.loginLogo.vars.id }}" name="{{ form.loginLogo.vars.full_name }}" src="{{ loginLogo }}" alt="Login Logo Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div>
+
+                {# <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>Admin Dashboard Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="dashboardLogo" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set adminDashboardLogo = noImage %}
+                            {% if form.adminDashboardLogo is defined and form.adminDashboardLogo.vars.data %}
+                                {% set adminDashboardLogo = asset('/' ~ form.adminDashboardLogo.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.adminDashboardLogo.vars.id }}" name="{{ form.adminDashboardLogo.vars.full_name }}" src="{{ adminDashboardLogo }}" alt="Admin Dashboard Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div> #}
+            </div>
+            <div class="row">
+                <div class="col-md-6" style="padding:35px;">
+                    <button class="btn btn-primary" id="saveSettingsBtn" title="Save">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+    <script>
+        function readImagePreview(input) {
+
+            var filePath = input.target.value; 
+
+            // Allowing file type 
+            var allowedExtensions =  
+                    /(\.jpg|\.jpeg|\.png)$/i; 
+              
+            if (!allowedExtensions.exec(filePath)) { 
+                alert('Uploaded file is not a valid image. Only JPG, PNG and JPEG files are allowed.'); 
+                input.target.value = ''; 
+                return false; 
+            }  
+            
+            
+        }  
+
+       
+
+
+
+    </script>
+{% endblock %}

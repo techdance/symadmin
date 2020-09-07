@@ -662,6 +662,16 @@
                                         maxlength="{{ form.institutionLocation.vars.form.region.vars.attr.maxlength }}" 
                                         placeholder="Region">
                                     </div>
+
+                                    <div class="form-group-field mb-2">
+                                    <label for="postal-code">Country</label>
+                                    <input type="text" class="form-control" 
+                                        id="{{ form.institutionLocation.vars.form.country.vars.id }}" 
+                                        name="{{ form.institutionLocation.vars.form.country.vars.full_name }}" 
+                                        value="{{ form.institutionLocation.vars.form.country.vars.value }}" 
+                                        maxlength="{{ form.institutionLocation.vars.form.country.vars.attr.maxlength }}" 
+                                        placeholder="Country Code">
+                                    </div>
                             </div>
                         </div>
                         <div class="row">

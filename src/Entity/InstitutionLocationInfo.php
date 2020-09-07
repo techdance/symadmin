@@ -47,6 +47,11 @@ class InstitutionLocationInfo
      */
     private $region;
 
+    /**
+     * @ORM\Column(type="string", length=3, nullable=true)
+     */
+    private $country;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +125,18 @@ class InstitutionLocationInfo
     public function setRegion(?string $region): self
     {
         $this->region = $region;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }

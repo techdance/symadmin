@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Settings;
 use App\Entity\Group;
 use App\Entity\InstitutionProfile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -661,6 +662,32 @@ class UserController extends AbstractController
         $mailer->send($email);
 
         return new JsonResponse(['status' => true]);
+    }
+
+    /**
+     * @Route("/api/image-get-logos", name="api_get_logo_images", methods={"GET"})
+     */
+    public function getLogoImages(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $settings = $em->getRepository(Settings::class)->findById(1);
+
+    
+        // if ($settings) {
+        //     if (isset($settings['loginLogo'])) {
+        //         $settings['loginLogo'] = $request->getHost() . ":" . $request->getPort() . "/" . $settings['loginLogo'];
+        //     }
+            
+        //     if (isset($settings['adminDashboardLogo'])) {
+        //         $settings['adminDashboardLogo'] = $request->getHost() . ":" . $request->getPort() . "/" . $settings['adminDashboardLogo'];
+        //     }
+        // }
+
+        return new JsonResponse([
+            'logo' => 'http://' . $request->getHost() . ":" . $request->getPort() . "/" . $settings['loginLogo']
+        ]);
+
     }
 
     /**

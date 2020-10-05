@@ -28,7 +28,7 @@
                             <span class="btn-label">Cancel</span>
                         </button>
 
-                                                                <button type="button" data-dismiss="modal" class="btn btn-danger" onclick="deleteBuilderForm()">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger" onclick="deleteBuilderForm()">
                                                         <span class="btn-label">Delete</span>
                             </button>
                 </div>
@@ -65,7 +65,7 @@
                         </td>
                         <td>
                             {% for array in builder.json %}
-                                {{ array.label }}{% if not loop.last %},{% endif %}
+								{{ array.label |default('') }}{% if not loop.last %},{% endif %}
                             {% endfor %}
                         </td>
                         {# <td>

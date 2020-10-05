@@ -1,5 +1,5 @@
 <?php 
-namespace App\Form\Type;
+namespace App\Form;
 
 use App\Form\Type\ShippingType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

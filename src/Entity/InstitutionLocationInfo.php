@@ -52,6 +52,12 @@ class InstitutionLocationInfo
      */
     private $country;
 
+
+    /**
+     * @ORM\Column(type="string", length=3, nullable=true)
+     */
+    private $timezone;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +143,18 @@ class InstitutionLocationInfo
     public function setCountry(?string $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?string $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

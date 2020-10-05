@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_profile")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionProfileRepository")
  */
 class InstitutionProfile
@@ -17,17 +20,17 @@ class InstitutionProfile
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string",name="institution_name", length=150, nullable=true)
      */
     private $institutionName;
 
     /**
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string",name="campus_name", length=150, nullable=true)
      */
     private $campusName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string",name="ins_profile_image", length=255, nullable=true)
      */
     private $insProfileImage;
 
@@ -37,7 +40,7 @@ class InstitutionProfile
     private $founded;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string",name="ins_type", length=50, nullable=true)
      */
     private $insType;
 
@@ -52,17 +55,17 @@ class InstitutionProfile
     private $president;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string",name="academic_calendar", length=50, nullable=true)
      */
     private $academicCalendar;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string",name="other_languages", length=50, nullable=true)
      */
     private $otherLanguages;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer",name="total_employees", nullable=true)
      */
     private $totalEmployees;
 

@@ -33,6 +33,84 @@
                     </div>
                 </div>
 
+
+                <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>SSO Login Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="ssoLogin" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set ssoLogin = noImage %}
+                            {% if form.ssoLogin is defined and form.ssoLogin.vars.data %}
+                                {% set ssoLogin = asset('/' ~ form.ssoLogin.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.ssoLogin.vars.id }}" name="{{ form.ssoLogin.vars.full_name }}" src="{{ ssoLogin }}" alt="SSO Login Logo Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>Collaborated Direct Login Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="collaboratedDirectLogin" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set collaboratedDirectLogin = noImage %}
+                            {% if form.collaboratedDirectLogin is defined and form.collaboratedDirectLogin.vars.data %}
+                                {% set collaboratedDirectLogin = asset('/' ~ form.collaboratedDirectLogin.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.collaboratedDirectLogin.vars.id }}" name="{{ form.collaboratedDirectLogin.vars.full_name }}" src="{{ collaboratedDirectLogin }}" alt="Collaborated Direct Login Logo Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>Side Navigation Menu Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="sideNavigationMenu" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set sideNavigationMenu = noImage %}
+                            {% if form.sideNavigationMenu is defined and form.sideNavigationMenu.vars.data %}
+                                {% set sideNavigationMenu = asset('/' ~ form.sideNavigationMenu.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.sideNavigationMenu.vars.id }}" name="{{ form.sideNavigationMenu.vars.full_name }}" src="{{ sideNavigationMenu }}" alt="Side Navigation Menu Logo Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label"><strong>Side Navigation Menu Collapsed Logo</strong></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="sideNavigationMenuCollapsed" accept="image/*" onchange="readImagePreview(event)"  placeholder="Form Builder Image">
+                        </div>
+                        <div class="input-group">
+                            {% set noImage = asset('uploads/no-image.jpg') %}
+                            {% set sideNavigationMenuCollapsed = noImage %}
+                            {% if form.sideNavigationMenuCollapsed is defined and form.sideNavigationMenuCollapsed.vars.data %}
+                                {% set sideNavigationMenuCollapsed = asset('/' ~ form.sideNavigationMenuCollapsed.vars.data) %}
+                            {% endif %}
+                        
+                            <img id="{{ form.sideNavigationMenuCollapsed.vars.id }}" name="{{ form.sideNavigationMenuCollapsed.vars.full_name }}" src="{{ sideNavigationMenuCollapsed }}" alt="Side Navigation MenuCollapsed Logo Image" onerror="this.src='{{ noImage }}'"  style="max-height:250px;"  />
+                        </div>
+                    </div>
+                </div>
+
                 {# <div class="col-md-6">
                     
                     <div class="form-group">

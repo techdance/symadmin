@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -85,6 +87,19 @@ class Entitygroup
         if (!$this->groups->contains($group)) {
             $this->groups[] = $group;
             $group->setEntities($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(GroupHasEntity $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            // set the owning side to null (unless already changed)
+            if ($group->getEntities() === $this) {
+                $group->setEntities(null);
+            }
         }
 
         return $this;

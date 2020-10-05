@@ -115,9 +115,63 @@
    
     <script type="text/javascript">
         $(function() {
+         
+          $('.batch-action-requires-confirmation').attr('name','batch_form_user[name]');
             $('.action-import').click(function() {
                 console.log($('#exampleModal').modal('show'))
             })
+
+
+            $('.action-delete').on('click', function(e) {
+                e.preventDefault();
+                const id = $(this).parents('tr').first().data('id');
+                var fName = $("<input type=\"hidden\" name=\"delete_id\" id=\"delete_id\"  />");
+                let deleteForm = $('#delete-form');
+                deleteForm.append(fName);
+                $('#delete_id').val($(this).attr('delete_id'));
+                deleteForm.attr('action', $(this).attr('href'));
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function () {
+                        let deleteForm = $('#delete-form');
+                        //deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
+                        deleteForm.attr('action', $(this).attr('href'));
+                        deleteForm.trigger('submit');
+                    });
+            });
+
+
+            let modalTitle = $('#batch-action-confirmation-title');
+            const titleContentWithPlaceholders = modalTitle.text();
+            $('button[name="batch_form_user[name]"].batch-action-requires-confirmation').on('click', function (event) {
+                let deleteForm = $('form[name="batch_form"]');
+                var fName = $("<input type=\"hidden\" name=\"delete_id\" id=\"delete_id\"  />");                
+                deleteForm.append(fName);
+                $('#delete_id').val($('#batch_form_ids').val());
+                var path = "{{ path('delete_user') }}";
+                deleteForm.attr('action',path );
+                event.preventDefault();
+                event.stopPropagation();
+                let $button = $(this);
+
+                const actionName = $button.text();
+                const numberOfSelectedItems = $('input[type="checkbox"].form-batch-checkbox:checked').length;
+                modalTitle.text(titleContentWithPlaceholders
+                    .replace('%action_name%', actionName)
+                    .replace('%num_items%', numberOfSelectedItems));
+
+                $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
+                    .off('click', '#modal-batch-action-button')
+                    .on('click', '#modal-batch-action-button', function () {
+                        $button.unbind('click');
+                        $button.trigger('click');
+
+                        modalTitle.text(titleContentWithPlaceholders);
+                    });
+            });
+
         })
+
+   
     </script>
 {% endblock %}

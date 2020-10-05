@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="social_media_urls")
  * @ORM\Entity(repositoryClass="App\Repository\SocialMediaUrlsRepository")
  */
 class SocialMediaUrls
@@ -17,7 +18,7 @@ class SocialMediaUrls
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string",name="social_media", length=25)
      */
     private $socialMedia;
 

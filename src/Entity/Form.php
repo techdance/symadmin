@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,7 +45,7 @@ class Form
     private $values;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string",name="form_image")
      */
     private $formImage;
 
@@ -137,6 +138,29 @@ class Form
     public function setFormImage($formImage)
     {
         $this->formImage = $formImage;
+
+        return $this;
+    }
+
+    public function addValue(FormValue $value): self
+    {
+        if (!$this->values->contains($value)) {
+            $this->values[] = $value;
+            $value->setForm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValue(FormValue $value): self
+    {
+        if ($this->values->contains($value)) {
+            $this->values->removeElement($value);
+            // set the owning side to null (unless already changed)
+            if ($value->getForm() === $this) {
+                $value->setForm(null);
+            }
+        }
 
         return $this;
     }

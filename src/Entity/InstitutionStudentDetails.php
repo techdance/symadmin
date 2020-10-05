@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_student_details")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionStudentDetailsRepository")
  */
 class InstitutionStudentDetails
@@ -27,57 +28,57 @@ class InstitutionStudentDetails
     private $year;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="total_students", length=11, nullable=true)
      */
     private $totalStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="female_students", length=11, nullable=true)
      */
     private $femaleStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="male_students", length=11, nullable=true)
      */
     private $maleStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="undergrad_students", length=11, nullable=true)
      */
     private $undergradStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="grad_students", length=11, nullable=true)
      */
     private $gradStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="other_students", nullable=true)
      */
     private $otherStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="full_time_students", nullable=true)
      */
     private $fullTimeStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="in_state_students", nullable=true)
      */
     private $inStateStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="out_of_state_students", nullable=true)
      */
     private $outOfStateStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="part_time_students", nullable=true)
      */
     private $partTimeStudents;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string", length=11,name="inter_national_students", nullable=true)
      */
     private $interNationalStudents;
 

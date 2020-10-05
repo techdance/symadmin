@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\Settings;
 use App\Entity\User;
-use App\Form\Type\SettingsType;
-use App\Form\Type\UserType;
+use App\Form\SettingsType;
+use App\Form\UserType;
 use App\Manager\UserManager;
 use App\Model\RoleModel;
 use Doctrine\DBAL\Types\DateType;
@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SettingsController extends EasyAdminController
 {
@@ -70,8 +71,16 @@ class SettingsController extends EasyAdminController
             if ($form->isValid()) {
                 $loginLogoFile = $request->files->get('loginLogo');
                 $dashboardLogoFile = $request->files->get('dashboardLogo');
+                $ssoLoginFile = $request->files->get('ssoLogin');
+                $collaboratedDirectLoginFile = $request->files->get('collaboratedDirectLogin');
+                $sideNavigationMenuFile = $request->files->get('sideNavigationMenu');
+                $sideNavigationMenuCollapsedFile = $request->files->get('sideNavigationMenuCollapsed');
                 $loginLogoFileName = "";
                 $dashboardLogoFileName = "";
+                $ssoLoginFileName = "";
+                $collaboratedDirectLoginFileName = "";
+                $sideNavigationMenuFileName = "";
+                $sideNavigationMenuCollapsedFileName = "";
                 
       
                 if ($loginLogoFile) {
@@ -80,6 +89,22 @@ class SettingsController extends EasyAdminController
 
                 if ($dashboardLogoFile) {
                     $dashboardLogoFileName = md5(uniqid()) . '.' . $dashboardLogoFile->guessExtension();
+                }
+
+                if ($ssoLoginFile) {
+                    $ssoLoginFileName = md5(uniqid()) . '.' . $ssoLoginFile->guessExtension();
+                }
+
+                if ($collaboratedDirectLoginFile) {
+                    $collaboratedDirectLoginFileName = md5(uniqid()) . '.' . $collaboratedDirectLoginFile->guessExtension();
+                }
+
+                if ($sideNavigationMenuFile) {
+                    $sideNavigationMenuFileName = md5(uniqid()) . '.' . $sideNavigationMenuFile->guessExtension();
+                }
+
+                if ($sideNavigationMenuCollapsedFile) {
+                    $sideNavigationMenuCollapsedFileName = md5(uniqid()) . '.' . $sideNavigationMenuCollapsedFile->guessExtension();
                 }
 
                
@@ -117,6 +142,69 @@ class SettingsController extends EasyAdminController
                     }
                 }
 
+                if ($setting && $ssoLoginFile) {
+                    if ($exstingSettings && $exstingSettings->getSsoLogin()) {
+                        $file_to_delete = $this->get('kernel')->getProjectDir() . '/public/' . $exstingSettings->getSsoLogin();
+
+                        if (file_exists($file_to_delete)) {
+                            unlink($file_to_delete);
+                        }
+                    }
+                } else {
+
+                    if ($exstingSettings && $exstingSettings->getSsoLogin()) {
+                        $setting->setSsoLogin($exstingSettings->getSsoLogin());
+                    }
+                }
+
+
+                if ($setting && $collaboratedDirectLoginFile) {
+                    if ($exstingSettings && $exstingSettings->getCollaboratedDirectLogin()) {
+                        $file_to_delete = $this->get('kernel')->getProjectDir() . '/public/' . $exstingSettings->getCollaboratedDirectLogin();
+
+                        if (file_exists($file_to_delete)) {
+                            unlink($file_to_delete);
+                        }
+                    }
+                } else {
+
+                    if ($exstingSettings && $exstingSettings->getCollaboratedDirectLogin()) {
+                        $setting->setCollaboratedDirectLogin($exstingSettings->getCollaboratedDirectLogin());
+                    }
+                }
+
+                
+                if ($setting && $sideNavigationMenuFile) {
+                    if ($exstingSettings && $exstingSettings->getSideNavigationMenu()) {
+                        $file_to_delete = $this->get('kernel')->getProjectDir() . '/public/' . $exstingSettings->getSideNavigationMenu();
+
+                        if (file_exists($file_to_delete)) {
+                            unlink($file_to_delete);
+                        }
+                    }
+                } else {
+
+                    if ($exstingSettings && $exstingSettings->getSideNavigationMenu()) {
+                        $setting->setSideNavigationMenu($exstingSettings->getSideNavigationMenu());
+                    }
+                }
+
+
+                if ($setting && $sideNavigationMenuCollapsedFile) {
+                    if ($exstingSettings && $exstingSettings->getSideNavigationMenuCollapsed()) {
+                        $file_to_delete = $this->get('kernel')->getProjectDir() . '/public/' . $exstingSettings->getSideNavigationMenuCollapsed();
+
+                        if (file_exists($file_to_delete)) {
+                            unlink($file_to_delete);
+                        }
+                    }
+                } else {
+
+                    if ($exstingSettings && $exstingSettings->getSideNavigationMenuCollapsed()) {
+                        $setting->setSideNavigationMenuCollapsed($exstingSettings->getSideNavigationMenuCollapsed());
+                    }
+                }
+
                 if ($loginLogoFile) {
                     // Move the file to the directory where your form images are stored
                     try {
@@ -145,6 +233,65 @@ class SettingsController extends EasyAdminController
                 }
 
 
+                if ($ssoLoginFile) {
+                    // Move the file to the directory where your form images are stored
+                    try {
+                        $ssoLoginFile->move(
+                            $this->paramBag->get('upload_directory') . "/settings/logo/",
+                            $ssoLoginFileName
+                        );
+
+                        $setting->setSsoLogin("uploads/settings/logo/" . $ssoLoginFileName);
+                    } catch (FileException $e) {
+                        //Handle error
+                    }
+                }
+
+                if ($collaboratedDirectLoginFile) {
+                    // Move the file to the directory where your form images are stored
+                    try {
+                        $collaboratedDirectLoginFile->move(
+                            $this->paramBag->get('upload_directory') . "/settings/logo/",
+                            $collaboratedDirectLoginFileName
+                        );
+
+                        $setting->setCollaboratedDirectLogin("uploads/settings/logo/" . $collaboratedDirectLoginFileName);
+                    } catch (FileException $e) {
+                        //Handle error
+                    }
+                }
+
+
+                if ($sideNavigationMenuFile) {
+                    // Move the file to the directory where your form images are stored
+                    try {
+                        $sideNavigationMenuFile->move(
+                            $this->paramBag->get('upload_directory') . "/settings/logo/",
+                            $sideNavigationMenuFileName
+                        );
+
+                        $setting->setSideNavigationMenu("uploads/settings/logo/" . $sideNavigationMenuFileName);
+                    } catch (FileException $e) {
+                        //Handle error
+                    }
+                }
+
+
+                if ($sideNavigationMenuCollapsedFile) {
+                    // Move the file to the directory where your form images are stored
+                    try {
+                        $sideNavigationMenuCollapsedFile->move(
+                            $this->paramBag->get('upload_directory') . "/settings/logo/",
+                            $sideNavigationMenuCollapsedFileName
+                        );
+
+                        $setting->setsideNavigationMenuCollapsed("uploads/settings/logo/" . $sideNavigationMenuCollapsedFileName);
+                    } catch (FileException $e) {
+                        //Handle error
+                    }
+                }
+
+
                 $em->persist($setting);
                 $em->flush();
 
@@ -165,5 +312,39 @@ class SettingsController extends EasyAdminController
         return $this->render('admin/settings/settings.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+	
+	/**	
+	 * @Route("/api/image-get-logos", name="api-image-get-logos")
+	 
+     */
+   
+
+    public function getImages(Request $request)
+    {
+
+    $responseData = [];
+
+    $em = $this->getDoctrine()->getManager();
+
+    $get_all_images = $em->getRepository(Settings::class)->find(1);
+
+    $protocal = 'http://';
+    if($request->isSecure()){
+        $protocal = 'https://';
+    }
+    $responseData = [
+    'login_logo' => $protocal .$request->server->get('HTTP_HOST') . "/".$get_all_images->getLoginLogo(),
+    'sso_login_logo' => $protocal .$request->server->get('HTTP_HOST') . "/".$get_all_images->getSsoLogin(),
+    'collaborated_direct_login_logo' => $protocal .$request->server->get('HTTP_HOST') . "/".$get_all_images->getCollaboratedDirectLogin(),
+    'side_navigation_menu_logo' => $protocal .$request->server->get('HTTP_HOST') . "/".$get_all_images->getSideNavigationMenu(),
+    'side_navigation_menu_collapsed_logo' => $protocal .$request->server->get('HTTP_HOST') . "/".$get_all_images->getSideNavigationMenuCollapsed()
+    ];
+
+    $response = new JsonResponse();
+
+    $response->setData($responseData);
+
+    return $response;
     }
 }

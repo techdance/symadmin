@@ -8,7 +8,7 @@ use App\Entity\GroupHasEntity;
 use App\Entity\User;
 use App\Entity\FormValue;
 use App\Form\FormType;
-use App\Form\Type\UserType;
+use App\Form\UserType;
 use App\Model\RoleModel;
 use App\Service\FileUploader;
 use Doctrine\DBAL\Types\DateType;
@@ -43,7 +43,7 @@ class FormBuilderController extends EasyAdminController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $builders = $em->getRepository('App:Form')->findAll();
+        $builders = $em->getRepository(Form::class)->findAll();
 
         return $this->render('admin/formbuilder/default/builders-list.html.twig', [
             'builders' => $builders,
@@ -83,7 +83,7 @@ class FormBuilderController extends EasyAdminController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $values = $em->getRepository('App:FormValue')->findValuesByForm($formEntity);
+        $values = $em->getRepository(FormValue::class)->findValuesByForm($formEntity);
 
         return $this->render('admin/formbuilder/default/builder-values.html.twig', [
             'formEntity' => $formEntity,
@@ -205,7 +205,7 @@ class FormBuilderController extends EasyAdminController
       
      
         if ($id = $request->request->get('id')) {
-            $form = $em->getRepository('App:Form')->findOneBy(['id' => $id]);
+            $form = $em->getRepository(Form::class)->findOneBy(['id' => $id]);
         }
 
         $file = $request->files->get('formBuilderImage');
@@ -312,7 +312,7 @@ class FormBuilderController extends EasyAdminController
         $form = null;
        
         if ($id = $request->request->get('id')) {
-            $form = $em->getRepository('App:Form')->findOneBy(['id' => $id]);
+            $form = $em->getRepository(Form::class)->findOneBy(['id' => $id]);
         }
        
         if ($form) {

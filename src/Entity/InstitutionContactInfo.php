@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_contact_info")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionContactInfoRepository")
  */
 class InstitutionContactInfo
@@ -17,17 +18,17 @@ class InstitutionContactInfo
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string",name="office_number", length=50, nullable=true)
      */
     private $officeNumber;
 
     /**
-     * @ORM\Column(type="string", length=75, nullable=true)
+     * @ORM\Column(type="string",name="mailing_name", length=75, nullable=true)
      */
     private $mailingName;
 
     /**
-     * @ORM\Column(type="string", length=75, nullable=true)
+     * @ORM\Column(type="string",name="fax_number", length=75, nullable=true)
      */
     private $faxNumber;
 
@@ -67,7 +68,7 @@ class InstitutionContactInfo
     private $state;
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string",name="postal_code", length=25, nullable=true)
      */
     private $postalCode;
 

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_faculty_details")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionFacultyDetailsRepository")
  */
 class InstitutionFacultyDetails
@@ -27,22 +28,22 @@ class InstitutionFacultyDetails
     private $year;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="full_time_faculty", length=11, nullable=true)
      */
     private $fullTimeFaculty;
 
     /**
-     * @ORM\Column(type="string", length=4, nullable=true)
+     * @ORM\Column(type="string",name="student_faculty_ratio", length=4, nullable=true)
      */
     private $studentFacultyRatio;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="faculty_higher_degree", length=11, nullable=true)
      */
     private $facultyHigherDegree;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="avg_ugclass_size", length=11, nullable=true)
      */
     private $avgUGClassSize;
 

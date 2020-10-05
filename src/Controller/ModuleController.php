@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\GroupHasEntity;
 use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Form\UserType;
 use App\Model\RoleModel;
 use Doctrine\DBAL\Types\DateType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;

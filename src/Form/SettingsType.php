@@ -1,5 +1,5 @@
 <?php 
-namespace App\Form\Type;
+namespace App\Form;
 
 use App\Entity\Entitygroup;
 use App\Entity\GroupHasEntity;
@@ -32,6 +32,18 @@ class SettingsType extends AbstractType
                 'data_class' => null
             ])
             ->add('adminDashboardLogo', FileType::class, [
+                'data_class' => null
+            ])
+            ->add('ssoLogin', FileType::class, [
+                'data_class' => null
+            ])
+            ->add('collaboratedDirectLogin', FileType::class, [
+                'data_class' => null
+            ])
+            ->add('sideNavigationMenu', FileType::class, [
+                'data_class' => null
+            ])
+            ->add('sideNavigationMenuCollapsed', FileType::class, [
                 'data_class' => null
             ])
             ->add('save', SubmitType::class, ['label' => 'Save Profile'])

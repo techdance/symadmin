@@ -653,6 +653,19 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
+                            <div class="form-group-field mb-2">
+                                    <label for="postal-code">Time Shone</label>
+                                    <select class="form-control" 
+                                        id="{{ form.institutionLocation.vars.form.timezone.vars.id }}" 
+                                        name="{{ form.institutionLocation.vars.form.timezone.vars.full_name }}" 
+                                        value="{{ form.institutionLocation.vars.form.timezone.vars.value }}" 
+                                        maxlength="{{ form.institutionLocation.vars.form.timezone.vars.attr.maxlength }}">
+                                        {% for key,timezone in timezones %}
+                                                <option value="{{key}}">{{timezone}}</option>
+                                            {% endfor %}
+                                        
+                                        </select>
+                                    </div>
                                 <div class="form-group-field mb-2">
                                     <label for="postal-code">Region</label>
                                     <input type="text" class="form-control" 

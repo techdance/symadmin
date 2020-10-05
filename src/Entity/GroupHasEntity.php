@@ -61,4 +61,9 @@ class GroupHasEntity extends BaseGroup
         $this->groups = $groups;
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
 }

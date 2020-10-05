@@ -1,5 +1,5 @@
 <?php 
-namespace App\Form\Type;
+namespace App\Form;
 
 use App\Entity\Entitygroup;
 use App\Entity\GroupHasEntity;

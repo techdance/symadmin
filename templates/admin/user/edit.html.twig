@@ -7,9 +7,265 @@
      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 {% endblock %}
 
+
+
 {% block entity_form %}
+
+   <style>
+    .content-header {
+       display:none;
+    }
+    .checkbox_padding{
+        padding: 3%;
+    }
+    .content {
+        background-color: transparent;
+        box-shadow: none;
+        border: 0;
+        border-radius: 0;
+    }
+    .content-body .form-horizontal, .content-body form {
+        background-color: transparent;
+        padding: 0;
+    }
+    .heading {
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 25px;
+            margin-bottom: 25px;
+            margin-top: 7px;
+            position: relative;
+        }
+    .form-group-field .col-form-label.required::after, .form-group-field label.required::after {
+    bottom: 4px;
+    color: var(--color-danger);
+    content: "\2022";
+    filter: opacity(75%);
+    position: relative;
+    right: -2px;
+    }
+    .form-group-field label {
+        color: #000000;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 18px;
+        margin-bottom: 4px;
+        display: block;
+        white-space: nowrap;
+    }
+    .form-group-field .form-control {
+        padding: 6px;
+        color: #505050;
+        display: block;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 18px;
+        width: 100%;
+        border-radius: 0;
+    }   
+    .inline-form-group-field {
+        display: flex;
+        align-items: center;
+    }
+    .action-save {
+        color: white;
+        float:left;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 12px;
+        max-width: 100px;
+        padding: 12px 14px;
+        width: 100%;
+        border-radius: 7px;
+        background: #299eff;
+    }
+    .grayBorderCard h3 {
+            margin: 0 0 15px;
+        }
+    .grayBorderCard {
+        padding: 5%;
+        border-radius: 5px;
+        border: 1px solid grey;
+        height: 100%;
+    }
+
+    .whiteCard {
+        background: #fff !important;
+        padding: 10px 18px 20px;   
+        border-radius: 8px;
+        box-shadow: 1px 1px 2px 0px rgba(194,194,194,1);
+    }
+   </style>
+
+{% set getInstName = render(controller('App\\Controller\\AdminUserController::getInstName')) %}
+
+    {{ form_start(form) }}  
+
+        <div class="container whiteCard">
+            <div class=" mt-4">
+                    <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="heading"><i class="fas fa-users"></i> Edit User</h3>
+                            </div>
+                            <div class="col-md-12">                           
+                                <div class="row mb-5">
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.prefix) }}
+                                            {{ form_widget(form.prefix) }}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.firstName)}}
+                                            {{ form_widget(form.firstName)}}                                      
+                                        </div>
+                                    </div>    
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.middleName)}}
+                                            {{ form_widget(form.middleName)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.lastName)}}
+                                            {{ form_widget(form.lastName)}}                                      
+                                        </div>
+                                    </div>     
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.userName)}}
+                                            {{ form_widget(form.userName)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.plainPassword)}}
+                                            {{ form_widget(form.plainPassword)}}                                      
+                                        </div>
+                                    </div>  
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.email) }}
+                                            {{ form_widget(form.email) }}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.institutionName)}}
+                                            {{ form_widget(form.institutionName, {'attr': {'readonly': true},'value':getInstName})}}                                      
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.phone)}}
+                                            {{ form_widget(form.phone)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.position)}}
+                                            {{ form_widget(form.position)}}                                     
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.ssn)}}
+                                            {{ form_widget(form.ssn)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.vetran)}}
+                                            {{ form_widget(form.vetran)}}                                     
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.ethinicity)}}
+                                            {{ form_widget(form.ethinicity)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.dateOfBirth)}}
+                                            {{ form_widget(form.dateOfBirth)}}                                     
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.gender)}}
+                                            {{ form_widget(form.gender)}}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.emergencyContactPerson) }}
+                                            {{ form_widget(form.emergencyContactPerson) }}                                     
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.emergencyContactPhone) }}
+                                            {{ form_widget(form.emergencyContactPhone) }}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.address1) }}
+                                            {{ form_widget(form.address1) }}                                     
+                                        </div>
+                                    </div>                                            
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.address2) }}
+                                            {{ form_widget(form.address2) }}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.city) }}
+                                            {{ form_widget(form.city) }}                                     
+                                        </div>
+                                    </div>  
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.state) }}
+                                            {{ form_widget(form.state) }}                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.zip) }}
+                                            {{ form_widget(form.zip) }}                                     
+                                        </div>
+                                    </div>  
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2">
+                                            {{ form_label(form.groups) }}
+                                            {{ form_widget(form.groups) }}                                     
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group-field mb-2 checkbox_padding">
+                                            {{ form_label(form.enabled) }}
+                                            {{ form_widget(form.enabled) }}                                     
+                                        </div>
+                                    </div>                               
+                             </div>                                             
+                        </div>
+                    </div>
+              </div>
+          </div>
     
-    {{ form(form) }}
+
+    
+    {{ form_row(form._token) }}
+{{ form_end(form) }}
+
 {% endblock entity_form %}
 
 
@@ -73,6 +329,24 @@
 
                 $('#edit-user-form').submit();
 
+            });
+
+            $('.action-delete').on('click', function(e) {
+                e.preventDefault();
+                const id = $(this).parents('tr').first().data('id');
+                var fName = $("<input type=\"hidden\" name=\"delete_id\" id=\"delete_id\"  />");
+                let deleteForm = $('#delete-form');
+                deleteForm.append(fName);
+                $('#delete_id').val($(this).attr('delete_id'));
+                deleteForm.attr('action', $(this).attr('href'));
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function () {
+                        let deleteForm = $('#delete-form');
+                        //deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
+                        deleteForm.attr('action', $(this).attr('href'));
+                        deleteForm.trigger('submit');
+                    });
             });
            
         })

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -61,6 +63,44 @@ class Group extends BaseGroup
     public function getUsers()
     {
         return $this->users;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function removeEntity(GroupHasEntity $entity): self
+    {
+        if ($this->entities->contains($entity)) {
+            $this->entities->removeElement($entity);
+            // set the owning side to null (unless already changed)
+            if ($entity->getGroups() === $this) {
+                $entity->setGroups(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removeGroup($this);
+        }
+
+        return $this;
     }
 
     

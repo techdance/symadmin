@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_academic_details")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionAcademicDetailsRepository")
  */
 class InstitutionAcademicDetails
@@ -22,32 +23,32 @@ class InstitutionAcademicDetails
     private $term;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="academic_year", length=11, nullable=true)
      */
     private $academicYear;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="associate_degrees", length=11, nullable=true)
      */
     private $associateDegrees;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="bachelors_degrees", length=11, nullable=true)
      */
     private $bachelorsDegrees;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="master_degrees", length=11, nullable=true)
      */
     private $masterDegrees;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="doctorate_degrees", length=11, nullable=true)
      */
     private $doctorateDegrees;
 
     /**
-     * @ORM\Column(type="string", length=11, nullable=true)
+     * @ORM\Column(type="string",name="under_graduate", length=11, nullable=true)
      */
     private $underGraduate;
 

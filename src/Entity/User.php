@@ -43,17 +43,17 @@ class User extends BaseUser
     }
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string",name="first_name", length=100)
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string",name="last_name", length=100)
      */
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string",name="middle_name", length=100, nullable=true)
      */
     private $middleName;
 
@@ -69,7 +69,7 @@ class User extends BaseUser
     private $prefix;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string",name="institution_name", length=150)
      */
     private $institutionName;
 
@@ -96,7 +96,7 @@ class User extends BaseUser
 
     
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="date",name="date_of_birth", nullable=true)
      * @Assert\NotBlank
      */
     private $dateOfBirth;
@@ -112,13 +112,13 @@ class User extends BaseUser
    
     /**
      *
-     * @ORM\Column(type="string", length=75, nullable=true)
+     * @ORM\Column(type="string",name="emergency_contact_person", length=75, nullable=true)
      */
     private $emergencyContactPerson;
 
      /**
      *
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string",name="emergency_contact_phone", length=25, nullable=true)
      */
     private $emergencyContactPhone;
 
@@ -161,7 +161,7 @@ class User extends BaseUser
 
     /**
      *
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string",name="dummy_password", length=150, nullable=true)
      */
     private $dummyPassword;
 

@@ -1,0 +1,241 @@
+{% extends 'easyadmin-bundle/src/Resources/views/default/layout.html.twig' %} {% block content_header %}
+<h5>Documents</h5> {% endblock %} {% block main %}
+<style>
+.nav-tabs {
+	border-bottom: var(--border-width) solid #ffffff;
+}
+</style>
+<div class="container">
+	<ul class="nav nav-tabs">
+		<li><a href="#gettingStarted" id="tab1" class="btn btn-primary" style="margin: 20px 30px 3px 0;">Getting Started</a></li>
+		<li><a href="#bestPractices" class="btn btn-primary" id="tab2" style="margin: 20px 30px 3px 0;">Best Practices & How-To Guides</a></li>
+		<li><a href="#templates" class="btn btn-primary" id="tab3" style="margin: 20px 30px 3px 0;">Templates</a></li>
+	</ul>
+	<br>
+	<form name="gettingStarted" method="post" style="background: #ffffff;" enctype="multipart/form-data"> {{ form_row(form._token) }}
+		<div class="tab-content">
+			<div id="gettingStarted">
+				<h3>Getting Started</h3>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group-field mb-2">
+							<label class="form-label"><strong style="flex: 30% 0 0;padding-right: 70px;">Sub Category</strong></label>
+							<input type="hidden" class="form-control" name="category" value="gettingStarted">
+							<div class="input-group">
+								<select class="form-control" name="sub_category" id="gettingStarted_sub_category">
+									<option value="addInterestViewMatches">Add an Interest and View Matches</option>
+									<option value="editFacultyProfile">Edit Faculty Profile</option>
+									<option value="introductionVideCollaboration">Create Introduction Video for Collaboration</option>
+									<option value="announcementEventRequest">Submit an Announcement or Event Request</option>
+									<option value="instructorCourseIntroduction">Create Instructor and Course Introduction Videos</option>
+									<option value="accessGuides">Access Guides, Templates, and Best Practices</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group-field mb-2">
+							<label class="form-label"><strong style="flex: 30% 0 0;">Upload File(pdf or excel)</strong></label>
+							<div class="input-group">
+								<input type="file" class="form-control" name="file_url" id="gettingStarted_file" onchange="readImagePreview(event)" placeholder="Form Builder File"> </div>
+						</div>
+						<div class="col-md-6" style="padding:35px;">
+							<button class="btn btn-primary" id="savegettingStartedBtn" title="Save">Save</button>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th scope="col">Sub Category</th>
+									<th scope="col">File</th>
+								</tr>
+							</thead>
+							<tbody> {% for document in All_documents %} {% if document.Category == 'gettingStarted' %}
+								<tr>
+									<td>{{ document.SubCategory|e }}</td>
+									<td><a href="{{ document.FileUrl|e }} " target="_blank" class="btn btn-primary">View</a></td>
+								</tr> {% endif %} {% endfor %} </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div id="bestPractices">
+				<h3>Best Practices & How-To Guides</h3> {{ form_row(form._token) }}
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group-field mb-2">
+							<label class="form-label" style="flex: 30% 0 0;padding-right: 70px;"><strong>Sub Category</strong></label>
+							<input type="hidden" class="form-control" name="category" id="bestPractices_category" value="bestPractices">
+							<div class="input-group">
+								<select class="form-control" name="sub_category" id="bestPractices_sub_category">
+									<option value="generalPublication">Author a General Publication</option>
+									<option value="academicJournal">Author an Academic Journal</option>
+									<option value="writingProject">Join a Writing Project</option>
+									<option value="createBestPractices">Create Best Practices</option>
+									<option value="academivWritingStyle">Hone Your Academic Writing Style</option>
+									<option value="createCoursewithPeers">Create a Course with Peers</option>
+									<option value="createStudyAbroadProgram">Create a Study Abroad Program</option>
+									<option value="courseDevelopmentBeginners">Course Development for Beginners</option>
+									<option value="startResearchProject">Start a Research Project</option>
+									<option value="influentialMentor">Be an Influential Mentor</option>
+									<option value="findMentor">Find a Mentor</option>
+									<option value="initiatePeerReview">Initiate a Peer Review</option>
+									<option value="participatePeerReview">Participate in a Peer Review</option>
+								</select>
+							</div>
+						</div>
+						<div class="class="form-group-field mb-2"">
+							<label class="form-label" style="flex: 30% 0 0;"><strong>Upload File(pdf or excel)</strong></label>
+							<div class="input-group">
+								<input type="file" class="form-control" name="file_url" id="bestPractices_file_url" onchange="readImagePreview(event)" placeholder="Form Builder File"> </div>
+						</div>
+						<div class="col-md-6" style="padding:35px;">
+							<button class="btn btn-primary" id="savebestPracticesBtn" title="Save">Save</button>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th scope="col">Sub Category</th>
+									<th scope="col">File</th>
+								</tr>
+							</thead>
+							<tbody> {% for document in All_documents %} {% if document.Category == 'bestPractices' %}
+								<tr>
+									<td>{{ document.SubCategory|e }}</td>
+									<td><a href="{{ document.FileUrl|e }} " target="_blank" class="btn btn-primary">View</a></td>
+								</tr> {% endif %} {% endfor %} </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div id="templates">
+				<h3>Template</h3> {{ form_row(form._token) }}
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group-field mb-2">
+							<label class="form-label" style="flex: 30% 0 0;padding-right: 70px;"><strong>Sub Category</strong></label>
+							<input type="hidden" class="form-control" name="category" id="templates_category" value="templates">
+							<div class="input-group">
+								<select class="form-control" name="sub_category" id="templates_sub_category">
+									<option value="courseControlDocument">AHEA Course Control Document</option>
+									<option value="syllabus">AHEA Syllabus</option>
+									<option value="courseIntroMgmt">AHEA Course - Intro Business Mgmt</option>
+									<option value="healthForm">AHEA Syllabus - Intro Business Mgmt</option>
+									<option value="parentGuide">Health Form</option>
+									<option value="programFactSheet">Parent Guide</option>
+									<option value="studyAbroadPackingChecklist">Program Fact Sheet</option>
+									<option value="studyAbroadPreDepartureChecklist">Study Abroad Packing Checklist</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group-field mb-2">
+							<label class="form-label" style="flex: 30% 0 0;"><strong>Upload File(pdf or excel)</strong></label>
+							<div class="input-group">
+								<input type="file" class="form-control" name="file_url" id="templates_file_url" onchange="readImagePreview(event)" placeholder="Form Builder File"> </div>
+						</div>
+						<div class="col-md-6" style="padding:35px;">
+							<button class="btn btn-primary" id="savetemplateBtn" title="Save">Save</button>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th scope="col">Sub Category</th>
+									<th scope="col">File</th>
+								</tr>
+							</thead>
+							<tbody> {% for document in All_documents %} {% if document.Category == 'templates' %}
+								<tr>
+									<td>{{ document.SubCategory|e }}</td>
+									<td><a href="{{ document.FileUrl|e }}" target="_blank" class="btn btn-primary">View</a></td>
+								</tr> {% endif %} {% endfor %} </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %} {% block body_javascript %}
+<script>
+function readImagePreview(input) {
+	var filePath = input.target.value;
+	// Allowing file type 
+    var allowedExtensions = /(\.pdf|\.docx)$/i;
+	if(!allowedExtensions.exec(filePath)) {
+		alert('Uploaded file is not a valid File. Only pdf, docs files are allowed.');
+		input.target.value = '';
+		return false;
+	}
+}
+</script>
+<script>
+$("#gettingStarted_category").attr("name", "category");
+	$("#gettingStarted_sub_category").attr("name", "sub_category");
+	$("#gettingStarted_file_url").attr("name", "file_url");
+	$("#templates_category").removeAttr("name");
+	$("#templates_sub_category").removeAttr("name");
+	$("#templates_file_url").removeAttr("name");
+	$("#bestPractices_category").removeAttr("name");
+	$("#bestPractices_sub_category").removeAttr("name");
+	$("#bestPractices_file_url").removeAttr("name");
+$("#gettingStarted").show();
+$("#bestPractices").hide();
+$("#templates").hide();
+$("#tab1").addClass( "active" );
+$("#tab2").removeClass( "active" );
+$("#tab3").removeClass( "active" );
+$("#tab1").click(function() {
+	$("#gettingStarted_category").attr("name", "category");
+	$("#gettingStarted_sub_category").attr("name", "sub_category");
+	$("#gettingStarted_file_url").attr("name", "file_url");
+	$("#templates_category").removeAttr("name");
+	$("#templates_sub_category").removeAttr("name");
+	$("#templates_file_url").removeAttr("name");
+	$("#bestPractices_category").removeAttr("name");
+	$("#bestPractices_sub_category").removeAttr("name");
+	$("#bestPractices_file_url").removeAttr("name");
+	$("#gettingStarted").show();
+	$("#bestPractices").hide();
+	$("#templates").hide();
+    $("#tab1").addClass("active");
+    $("#tab2").removeClass("active");
+    $("#tab3").removeClass("active");
+});
+$("#tab2").click(function() {
+	$("#bestPractices_category").attr("name", "category");
+	$("#bestPractices_sub_category").attr("name", "sub_category");
+	$("#bestPractices_file_url").attr("name", "file_url");
+	$("#templates_category").removeAttr("name");
+	$("#templates_sub_category").removeAttr("name");
+	$("#templates_file_url").removeAttr("name");
+	$("#gettingStarted_category").removeAttr("name");
+	$("#gettingStarted_sub_category").removeAttr("name");
+	$("#gettingStarted_file_url").removeAttr("name");
+	$("#bestPractices").show();
+	$("#gettingStarted").hide();
+	$("#templates").hide();
+    $("#tab2").addClass( "active" );
+    $("#tab1").removeClass("active");
+    $("#tab3").removeClass("active");
+});
+$("#tab3").click(function() {
+	$("#templates_category").attr("name", "category");
+	$("#templates_sub_category").attr("name", "sub_category");
+	$("#templates_file_url").attr("name", "file_url");
+	$("#bestPractices_category").removeAttr("name");
+	$("#bestPractices_sub_category").removeAttr("name");
+	$("#bestPractices_file_url").removeAttr("name");
+	$("#gettingStarted_category").removeAttr("name");
+	$("#gettingStarted_sub_category").removeAttr("name");
+	$("#gettingStarted_file_url").removeAttr("name");
+	$("#templates").show();
+	$("#gettingStarted").hide();
+	$("#bestPractices").hide();
+    $("#tab3").addClass("active");
+    $("#tab1").removeClass("active");
+    $("#tab2").removeClass("active");
+});
+</script> {% endblock %}

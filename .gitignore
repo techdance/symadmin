@@ -6,7 +6,8 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
-/vendor/
+/src/Migrations
+###/vendor/
 /.env
 /.gitignore
 .gitignore

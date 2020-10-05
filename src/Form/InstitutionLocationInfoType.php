@@ -28,7 +28,8 @@ class InstitutionLocationInfoType extends AbstractType
             ->add('state',null, ['empty_data' => ''])
             ->add('postalCode',null, ['empty_data' => ''])
             ->add('region',null, ['empty_data' => ''])
-            ->add('country',null, ['empty_data' => ''])
+			->add('country',null, ['empty_data' => ''])
+            ->add('timezone',null, ['empty_data' => ''])
         ;
     }
 

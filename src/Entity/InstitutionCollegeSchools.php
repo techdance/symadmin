@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_college_schools")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionCollegeSchoolsRepository")
  */
 class InstitutionCollegeSchools
@@ -17,7 +18,7 @@ class InstitutionCollegeSchools
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string",name="college_school_name", length=150, nullable=true)
      */
     private $collegeSchoolName;
 

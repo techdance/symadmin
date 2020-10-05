@@ -55,6 +55,7 @@ class RolePermissionController extends EasyAdminController
 
     protected function removeEntity($entity)
     {
+      
         $request = $this->container->get('request_stack')->getCurrentRequest();
 
         if (in_array($entity->getName(), [RoleModel::ROLE_SUPER_ADMIN, RoleModel::ROLE_DEVELOPER])) {

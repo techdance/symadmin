@@ -9,8 +9,8 @@ use App\Entity\User;
 use App\Entity\FormValue;
 use App\Entity\InstitutionProfile;
 use App\Form\FormType;
-use App\Form\Type\InstitutionProfileType;
-use App\Form\Type\UserType;
+use App\Form\InstitutionProfileType;
+use App\Form\UserType;
 use App\Model\RoleModel;
 use App\Service\FileUploader;
 use Doctrine\DBAL\Types\DateType;
@@ -238,8 +238,7 @@ class InstitutionProfileController extends EasyAdminController
         }
 
         return $this->render('admin/profile/profile.html.twig', [
-               'form' => $form->createView()
-        ,'timezones' => $timezones]);
+               'form' => $form->createView(), 'timezones' => $timezones]);
     }
 
    

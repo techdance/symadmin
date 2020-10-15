@@ -651,21 +651,27 @@
                                         maxlength="{{ form.institutionLocation.vars.form.address2.vars.attr.maxlength }}" 
                                         placeholder="Address2">
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                            <div class="form-group-field mb-2">
-                                    <label for="postal-code">Time Shone</label>
+                                <div class="form-group-field mb-2">
+                                    <label for="postal-code">Time Zone </label>
+                                   
                                     <select class="form-control" 
                                         id="{{ form.institutionLocation.vars.form.timezone.vars.id }}" 
                                         name="{{ form.institutionLocation.vars.form.timezone.vars.full_name }}" 
                                         value="{{ form.institutionLocation.vars.form.timezone.vars.value }}" 
                                         maxlength="{{ form.institutionLocation.vars.form.timezone.vars.attr.maxlength }}">
                                         {% for key,timezone in timezones %}
-                                                <option value="{{key}}">{{timezone}}</option>
+                                                {% if form.institutionLocation.vars.form.timezone.vars.value == key %}
+                                                <option value="{{key}}" selected="selected">{{timezone}}</option>
+                                                {% else %}
+                                                <option value="{{key}}" >{{timezone}}</option>
+                                                {% endif %}>
                                             {% endfor %}
                                         
                                         </select>
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                     
                                 <div class="form-group-field mb-2">
                                     <label for="postal-code">Region</label>
                                     <input type="text" class="form-control" 

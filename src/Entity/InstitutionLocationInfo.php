@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="institution_location_info")
  * @ORM\Entity(repositoryClass="App\Repository\InstitutionLocationInfoRepository")
  */
 class InstitutionLocationInfo
@@ -54,7 +55,7 @@ class InstitutionLocationInfo
 
 
     /**
-     * @ORM\Column(type="string", length=3, nullable=true)
+     * @ORM\Column(type="string", length=150, nullable=true)
      */
     private $timezone;
 

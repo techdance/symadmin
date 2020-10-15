@@ -699,13 +699,6 @@ class UserController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $profile = $em->getRepository(InstitutionProfile::class)->findById(1);
-		
-        //$profile_location = $em->getRepository(InstitutionLocationInfo::class)->findById(1);
-		
-		$profile_location = $em->getRepository(InstitutionLocationInfo::class)->find(1);
-		
-		//print_r($profile_location);exit;
-		
        
 
         if ($profile) {
@@ -713,14 +706,7 @@ class UserController extends AbstractController
                 $profile['insProfileImage'] = $request->getHost() . ":" . $request->getPort() . "/" . $profile['insProfileImage'];
             }
         }
-		
-		if ($profile_location) {
-            if ($profile_location->getTimezone()!='') {
-                $profile['timezone'] = $profile_location->getTimezone();
-            }
-        }
-		
-		
+
 
         return new JsonResponse([
             'data' => $profile
@@ -758,7 +744,8 @@ class UserController extends AbstractController
                 'address2' => $profile->getInstitutionLocation()->getAddress2(),
                 'city' => $profile->getInstitutionLocation()->getCity(),
                 'state' => $profile->getInstitutionLocation()->getState(),
-                'postalCode' => $profile->getInstitutionLocation()->getPostalCode()
+                'postalCode' => $profile->getInstitutionLocation()->getPostalCode(),
+				'timezone' => $profile->getInstitutionLocation()->getTimezone()
             ],
             'studentDetails'=> [
                 'term' => $profile->getStudentDetails()->getTerm(),

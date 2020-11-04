@@ -138,8 +138,7 @@ class UserController extends AbstractController
         $password         = $request->request->get("password");
         $user =  $this->getDoctrine()
                         ->getRepository(User::class)
-                        ->findOneByUsername($username);
-
+                        ->findOneByEmail($username);
   
         if (!$user) {
             //throw $this->createNotFoundException();

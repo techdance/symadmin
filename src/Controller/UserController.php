@@ -883,7 +883,7 @@ class UserController extends AbstractController
   //  further parameters are base64 encoded fields "startgin at position 10" to be updated in institution profile
   public function setInstitutionProfile(Request $request)
   {
-    $this->logger->debug("Request : " . serialize($request));
+    // $this->logger->debug("Request : " . serialize($request));
     $em = $this->getDoctrine()->getManager();
     $institutionProfileRepository = $this->getDoctrine()->getRepository(
       InstitutionProfile::class
@@ -891,7 +891,6 @@ class UserController extends AbstractController
 
     // $institutionID = substr(base64_decode($request->query->get("id")), 10);
     $institutionID = base64_decode($request->query->get("id"));
-    // $institutionID = $request->query->get("id");
     $profile = $institutionProfileRepository->findOneBy([
       'id' => $institutionID,
     ]);
@@ -902,8 +901,32 @@ class UserController extends AbstractController
     //     }
     // }
 
-    $academicCalendar = base64_decode($request->query->get("academicCalendar"));
-    $profile->setAcademicCalendar($academicCalendar);
+    $profile->setAcademicCalendar(
+      $this->checkQueryParam(
+        "academicCalendar",
+        $request,
+        $profile->getAcademicCalendar()
+      )
+    );
+    $profile->setFounded(
+      $this->checkQueryParam("foundedYear", $request, $profile->getFounded())
+    );
+    $profile->setPresident(
+      $this->checkQueryParam("president", $request, $profile->getPresident())
+    );
+    $profile->setOverview(
+      $this->checkQueryParam("description", $request, $profile->getOverview())
+    );
+    $profile->setTotalEmployees(
+      $this->checkQueryParam(
+        "employees",
+        $request,
+        $profile->getTotalEmployees()
+      )
+    );
+    $profile->setAlumini(
+      $this->checkQueryParam("alumni", $request, $profile->getAlumini())
+    );
 
     try {
       $em->persist($profile);
@@ -997,5 +1020,20 @@ class UserController extends AbstractController
     //         'avgUGClassSize' => $profile->getAcademicDetails()->getAvgUGClassSize()
     //     ],
     // ]);
+  }
+
+  // checks to see if query parameter is in the url request
+  //   if it exists, then base64 decode it and return
+  //   if it doesn't exist then returns the existing db value
+  //      $parameterName : string representing the query field name (like academicCalendar) passed in the url request
+  //      $urlRequest is the Request object
+  //      $currentValue is the current value in the db record
+  public function checkQueryParam($parameterName, $urlRequest, $currentValue)
+  {
+    ($returnValue = $urlRequest->query->get($parameterName))
+      ? ($returnValue = base64_decode($returnValue))
+      : ($returnValue = $currentValue);
+
+    return $returnValue;
   }
 }

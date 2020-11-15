@@ -895,12 +895,6 @@ class UserController extends AbstractController
       'id' => $institutionID,
     ]);
 
-    // if ($profile) {
-    //     if (isset($profile['insProfileImage'])) {
-    //         $profile['insProfileImage'] = $request->getHost() . ":" . $request->getPort() . "/" . $profile['insProfileImage'];
-    //     }
-    // }
-
     $profile->setAcademicCalendar(
       $this->checkQueryParam(
         "academicCalendar",
@@ -927,6 +921,58 @@ class UserController extends AbstractController
     $profile->setAlumini(
       $this->checkQueryParam("alumni", $request, $profile->getAlumini())
     );
+
+    // get the institution contact record for this profile,
+    //   then update fields pulled from query,
+    //   then write new contact record back to db
+
+    $institutionContact = $profile->getInstitutionContact();
+
+    $institutionContact->setOfficeNumber(
+      $this->checkQueryParam(
+        "phone",
+        $request,
+        $profile->getInstitutionContact()->getOfficeNumber()
+      )
+    );
+    $institutionContact->setMailingName(
+      $this->checkQueryParam(
+        "name1",
+        $request,
+        $profile->getInstitutionContact()->getMailingName()
+      )
+    );
+
+    $profile->setInstitutionContact($institutionContact);
+
+    // get the institution location record for this profile,
+    //   then update fields pulled from object passed with request,
+    //   then write new location record back to db
+
+    $newProfile = json_decode($request->getContent(), true); // $newProfile gets an object representing json stored in request body.
+
+    $institutionLocation = $profile->getInstitutionLocation();
+
+    $institutionLocation->setAddress1(
+      $newProfile["ContactInfo"]["Locations"][0]["address1"] // currently database only supports one location per institution but HTML (and react) supports many.
+    );
+    $institutionLocation->setAddress2(
+      $newProfile["ContactInfo"]["Locations"][0]["address2"]
+    );
+
+    $profile->setInstitutionLocation($institutionLocation);
+
+    // 'officeNumber' => ,
+    //     'mailingName' => $profile->getInstitutionContact()->getMailingName(),
+    //     'faxNumber' => $profile->getInstitutionContact()->getFaxNumber(),
+    //     'department' => $profile->getInstitutionContact()->getDepartment(),
+    //     'website' => $profile->getInstitutionContact()->getWebsite(),
+    //     'email' => $profile->getInstitutionContact()->getEmail(),
+    //     'address1' => $profile->getInstitutionContact()->getAddress1(),
+    //     'address2' => $profile->getInstitutionContact()->getAddress2(),
+    //     'city' => $profile->getInstitutionContact()->getCity(),
+    //     'state' => $profile->getInstitutionContact()->getState(),
+    //     'postalCode' => $profile->getInstitutionContact()->getPostalCode(),
 
     try {
       $em->persist($profile);

@@ -106,10 +106,21 @@ class ComposerStaticInit61e03b4f2d85c1cdb97fe2fb885d4fc8
         'N' => 
         array (
             'Nelmio\\CorsBundle\\' => 18,
+            'Negotiation\\' => 12,
+        ),
+        'M' => 
+        array (
+            'Metadata\\' => 9,
+        ),
+        'J' => 
+        array (
+            'JMS\\Serializer\\' => 15,
+            'JMS\\SerializerBundle\\' => 21,
         ),
         'F' => 
         array (
             'FOS\\UserBundle\\' => 15,
+            'FOS\\RestBundle\\' => 15,
         ),
         'E' => 
         array (
@@ -419,9 +430,29 @@ class ComposerStaticInit61e03b4f2d85c1cdb97fe2fb885d4fc8
         array (
             0 => __DIR__ . '/..' . '/nelmio/cors-bundle',
         ),
+        'Negotiation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/willdurand/negotiation/src/Negotiation',
+        ),
+        'Metadata\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jms/metadata/src',
+        ),
+        'JMS\\Serializer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jms/serializer/src',
+        ),
+        'JMS\\SerializerBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jms/serializer-bundle',
+        ),
         'FOS\\UserBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/friendsofsymfony/user-bundle',
+        ),
+        'FOS\\RestBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/friendsofsymfony/rest-bundle',
         ),
         'Egulias\\EmailValidator\\' => 
         array (
@@ -513,6 +544,13 @@ class ComposerStaticInit61e03b4f2d85c1cdb97fe2fb885d4fc8
             'ProxyManager\\' => 
             array (
                 0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
+            ),
+        ),
+        'J' => 
+        array (
+            'JsonpCallbackValidator' => 
+            array (
+                0 => __DIR__ . '/..' . '/willdurand/jsonp-callback-validator/src',
             ),
         ),
     );

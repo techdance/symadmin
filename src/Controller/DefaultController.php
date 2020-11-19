@@ -20,6 +20,9 @@ class DefaultController extends AbstractController
         	$protocal = 'https://';
         }
         $url = $protocal .$request->server->get('HTTP_HOST') .":3000";
-        return $this->redirect($url, 301);
+        echo($url); 
+        // sleep(30);
+        // return $this->redirect($url, 301);
+        return $this->json(['url',$url]);
     }
 }

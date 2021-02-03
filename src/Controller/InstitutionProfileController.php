@@ -163,82 +163,83 @@ class InstitutionProfileController extends EasyAdminController
         $em = $this->getDoctrine()->getManager();
 
         $profile = $em->getRepository(InstitutionProfile::class)->find(1);
+        return $this->json(['profile',$profile]);
         
-        $existingProfile = '';
+        // $existingProfile = '';
 
-        if (is_null($profile)) {
-             $profile = new InstitutionProfile();
-        } else {
-            $existingProfile = clone $profile;
-        }
+        // if (is_null($profile)) {
+        //      $profile = new InstitutionProfile();
+        // } else {
+        //     $existingProfile = clone $profile;
+        // }
         
-        $form = $this->createForm(InstitutionProfileType::class, $profile);
+        // $form = $this->createForm(InstitutionProfileType::class, $profile);
 
-        $form->handleRequest($request);
+        // $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        // if ($form->isSubmitted()) {
 
-            if ($form->isValid()) {
+        //     if ($form->isValid()) {
            
-                $file = $form['insProfileImage']->getData();
+        //         $file = $form['insProfileImage']->getData();
 
 
-                if ( $file) {
-                    $newFilename = md5(uniqid()).'.'.$file->guessExtension();
-                }
+        //         if ( $file) {
+        //             $newFilename = md5(uniqid()).'.'.$file->guessExtension();
+        //         }
 
 
-                if ($profile && $file) {
+        //         if ($profile && $file) {
                     
                    
-                    if ($existingProfile && $existingProfile->getInsProfileImage()) {
-                        $file_to_delete = $this->get('kernel')->getProjectDir(). '/public/' . $existingProfile->getInsProfileImage();
+        //             if ($existingProfile && $existingProfile->getInsProfileImage()) {
+        //                 $file_to_delete = $this->get('kernel')->getProjectDir(). '/public/' . $existingProfile->getInsProfileImage();
                     
-                        if (file_exists($file_to_delete)) {
-                            unlink($file_to_delete);
-                        }
-                    }
-                } else {
+        //                 if (file_exists($file_to_delete)) {
+        //                     unlink($file_to_delete);
+        //                 }
+        //             }
+        //         } else {
                    
-                    if ($existingProfile && $existingProfile->getInsProfileImage()) {
-                        $profile->setInsProfileImage($existingProfile->getInsProfileImage());
-                    }
-                }
+        //             if ($existingProfile && $existingProfile->getInsProfileImage()) {
+        //                 $profile->setInsProfileImage($existingProfile->getInsProfileImage());
+        //             }
+        //         }
 
         
-                if ( $file) {
-                    // Move the file to the directory where your form images are stored
-                    try {
-                        $file->move(
-                            $this->paramBag->get('upload_directory')."/admin/profile/",
-                            $newFilename
-                        );
-                    } catch (FileException $e) {
-                        //Handle error
-                    }
-                }
+        //         if ( $file) {
+        //             // Move the file to the directory where your form images are stored
+        //             try {
+        //                 $file->move(
+        //                     $this->paramBag->get('upload_directory')."/admin/profile/",
+        //                     $newFilename
+        //                 );
+        //             } catch (FileException $e) {
+        //                 //Handle error
+        //             }
+        //         }
 
-                if ( $file) {
-                    $profile->setInsProfileImage("uploads/admin/profile/" . $newFilename);
-                } 
+        //         if ( $file) {
+        //             $profile->setInsProfileImage("uploads/admin/profile/" . $newFilename);
+        //         } 
 
                
-                $em->persist($profile);
-                $em->flush();
+        //         $em->persist($profile);
+        //         $em->flush();
 
-                $this->addFlash(
-                    'success',
-                    "Institution Profile Saved Successfully"
-                );
+        //         $this->addFlash(
+        //             'success',
+        //             "Institution Profile Saved Successfully"
+        //         );
 
-                return $this->redirect($this->generateUrl('institution_profile'));
-            } else {
-               dump($form->getErrors());die;
-            }
-        }
+        //         return $this->redirect($this->generateUrl('institution_profile'));
+        //     } else {
+        //        dump($form->getErrors());die;
+        //     }
+        // }
 
-        return $this->render('admin/profile/profile.html.twig', [
-               'form' => $form->createView(), 'timezones' => $timezones]);
+        // return $this->render('admin/profile/profile.html.twig', [
+        //        'form' => $form->createView(), 'timezones' => $timezones]);
     }
 
    

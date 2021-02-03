@@ -24,7 +24,7 @@ class InstitutionContactInfoType extends AbstractType
             ->add('officeNumber',null, ['empty_data' => ''])
             ->add('mailingName',null, ['empty_data' => ''])
             ->add('faxNumber',null, ['empty_data' => ''])
-            ->add('department',null, ['empty_data' => ''])
+            //->add('department',null, ['empty_data' => ''])
             ->add('website',null, ['empty_data' => ''])
             ->add('email',null, ['empty_data' => ''])
             ->add('address1',null, ['empty_data' => ''])

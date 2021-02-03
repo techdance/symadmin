@@ -8,6 +8,7 @@
 /var/
 /src/Migrations
 ###/vendor/
+/vendor/
 /.env
 /.gitignore
 .gitignore

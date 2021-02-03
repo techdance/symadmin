@@ -49,7 +49,7 @@ class InstitutionLocationInfo
     private $region;
 
     /**
-     * @ORM\Column(type="string", length=3, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $country;
 

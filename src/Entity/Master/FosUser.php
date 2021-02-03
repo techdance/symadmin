@@ -266,6 +266,11 @@ class FosUser
     private $localFosId;
 
     /**
+     * @ORM\Column(type="string",name="department" , length=150, nullable=true)
+     */
+    private $department;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -454,6 +459,18 @@ class FosUser
     public function setInstitutionName(string $institutionName): self
     {
         $this->institutionName = $institutionName;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?string
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(string $department): self
+    {
+        $this->department = $department;
 
         return $this;
     }

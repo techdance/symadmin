@@ -1,7 +1,7 @@
 <?php
 namespace App\Command;
 
-use App\Util\UserManipulator;
+use FOS\UserBundle\Util\UserManipulator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

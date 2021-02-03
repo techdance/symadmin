@@ -35,11 +35,6 @@ class InstitutionContactInfo
     /**
      * @ORM\Column(type="string", length=150, nullable=true)
      */
-    private $department;
-
-    /**
-     * @ORM\Column(type="string", length=150, nullable=true)
-     */
     private $website;
 
     /**

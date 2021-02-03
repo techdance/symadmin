@@ -156,6 +156,7 @@ class AdminUserController extends EasyAdminController
         $Muser->setPhone($entity->getPhone());
         $Muser->setSsn($entity->getSsn());
         $Muser->setVetran($entity->getVetran());
+        $Muser->setDepartment($entity->getDepartment());
         $Muser->setEthinicity($entity->getEthinicity());
         $Muser->setDateOfBirth($entity->getDateOfBirth());
         $Muser->setGender($entity->getGender());
@@ -168,6 +169,7 @@ class AdminUserController extends EasyAdminController
         $Muser->setZip($entity->getZip());
         $Muser->setMiddleName($entity->getMiddleName());
         $Muser->setPosition($entity->getPosition());
+        $Muser->setDepartment($entity->getDepartment());
         $Muser->setDummyPassword($entity->getDummyPassword());
         foreach($entity->getGroups() as $group_data){    
         $Mgroup_array_collection = $this->getDoctrine()->getRepository(FosGroup::class)->findOneBy([
@@ -235,25 +237,26 @@ class AdminUserController extends EasyAdminController
             $row[10] && $user->setEthinicity($row[10]);
             $row[11] && $user->setDateOfBirth(\DateTime::createFromFormat('d/m/Y', $row[11]));
             $row[12] && $user->setGender(ucfirst($row[12]));
-            $row[13] && $user->setEmergencyContactPerson($row[13]);
-            $row[14] && $user->setEmergencyContactPhone($row[14]);
-            $row[15] && $user->setAddress1($row[15]);
-            $row[16] && $user->setAddress2($row[16]);
-            $row[17] && $user->setCity($row[17]);
-            $row[18] && $user->setState($row[18]);
-            $row[19] && $user->setZip($row[19]);
+            $row[12] && $user->setDepartment(ucfirst($row[13]));
+            $row[13] && $user->setEmergencyContactPerson($row[14]);
+            $row[14] && $user->setEmergencyContactPhone($row[15]);
+            $row[15] && $user->setAddress1($row[16]);
+            $row[16] && $user->setAddress2($row[17]);
+            $row[17] && $user->setCity($row[18]);
+            $row[18] && $user->setState($row[19]);
+            $row[19] && $user->setZip($row[20]);
          
             if ($row[20]) {
 
                 $userRole = $this->getDoctrine()->getRepository(Group::class)->findOneBy([
-                    'name' => $row[20]
+                    'name' => $row[21]
                 ]);
 
                 if (!empty($userRole)) {
                     $user->addGroup($userRole);
                 }
             }
-            $row[21] && $user->setPosition($row[21]);
+            $row[21] && $user->setPosition($row[22]);
             
             $user->setPlainPassword(base64_encode(rand(1000000000,9999999999)));
 

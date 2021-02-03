@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Manager\UserManager;
 use App\Model\RoleModel;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -134,29 +135,48 @@ class UserController extends AbstractController
      */
     public function login(UserPasswordEncoderInterface $passwordEncoder, Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $token = bin2hex(random_bytes(32));      
+        $logintime = new \DateTime('@'.strtotime('now'));
         $username         = $request->request->get("institutionEmail");
         $password         = $request->request->get("password");
         $user =  $this->getDoctrine()
                         ->getRepository(User::class)
                         ->findOneByEmail($username);
+                    
   
         if (!$user) {
             //throw $this->createNotFoundException();
-            return $this->respondWithSuccess(sprintf('Invalid User name'));
+            return $this->json([
+                'token' => '',
+                'message'=>'Invalid User name',
+                'status' => false
+            ]);
+            
         }
         $isValid = $passwordEncoder->isPasswordValid($user, $password);
-
+       
         if (!$isValid) {
-            //throw new BadCredentialsException();
-            return $this->respondWithSuccess(sprintf('Incorrect username or password'));
+            return $this->json([
+                'token' => '',
+                'message'=>'Invalid username or password',
+                'status' => false
+            ]);
+        }else{
+            $user->setApiToken($token);
+            $user->setLastLogin($logintime);
+            $em->persist($user);
+            $em->flush();
         }
 
+  
         $result = $this->serializeUsers($user);
 
         // 'user' => base64_encode(rand(1000000000,9999999999).$request->request->get("institutionEmail")),
         // 	   'status' => true
         return $this->json([
-            'user' => base64_encode(rand(1000000000, 9999999999) . $result["userName"]),
+            'token' => $token,
+            'message'=>'Success',
             'status' => true
         ]);
     }
@@ -196,7 +216,8 @@ class UserController extends AbstractController
             'city' => $usr->getCity(),
             'state' => $usr->getState(),
             'zip' => $usr->getZip(),
-            'password' => $usr->getDummyPassword()
+            'password' => $usr->getDummyPassword(),
+			'department' => $usr->getDepartment()
             //I have tried using getter method to retrieve image value here but I cannot because image is related to users
         );
     }
@@ -211,6 +232,7 @@ class UserController extends AbstractController
         $user = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($username);
         if ($user) {
             $result = $this->serializeUsers($user);
+
             return $this->json([
                 'user' => $result
             ]);
@@ -551,6 +573,7 @@ class UserController extends AbstractController
             $em->flush();
     
             $name = $user->getFullNameWithPrefix();
+            //Line 577 will be changed to use the enviornment variable defined in URLConfig
             $resetPasswordLink = "http://23.99.141.44/changepassword?token=${token}";
             $content = "<h1>Hi, ${name} </h1> </br> <p>You can reset your password by clicking the link below: </br> ${resetPasswordLink} </p>";
             $email = (new Email())
@@ -607,7 +630,7 @@ class UserController extends AbstractController
 
             if ($diff > 5) {
                 return $this->json([
-                    'errors' => [ 'Reset password link was expired.' ]
+                    'errors' => [ 'Reset password link has expired.' ]
                 ], 400);
             }
         } 

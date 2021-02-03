@@ -165,6 +165,19 @@ class User extends BaseUser
      */
     private $dummyPassword;
 
+
+    /**
+     * @ORM\Column(type="string",name="department" , length=150, nullable=true)
+     */
+    private $department;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="api_token", type="string", length=180, nullable=true)
+     */
+    private $apiToken;
+
     
 
     public function getFirstName(): ?string
@@ -231,6 +244,19 @@ class User extends BaseUser
     public function setInstitutionName(string $institutionName): self
     {
         $this->institutionName = $institutionName;
+
+        return $this;
+    }
+
+
+    public function getDepartment(): ?string
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(string $department): self
+    {
+        $this->department = $department;
 
         return $this;
     }
@@ -419,6 +445,18 @@ class User extends BaseUser
         }
 
         return $roles;
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+
+        return $this;
     }
 
 

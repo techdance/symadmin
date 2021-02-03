@@ -271,6 +271,18 @@ class FosUser
     private $department;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $thoughts;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="onlineStatus", type="boolean", nullable=false)
+     */
+    private $onlineStatus;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -713,6 +725,30 @@ class FosUser
     public function setLocalFosId(?int $localFosId): self
     {
         $this->localFosId = $localFosId;
+
+        return $this;
+    }
+
+    public function getThoughts(): ?string
+    {
+        return $this->thoughts;
+    }
+
+    public function setThoughts(?string $thoughts): self
+    {
+        $this->thoughts = $thoughts;
+
+        return $this;
+    }
+
+    public function getOnlineStatus(): ?bool
+    {
+        return $this->onlineStatus;
+    }
+
+    public function setOnlineStatus(bool $onlineStatus): self
+    {
+        $this->onlineStatus = $onlineStatus;
 
         return $this;
     }

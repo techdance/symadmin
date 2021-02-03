@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+         <service id="easyadmin.twig.extension" class="App\Twig\EasyAdminTwigExtension" public="false">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="easyadmin.rolepermission.manager" />
+            <argument type="service" id="easyadmin.config.manager" />
+            <argument type="service" id="property_accessor" />
+            <argument type="service" id="easyadmin.router" />
+            <argument type="service" id="security.logout_url_generator" on-invalid="null" />
+            <argument type="service" id="translator" on-invalid="null" />
+            <argument type="service" id="easyadmin.security.authorization_checker" />
+            <tag name="twig.extension" />
+        </service>
+        <service id="EasyCorp\Bundle\EasyAdminBundle\Router\EasyAdminRouter" alias="easyadmin.router" />
+        <!-- <service id="App\Manager\RolePermissionManager" alias="easyadmin.role.permission" /> -->
+
+        <service id="fos_user.command.create_user" class="App\Command\CreateUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:create" />
+        </service>
+
+        <service id="fos_user.command.demote_user" class="App\Command\DemoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:demote" />
+        </service>
+
+        <service id="fos_user.command.promote_user" class="App\Command\PromoteUserCommand">
+            <argument type="service" id="fos_user.util.user_manipulator" />
+            <tag name="console.command" command="fos:user:promote" />
+        </service>
+
+        <service id="fos_user.util.user_manipulator" class="App\Util\UserManipulator">
+            <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="service_container" />
+        </service>
+    </services>
+</container>

@@ -21,4 +21,17 @@ class DefaultController extends AbstractController
         $url = $protocal .$request->server->get('HTTP_HOST') .":3000";
         return $this->redirect($url, 301);
     }
+	
+	/**
+     * @Route("/signin")
+     */
+    public function signinAction(Request $request)
+    {
+		$protocal = 'http://';
+        if($request->isSecure()){
+        	$protocal = 'https://';
+        }
+        $url = $protocal .$request->server->get('HTTP_HOST') .":3000";
+        return $this->redirect($url, 301);
+    }
 }

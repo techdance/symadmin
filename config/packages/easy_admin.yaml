@@ -1,0 +1,186 @@
+#easy_admin:
+#    entities:
+#        # List the entity class name you want to manage
+#        - App\Entity\Product
+#        - App\Entity\Category
+#        - App\Entity\User
+easy_admin:
+  design:
+    form_theme:
+        - 'easyadmin-bundle/src/Resources/views/form/bootstrap_4.html.twig'
+    templates:
+        layout: 'easyadmin-bundle/src/Resources/views/default/layout.html.twig' # templates/layout.html.twig
+        list: 'easyadmin-bundle/src/Resources/views/default/list.html.twig'
+        new: 'easyadmin-bundle/src/Resources/views/default/new.html.twig'
+        show: 'easyadmin-bundle/src/Resources/views/default/show.html.twig'
+        edit: 'easyadmin-bundle/src/Resources/views/default/edit.html.twig'
+        menu: 'easyadmin-bundle/src/Resources/views/default/menu.html.twig'
+    menu:
+      - {label: "Entities"}
+      - { entity: 'User', label: 'Users', icon: 'users', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Form Builder', module: 'Form', icon: 'newspaper', route: 'form_builder_list', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Institution Profile', module: 'InstitutionProfile', icon: 'institution', route: 'institution_profile', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Documents', module: 'Documents', icon: 'file', route: 'documents', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { label: 'Settings', module: 'Settings', icon: 'cog', route: 'image_settings', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { entity: 'Group', label: 'Role Permissions', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+      - { entity: 'Entitygroup', label: 'Module', icon: 'lock', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER' ] }
+     
+        
+
+  site_name: 'Admin Panel'
+  user:
+      display_name : true
+      display_avatar: true
+      name_property_path: "firstName" 
+  entities:
+    User:
+      class: App\Entity\User
+      controller: App\Controller\AdminUserController
+      label: "Users"
+      #roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN',  'ROLE_USER']
+      templates:
+        show: 'admin/user/show.html.twig'
+        list: 'admin/user/list.html.twig'
+        new: 'admin/user/new.html.twig'
+        edit: 'admin/user/edit.html.twig'
+      list:
+        fields:
+          - prefix
+          - firstName
+          - middleName
+          - lastName
+          - userName
+          - email
+          - institutionName
+          - roles
+        collapse_actions: true
+        actions:
+          - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER'] }          
+          - { name: 'import',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }          
+          - { name: 'show', icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'edit', icon: 'edit', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'trash',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+        batch_actions: ['delete' ]
+        item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
+      form:
+        fields:
+          - prefix
+          - firstName
+          - { property: 'middleName', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - lastName
+          - { property: 'userName', label: 'UserName', type: 'text', type_options: { required: true } }
+          - { property: 'plainPassword', type: 'text', type_options: { required: true } }
+          - email
+          - institutionName
+          - phone
+          - { property: 'position', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'department', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'ssn', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'vetran', label: 'Veteran', type: 'text', type_options: { required: false, empty_data : '' }  }
+          - { property: 'ethinicity', label: 'Ethnicity', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'dateOfBirth', type: 'date', type_options : { widget : 'single_text', html5: false, format : 'yyyy-MM-dd',  attr: {class: 'js-datepicker'} } }
+          - { property: 'gender', type: 'choice', type_options: { choices: { 'Male': 'Male', 'Female' : 'Male' } } }
+          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'address1', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'address2', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'city', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'state', type: 'text', type_options: { required: false,  empty_data : '' } }
+          - { property: 'zip', type: 'text', type_options: { required: false,  empty_data : '' } }
+          # - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN':'ROLE_SUPER_ADMIN'} } }
+          - { property: 'groups', label: 'Roles', type: 'entity', type_options: { multiple: true, expanded: false, required: true, choice_label: 'name', class: 'App\Entity\Group' } }
+          - enabled
+          
+      edit:
+        actions:          
+          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+        item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2']
+      show:
+        fields:
+          - prefix
+          - firstName
+          - middleName
+          - lastName
+          - { property: 'userName', label: 'UserName', type: 'text' }
+          - email
+          - institutionName
+          - roles
+          - enabled
+          - phone
+          - { property: 'vetran', label: 'Veteran', type: 'text' }
+          - { property: 'ethinicity', label: 'Ethnicity', type: 'text' }
+          - { property: 'dateOfBirth', type: 'date' }
+          - { property: 'gender', type: 'choice', type_options: { choices: { 'Male': 'Male', 'Female' : 'Male' } } }
+          - { property: 'emergencyContactPerson', label: 'Emergency Contact', type: 'text' }
+          - { property: 'emergencyContactPhone', label: "Emergency Contact's Phone", type: 'text' }
+          - address1
+          - address2
+          - city
+          - state
+          - zip
+        actions:          
+          - { name: 'edit', icon: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'delete', roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+        item_permission:  ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2']
+      new:
+        item_permission:  ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER']
+    Group:
+      class: App\Entity\Group
+      controller: App\Controller\RolePermissionController
+      label: "Role Permissions"
+      templates:
+        show: 'admin/group/show.html.twig'
+        list: 'admin/group/list.html.twig'
+        edit: 'admin/group/edit.html.twig'
+        new: 'admin/group/new.html.twig'
+      list:
+        fields:
+          - name
+          # - id
+        
+        collapse_actions: true
+        actions:
+          - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER' ] }          
+          - { name: 'show', icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'edit', icon: 'edit', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER'] }
+          - { name: 'delete',icon: 'trash', roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+        batch_actions: ['delete' ]
+        item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
+      show:
+        fields:
+          - name
+          - { property: 'entities', type: 'collection', type_options: { allow_delete: false, allow_add: true, by_reference: true, entry_type: 'App\Form\Type\EntityGroupType' } }
+        actions:          
+          - { name: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+          - { name: 'delete',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER'] }
+        item_permission:  ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2']
+      form:
+        fields:
+          - name
+          - { property: 'entities', type: 'collection', type_options: { allow_delete: false, allow_add: true, by_reference: true, entry_type: 'App\Form\Type\EntityGroupType' } }
+
+    Entitygroup:
+      class: App\Entity\Entitygroup
+      controller: App\Controller\ModuleController
+      label: "Module"
+      list:
+        fields:
+          # - id
+          - name
+        collapse_actions: true
+        actions:
+          - { name: 'create',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2','ROLE_USER' ] }          
+          - { name: 'show',icon: 'eye', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN' , 'ROLE_USER', 'ROLE_ADMIN_LEVEL_2'] }
+          - { name: 'edit',icon: 'edit',roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2', 'ROLE_USER'] }
+          - { name: 'delete',icon: 'trash',roles: ['ROLE_SUPER_ADMIN', 'ROLE_USER', 'ROLE_DEVELOPER'] }
+        batch_actions: ['delete' ]
+        item_permission:  ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN_LEVEL_2' ]
+      form:
+        fields:
+          - name
+          - label
+    
+
+
+      
+      

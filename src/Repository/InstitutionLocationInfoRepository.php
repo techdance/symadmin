@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\InstitutionLocationInfo;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -12,12 +12,12 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method InstitutionLocationInfo[]    findAll()
  * @method InstitutionLocationInfo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class InstitutionLocationInfoRepository extends ServiceEntityRepository
+class InstitutionLocationInfoRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, InstitutionLocationInfo::class);
-    }
+    // public function __construct(ManagerRegistry $registry)
+    // {
+    //     parent::__construct($registry, InstitutionLocationInfo::class);
+    // }
 
     // /**
     //  * @return InstitutionLocationInfo[] Returns an array of InstitutionLocationInfo objects

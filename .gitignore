@@ -5,7 +5,7 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/var/
+/var/**
 /src/Migrations
 ###/vendor/
 /vendor/**
@@ -21,3 +21,4 @@ composer.lock
 ###< symfony/web-server-bundle ###
 config/bundles.php
 .DS_Store
+/src/.DS_Store

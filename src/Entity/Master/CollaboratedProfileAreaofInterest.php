@@ -17,8 +17,10 @@ class CollaboratedProfileAreaofInterest
      */
     private $id;
 
+    
     /**
-     * @ORM\Column(type="integer",name="userId", length=20, nullable=false)
+     * @ORM\ManyToOne(targetEntity="FosUser", cascade={"persist"})
+     * @ORM\JoinColumn(name="userId", nullable=false, referencedColumnName="id")
      */
     private $userId;
 
@@ -154,18 +156,6 @@ class CollaboratedProfileAreaofInterest
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
-
-        return $this;
     }
 
     public function getCreateDate(): ?\DateTimeInterface
@@ -468,5 +458,16 @@ class CollaboratedProfileAreaofInterest
         return $this;
     }
 
+    public function getUserId(): ?FosUser
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?FosUser $userId): self
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
 
 }

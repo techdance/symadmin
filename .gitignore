@@ -20,5 +20,12 @@ composer.lock
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 config/bundles.php
+
+
+##
 .DS_Store
 /src/.DS_Store
+
+##db
+*.sql
+

@@ -668,8 +668,8 @@ class UserController extends AbstractController
         $locationC  = $request->query->get("locationC");
         $disciplineD  = $request->query->get("disciplineD");
         $locationD  = $request->query->get("locationD");
-        $rangeYearStart  = $request->query->get("rangeYearStart");
-        $rangeYearEnd  = $request->query->get("rangeYearEnd");
+        $rangeYearStart  = (int) $request->query->get("rangeYearStart");
+        $rangeYearEnd  = (int) $request->query->get("rangeYearEnd");
         $rangeMonthStart  = $request->query->get("rangeMonthStart");
         $rangeMonthEnd  = $request->query->get("rangeMonthEnd");
         $universityName  = $request->query->get("universityName");
@@ -696,16 +696,49 @@ class UserController extends AbstractController
             $locationC  = $request->request->get("locationC");
             $disciplineD  = $request->request->get("disciplineD");
             $locationD  = $request->request->get("locationD");
-            $rangeYearStart  = $request->request->get("rangeYearStart");
-            $rangeYearEnd  = $request->request->get("rangeYearEnd");
+            $rangeYearStart  = (int) $request->request->get("rangeYearStart");
+            $rangeYearEnd  = (int) $request->request->get("rangeYearEnd");
             $rangeMonthStart  = $request->request->get("rangeMonthStart");
             $rangeMonthEnd  = $request->request->get("rangeMonthEnd");
             $universityName  = $request->request->get("universityName");
             $groupName  = $request->request->get("groupName");
         }
 
+        
+        if($this->validateDate($createDate) == false){
+            $field_name = str_replace( '$', '', '$createDate' );
+            return $this->json([
+                'message'=>'Please enter valid date as '.$field_name.'',
+                'status' => false
+            ]);
+        }
         $createDate = new DateTime($createDate);
+       
+       
+        if($this->validateDate($modifiedDate) == false){
+            $field_name = str_replace( '$', '', '$modifiedDate' );
+            return $this->json([
+                'message'=>'Please enter valid date as '.$field_name.'',
+                'status' => false
+            ]);
+        }
         $modifiedDate = new DateTime($modifiedDate);
+
+        if(empty(is_int($rangeYearStart))){
+            $field_name = str_replace( '$', '', '$rangeYearStart' );
+            return $this->json([
+                'message'=>'Please enter valid integer as '.$field_name.'',
+                'status' => false
+            ]);
+        }
+
+        if(empty(is_int($rangeYearEnd))){
+            $field_name = str_replace( '$', '', '$rangeYearEnd' );
+            return $this->json([
+                'message'=>'Please enter valid integer as '.$field_name.'',
+                'status' => false
+            ]);
+        }
 
         $token_error= $this->tokenVerificationCheck($token);
         if($token_error['status'] == false){
@@ -771,6 +804,13 @@ class UserController extends AbstractController
                 'status' => true
             ]);            
 
+    }
+
+    function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
     }
 
 
@@ -1409,16 +1449,16 @@ class UserController extends AbstractController
      */
     public function collaboratedUserProfileimageSave(Request $request)
     {
+      
         $em = $this->getDoctrine()->getManager();
         $token  = $request->query->get("token");
         $createdOn  = $request->query->get("createdOn");
         $blobData  = $request->query->get("blobData");
 
-        if(empty($token)){
-            $token  = $request->request->get("token");
-            $createdOn  = $request->request->get("createdOn");
+        if(empty($blobData)){
             $blobData  = $request->request->get("blobData");
         }
+    
         $createdOn = new DateTime($createdOn);
         $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
         if(empty($user)){
@@ -1445,9 +1485,10 @@ class UserController extends AbstractController
         $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
             'userId' => $Muser->getId()
         ]);
+       
         if(empty($CollaboratedUserProfileimage)){
-            $CollaboratedUserProfileimage = new CollaboratedUserProfileimage();
-        }  
+            $CollaboratedUserProfileimage = new CollaboratedUserProfileimage();        
+        }
         
             $CollaboratedUserProfileimage->setUserId($Muser->getId());
             $CollaboratedUserProfileimage->setCreatedOn($createdOn);
@@ -1487,15 +1528,14 @@ class UserController extends AbstractController
         ]);
         
         if ($CollaboratedUserProfileimage) {           
-            return $this->json([
+            return $this->json(['CollaboratedUserProfileimage'=>[
                 'userId'=>$CollaboratedUserProfileimage->getUserId(),
                 'createdOn'=>$CollaboratedUserProfileimage->getCreatedOn(),
-                'blobData'=>stream_get_contents($CollaboratedUserProfileimage->getBlobData()),
-                'status' => true
-            ]);
+                'blobData'=>stream_get_contents($CollaboratedUserProfileimage->getBlobData()),                
+            ],'status' => true]);
         }else{
             return $this->json([
-                'message'=>'User data not found',
+                'message'=>'Collaborated user profile image data not found',
                 'status' => false
             ]);
         }
@@ -1656,6 +1696,7 @@ class UserController extends AbstractController
         if($token_error['status'] == false){
             return $this->json($token_error);
         }
+        
         $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
         $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
             'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
@@ -1683,8 +1724,10 @@ class UserController extends AbstractController
             'Institution' => $result,
             'status' => true
         ]);
+        }else{
+            return $this->respondWithErrors(sprintf('Institution profile data is not available'));
         }
-        return $this->respondWithSuccess(sprintf('User is not available'));
+        
     }
 
     /**
@@ -1697,9 +1740,9 @@ class UserController extends AbstractController
         if($token_error['status'] == false){
             return $this->json($token_error);
         }
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['apiToken'=>$token]);
         
-        if ($user) {
+        if (!empty($user)) {
             $this->userDataSave($user);
             $result = $this->serializeUsers($user);
 
@@ -1707,7 +1750,7 @@ class UserController extends AbstractController
                 'user' => $result
             ]);
         }
-        return $this->respondWithSuccess(sprintf('User is not available'));
+        return $this->respondWithErrors(sprintf('User is not available'));
     }
 
     /**

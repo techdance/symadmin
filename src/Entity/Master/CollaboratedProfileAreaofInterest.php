@@ -124,12 +124,12 @@ class CollaboratedProfileAreaofInterest
     private $locationD;
 
     /**
-     * @ORM\Column(type="integer", name="rangeYearStart", length=20, nullable=true)
+     * @ORM\Column(type="string", name="rangeYearStart", length=20, nullable=true)
      */
     private $rangeYearStart;
 
     /**
-     * @ORM\Column(type="integer", name="rangeYearEnd", length=20, nullable=true)
+     * @ORM\Column(type="string", name="rangeYearEnd", length=20, nullable=true)
      */
     private $rangeYearEnd;
 
@@ -386,24 +386,24 @@ class CollaboratedProfileAreaofInterest
         return $this;
     }
 
-    public function getRangeYearStart(): ?int
+    public function getRangeYearStart(): ?string
     {
         return $this->rangeYearStart;
     }
 
-    public function setRangeYearStart(?int $rangeYearStart): self
+    public function setRangeYearStart(?string $rangeYearStart): self
     {
         $this->rangeYearStart = $rangeYearStart;
 
         return $this;
     }
 
-    public function getRangeYearEnd(): ?int
+    public function getRangeYearEnd(): ?string
     {
         return $this->rangeYearEnd;
     }
 
-    public function setRangeYearEnd(?int $rangeYearEnd): self
+    public function setRangeYearEnd(?string $rangeYearEnd): self
     {
         $this->rangeYearEnd = $rangeYearEnd;
 
@@ -469,5 +469,6 @@ class CollaboratedProfileAreaofInterest
 
         return $this;
     }
+
 
 }

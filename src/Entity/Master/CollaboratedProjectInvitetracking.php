@@ -32,9 +32,9 @@ class CollaboratedProjectInvitetracking
     private $modifiedDate;
 
     /**
-     * @ORM\Column(type="integer", name="projectId", length=20, nullable=true)
+     * @ORM\Column(type="integer", name="interestId", length=20, nullable=true)
      */
-    private $projectId;
+    private $interestId;
 
     /**
      * @ORM\Column(type="integer", name="inviteFrom", length=20, nullable=true)

@@ -6,6 +6,7 @@ use App\Entity\Settings;
 use App\Entity\Group;
 use App\Entity\InstitutionProfile;
 use App\Entity\Master\FosUser;
+use App\Entity\Master\MasterLanguage;
 use App\Entity\Master\CommunicationPreferences;
 use App\Entity\Master\CollaboratedProfileAreaofInterest;
 use App\Entity\Master\Collaborateduserprofessionalbio;
@@ -406,16 +407,16 @@ class UserController extends AbstractController
                 'userId'=>$CommunicationPreferences->getUserId(),
                 'createDate'=>$CommunicationPreferences->getCreateDate(),
                 'modifiedDate'=>$CommunicationPreferences->getModifiedDate(),
-                'primaryLanguageId'=>$CommunicationPreferences->getPrimaryLanguageId(),
-                'primaryLanguageName'=>$CommunicationPreferences->getPrimaryLanguageName(),
-                'secondaryLanguageId'=>$CommunicationPreferences->getSecondaryLanguageId(),
-                'secondaryLanguageName'=>$CommunicationPreferences->getSecondaryLanguageName(),
-                'tertiaryLanguageId'=>$CommunicationPreferences->getTertiaryLanguageId(),
-                'tertiaryLanguageName'=>$CommunicationPreferences->getTertiaryLanguageName(),
+                'language'=> ['primary'=>['LanguageId'=>$CommunicationPreferences->getPrimaryLanguageId(),
+                              'LanguageName'=>$CommunicationPreferences->getPrimaryLanguageName()],
+                             'secondary'=>['LanguageId'=>$CommunicationPreferences->getSecondaryLanguageId(),
+                              'LanguageName'=>$CommunicationPreferences->getSecondaryLanguageName()],
+                              'tertiary'=>['LanguageId'=>$CommunicationPreferences->getTertiaryLanguageId(),
+                'LanguageName'=>$CommunicationPreferences->getTertiaryLanguageName()]],
                 'emailAddress'=>$CommunicationPreferences->getEmailAddress(),
-                'phoneNumber'=>$CommunicationPreferences->getPhoneNumber(),
-                'website'=>$CommunicationPreferences->getWebsite(),
-                'mobileNumber'=>$CommunicationPreferences->getMobileNumber(),
+                'phoneNumber'=>['landphone'=>$CommunicationPreferences->getPhoneNumber(),
+                                'mobileNumber'=>$CommunicationPreferences->getMobileNumber()],
+                'website'=>parse_url($CommunicationPreferences->getWebsite()),                
                 'status' => true
             ]);
         }else{
@@ -539,13 +540,13 @@ class UserController extends AbstractController
                 'userId'=>$Collaboratedusercredential->getUserId(),
                 'createDate'=>$Collaboratedusercredential->getCreateDate(),
                 'modifiedDate'=>$Collaboratedusercredential->getModifiedDate(),
-                'membership1'=>$Collaboratedusercredential->getMembership1(),
-                'membership2'=>$Collaboratedusercredential->getMembership2(),
-                'membership3'=>$Collaboratedusercredential->getMembership3(),
+                'membership'=>['1'=>$Collaboratedusercredential->getMembership1(),
+                '2'=>$Collaboratedusercredential->getMembership2(),
+                '3'=>$Collaboratedusercredential->getMembership3()],
                 'educationallevel'=>$Collaboratedusercredential->getEducationallevel(),
-                'certificate1'=>$Collaboratedusercredential->getCertificate1(),
-                'certificate2'=>$Collaboratedusercredential->getCertificate2(),
-                'certificate3'=>$Collaboratedusercredential->getCertificate3(),
+                'certificate'=>['1'=>$Collaboratedusercredential->getCertificate1(),
+                '2'=>$Collaboratedusercredential->getCertificate2(),
+                '3'=>$Collaboratedusercredential->getCertificate3()],
                 'status' => true
             ]);
         }else{
@@ -1425,9 +1426,9 @@ class UserController extends AbstractController
                 'userId'=>$Collaborateduserprofessionalbio->getUserId(),
                 'createDate'=>$Collaborateduserprofessionalbio->getCreateDate(),
                 'modifiedDate'=>$Collaborateduserprofessionalbio->getModifiedDate(),
-                'areaofexpertise1'=>$Collaborateduserprofessionalbio->getAreaofexpertiseA(),
-                'areaofexpertise2'=>$Collaborateduserprofessionalbio->getAreaofexpertiseB(),
-                'areaofexpertise3'=>$Collaborateduserprofessionalbio->getAreaofexpertiseC(),
+                'areaofexpertise1'=>['1'=>$Collaborateduserprofessionalbio->getAreaofexpertiseA(),
+                '2'=>$Collaborateduserprofessionalbio->getAreaofexpertiseB(),
+                '3'=>$Collaborateduserprofessionalbio->getAreaofexpertiseC()],
                 'experienceyears'=>$Collaborateduserprofessionalbio->getExperienceyears(),
                 'cvlink'=>$Collaborateduserprofessionalbio->getCvlink(),
                 'biodescription'=>$Collaborateduserprofessionalbio->getBiodescription(),
@@ -1443,6 +1444,47 @@ class UserController extends AbstractController
     }
 
 
+    /**
+     * @Route("/api/getLanguageList", name="api_get_language_list", methods={"GET"})
+     */
+    public function getLanguageList(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        $MasterLanguage = $this->getDoctrine()->getRepository(MasterLanguage::class)->findBy([],['id'=>'ASC']);
+        
+        if ($MasterLanguage) { 
+            $language_array = [];
+            foreach($MasterLanguage as $MasterLanguage_data){
+                $language_array[]=   [
+                'Id'=>$MasterLanguage_data->getId(),
+                'LanguageName'=>$MasterLanguage_data->getLanguagename()
+                ];
+            }
+            return $this->json([
+                'language_array'=>$language_array,
+                'status' => true
+            ]);
+        }else{
+            return $this->json([
+                'message'=>'Language data not found',
+                'status' => false
+            ]);
+        }
+    }
 
     /**
      * @Route("/api/collaboratedUserProfileimageSave", name="api_collaborated_UserProfile_image_Save", methods={"POST"})
@@ -1713,10 +1755,9 @@ class UserController extends AbstractController
         if(!empty($MasterInstitutionLocationInfo)){
         $result = array(
             'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
-            'institutecity' => $MasterInstitutionLocationInfo->getInstitutecity(),
+            'duration'=>'',
+            'location' => $MasterInstitutionLocationInfo->getInstitutecity().','.     $MasterInstitutionLocationInfo->getInstitutestate(),
             'institutecountry' => $MasterInstitutionLocationInfo->getInstitutecountry(),
-            'institutedepartment' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
-            'institutestate' => $MasterInstitutionLocationInfo->getInstitutestate(),
             'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone()
               );
 

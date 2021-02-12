@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en' 
-    time_out: 1800 
+    time_out: 10000 
     environment: prod
     debug: false
     upload_directory: '%kernel.project_dir%/public/uploads/'

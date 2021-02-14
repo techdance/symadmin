@@ -14,7 +14,7 @@
 .gitignore
 composer.lock
 /composer.lock
-
+symfony.lock
 ##/public/
 /public/**
 ###< symfony/framework-bundle ###
@@ -22,7 +22,7 @@ composer.lock
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
-config/bundles.php
+#config/bundles.php
 
 
 ##

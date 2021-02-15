@@ -32,9 +32,10 @@ class CollaboratedLabScreenProjectPartners
     private $modifiedDate;
 
     /**
-     * @ORM\Column(type="integer", name="projectId", length=20, nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Master\CollaboratedProfileAreaofInterest")
+     * @ORM\JoinColumn(name="interestId", referencedColumnName="id", nullable=true)
      */
-    private $projectId;
+    private $interestId;
 
     /**
      * @ORM\Column(type="integer", name="projectPartnerId", length=20, nullable=true)
@@ -75,18 +76,6 @@ class CollaboratedLabScreenProjectPartners
         return $this;
     }
 
-    public function getProjectId(): ?int
-    {
-        return $this->projectId;
-    }
-
-    public function setProjectId(?int $projectId): self
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
     public function getProjectPartnerId(): ?int
     {
         return $this->projectPartnerId;
@@ -111,5 +100,16 @@ class CollaboratedLabScreenProjectPartners
         return $this;
     }
 
+    public function getInterestId(): ?CollaboratedProfileAreaofInterest
+    {
+        return $this->interestId;
+    }
+
+    public function setInterestId(?CollaboratedProfileAreaofInterest $interestId): self
+    {
+        $this->interestId = $interestId;
+
+        return $this;
+    }
 
 }

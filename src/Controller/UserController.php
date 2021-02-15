@@ -9,9 +9,11 @@ use App\Entity\Master\FosUser;
 use App\Entity\Master\MasterLanguage;
 use App\Entity\Master\CommunicationPreferences;
 use App\Entity\Master\CollaboratedProfileAreaofInterest;
+use App\Entity\Master\CollaboratedProjectInvitetracking;
 use App\Entity\Master\Collaborateduserprofessionalbio;
 use App\Entity\Master\Collaboratedusercredential;
 use App\Entity\Master\CollaboratedLanguagePreferences;
+use App\Entity\Master\CollaboratedLabScreenProjectPartners;
 use App\Entity\Master\MasterInstitutionLocationInfo;
 use App\Entity\Master\CollaboratedUserProfileimage;
 use App\Entity\Master\FosGroup;
@@ -377,6 +379,115 @@ class UserController extends AbstractController
 
     }
 
+
+
+    /**
+     * @Route("/api/collaboratedProjectInvitetrackingSave", name="api_collaborated_ProjectInvitetracking_Save", methods={"POST"})
+     */
+    public function collaboratedProjectInvitetrackingSave(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $interestId  = $request->query->get("interestId");
+        $projectPartnerId  = $request->query->get("projectPartnerId");
+        $inviteFrom  = $request->query->get("inviteFrom");
+        $inviteTo  = $request->query->get("inviteTo");
+        $invitationStatus  = $request->query->get("invitationStatus");
+        $isRead  = $request->query->get("isRead");
+        $isRemoved  = $request->query->get("isRemoved");
+        $messageTitle  = $request->query->get("messageTitle");
+        $messageContent  = $request->query->get("messageContent");
+        $emailContent  = $request->query->get("emailContent");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $interestId  = $request->request->get("interestId");
+            $projectPartnerId  = $request->request->get("projectPartnerId");
+            $inviteFrom  = $request->request->get("inviteFrom");
+            $inviteTo  = $request->request->get("inviteTo");
+            $invitationStatus  = $request->request->get("invitationStatus");
+            $isRead  = $request->request->get("isRead");
+            $isRemoved  = $request->request->get("isRemoved");
+            $messageTitle  = $request->request->get("messageTitle");
+            $messageContent  = $request->request->get("messageContent");
+            $emailContent  = $request->request->get("emailContent");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneById($interestId);
+        if(empty($CollaboratedProfileAreaofInterest)){
+            return $this->json([
+                'message'=>'Unable to find user collaborated profile area of interest details',
+                'status' => false
+            ]);        
+        }
+        
+        $CollaboratedProjectInvitetracking = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findOneBy([
+            'interestId' => $interestId
+        ]);
+
+        if(empty($CollaboratedProjectInvitetracking)){
+            $CollaboratedProjectInvitetracking = new CollaboratedProjectInvitetracking();
+        } 
+            $em->beginTransaction();
+                
+            $CollaboratedProjectInvitetracking->setCreateDate($createDate);
+            $CollaboratedProjectInvitetracking->setModifiedDate($modifiedDate);
+            $CollaboratedProjectInvitetracking->setInterestId($CollaboratedProfileAreaofInterest);
+            $CollaboratedProjectInvitetracking->setInviteFrom($inviteFrom);
+            $CollaboratedProjectInvitetracking->setInviteTo($inviteTo);
+            $CollaboratedProjectInvitetracking->setInvitationStatus($invitationStatus);
+            $CollaboratedProjectInvitetracking->setIsRead($isRead);
+            $CollaboratedProjectInvitetracking->setIsRemoved($isRemoved);
+            $CollaboratedProjectInvitetracking->setMessageTitle($messageTitle);
+            $CollaboratedProjectInvitetracking->setMessageContent($messageContent);
+            $CollaboratedProjectInvitetracking->setEmailContent($emailContent);
+            $em->persist($CollaboratedProjectInvitetracking);
+            $em->flush();
+         
+
+            $CollaboratedLabScreenProjectPartners = $this->getDoctrine()->getRepository(CollaboratedLabScreenProjectPartners::class)->findOneBy([
+                'interestId' => $interestId
+            ]);
+    
+            if(empty($CollaboratedLabScreenProjectPartners)){
+                $CollaboratedLabScreenProjectPartners = new CollaboratedLabScreenProjectPartners();
+            }
+            $CollaboratedLabScreenProjectPartners->setCreateDate($createDate);
+            $CollaboratedLabScreenProjectPartners->setModifiedDate($modifiedDate);
+            $CollaboratedLabScreenProjectPartners->setInterestId($CollaboratedProfileAreaofInterest);
+            $CollaboratedLabScreenProjectPartners->setProjectPartnerId($projectPartnerId);
+            $CollaboratedLabScreenProjectPartners->setIsActive(1);
+            $em->persist($CollaboratedLabScreenProjectPartners);
+            $em->flush();
+
+            $em->commit();
+
+            return $this->json([
+                'message'=>'Collaborated project invitetracking saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
     /**
      * @Route("/api/getCommunicationPreferences", name="api_get_communication_Preferences", methods={"GET"})
      */
@@ -400,7 +511,6 @@ class UserController extends AbstractController
         $CommunicationPreferences = $this->getDoctrine()->getRepository(CommunicationPreferences::class)->findOneBy([
             'userId' => $Muser->getId()
         ]);
-
 
         if ($CommunicationPreferences) {           
             return $this->json([
@@ -507,6 +617,304 @@ class UserController extends AbstractController
                 'message'=>'Collaborated user credential saved successfully',
                 'status' => true
             ]);            
+
+    }
+
+    /**
+     * @Route("/api/getMessageData", name="api_get_message_data", methods={"GET"})
+     */
+    public function getMessageData(Request $request)
+    {
+
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $CollaboratedProjectInvitetracking_received = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteTo' => $Muser->getId(),'isRead'=>1],['createDate'=>'DESC']); 
+     
+        $message_received = [];
+        if (!empty($CollaboratedProjectInvitetracking_received)) {            
+                 
+            foreach($CollaboratedProjectInvitetracking_received as $Invitetracking_data){
+
+                $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+                'id' => $Invitetracking_data->getInviteFrom() ]);
+                $institution_code = $Muser->getInstitutionCode();
+                $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+                ]);
+
+                $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneBy([
+                    'id' => $Invitetracking_data->getInterestId()
+                ]);               
+                
+                $message_received[] = [
+                'image'=>$this->getUserImage($Invitetracking_data->getInviteFrom()),
+                'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
+                'full_name'=>$Muser->getFirstName(),
+                'projectType'=>$CollaboratedProfileAreaofInterest->getProjectType(),
+                'description'=>$CollaboratedProfileAreaofInterest->getDescription(),
+                'discipline1'=>$CollaboratedProfileAreaofInterest->getDisciplineA(),
+                'language'=>$CollaboratedProfileAreaofInterest->getLanguage(),
+                'location1'=>$CollaboratedProfileAreaofInterest->getLocationA(),
+                'messageTitle'=>$Invitetracking_data->getMessageTitle(),
+                'messageContent'=>$Invitetracking_data->getMessageContent(),
+                'invite_received'=>$Invitetracking_data->getCreateDate()
+                 ];
+            }
+            
+        }
+
+        $CollaboratedProjectInvitetracking_send = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteFrom' => $Muser->getId(),'isRead'=>1],['createDate'=>'DESC']);   
+        
+        $message_send = [];
+        if ($CollaboratedProjectInvitetracking_send) {          
+        foreach($CollaboratedProjectInvitetracking_send as $Invitetracking_send_data){
+            $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'id' => $Invitetracking_data->getInviteTo() ]);
+            $institution_code = $Muser->getInstitutionCode();
+            $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+            ]);
+
+            $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneBy([
+                'id' => $Invitetracking_data->getInterestId()
+            ]);  
+
+            $message_send[] = [
+            'image'=>$this->getUserImage($Invitetracking_send_data->getInviteTo()),
+            'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
+            'full_name'=>$Muser->getFirstName(),
+            'projectType'=>$CollaboratedProfileAreaofInterest->getProjectType(),
+            'description'=>$CollaboratedProfileAreaofInterest->getDescription(),
+            'discipline1'=>$CollaboratedProfileAreaofInterest->getDisciplineA(),
+            'language'=>$CollaboratedProfileAreaofInterest->getLanguage(),
+            'location1'=>$CollaboratedProfileAreaofInterest->getLocationA(),
+            'messageTitle'=>$Invitetracking_send_data->getMessageTitle(),
+            'messageContent'=>$Invitetracking_send_data->getMessageContent(),
+            'invite_send'=>$Invitetracking_data->getCreateDate()
+                ];
+        }
+        } 
+
+        if (!empty($message_received)||!empty($message_send)) {
+            return $this->json([
+                'message_received'=>['data'=>$message_received,'count'=>count($message_received)],
+                'message_send'=>['data'=>$message_send,'count'=>count($message_send)],
+                'status' => true
+            ]);
+
+        }else{
+            return $this->json([
+                'message'=>'No data not found',
+                'status' => false
+            ]);
+        }
+
+
+    }
+
+    /**
+     * @Route("/api/getNotificationsData", name="api_get_notification_data", methods={"GET"})
+     */
+    public function getNotificationsData(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+
+        // $CollaboratedProjectInvitetracking_received = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteTo' => $Muser->getId(),'isRead'=>1],['createDate'=>'DESC']); 
+ 
+        $CollaboratedProjectInvitetracking_received = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteTo' => $Muser->getId(),'isRemoved'=>4],['createDate'=>'DESC']);    
+       
+            
+            $message_received = [];
+            if ($CollaboratedProjectInvitetracking_received) {          
+            foreach($CollaboratedProjectInvitetracking_received as $Invitetracking_data){
+                $message_received[] = [
+                'image'=>$this->getUserImage($Invitetracking_data->getInviteFrom()),
+                'messageTitle'=>$Invitetracking_data->getMessageTitle(),
+                'messageContent'=>$Invitetracking_data->getMessageContent()
+                 ];
+            }
+            }
+
+        $CollaboratedProjectInvitetracking_send = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteFrom' => $Muser->getId(),'isRemoved'=>0],['createDate'=>'DESC']);    
+    
+        
+        $message_send = [];
+        if ($CollaboratedProjectInvitetracking_send) {          
+        foreach($CollaboratedProjectInvitetracking_send as $Invitetracking_send_data){
+            $message_send[] = [
+            'image'=>$this->getUserImage($Invitetracking_send_data->getInviteTo()),
+            'messageTitle'=>$Invitetracking_send_data->getMessageTitle(),
+            'messageContent'=>$Invitetracking_send_data->getMessageContent()
+                ];
+        }
+        }    
+
+        if (!empty($message_received)||!empty($message_send)) { 
+            return $this->json([
+                'message_received'=>['data'=>$message_received,'count'=>count($message_received)],
+                'message_send'=>['data'=>$message_send,'count'=>count($message_send)],
+                'message_count'=>count($message_received),
+                'status' => true
+            ]);
+
+        }else{
+            return $this->json([
+                'message'=>'No data not found',
+                'status' => false
+            ]);
+        }
+
+    }
+
+    function getUserImage($user_id)
+    {
+        $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
+            'userId' => $user_id
+        ]);
+
+        if ($CollaboratedUserProfileimage) { 
+         return stream_get_contents($CollaboratedUserProfileimage->getBlobData());
+        }else{
+         return '';  
+        }
+    }
+
+
+    /**
+     * @Route("/api/getLoginData", name="api_get_login_data", methods={"GET"})
+     */
+    public function getLoginData(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }else{
+            return $this->json([
+                'user_image'=>$this->getUserImage($Muser->getId()),
+                'user_name'=>$Muser->getFirstName(),
+                'status' => true
+            ]);
+        }
+    }
+    
+
+    /**
+     * @Route("/api/updateProjectInvites", name="update_Project_Invites", methods={"POST"})
+     */
+    public function updateProjectInvites(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $status  = $request->query->get("status");
+        $inviteId  = $request->query->get("inviteId");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $status  = $request->request->get("status");
+            $inviteId  = $request->request->get("inviteId");
+        }
+
+        
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        if(empty($inviteId)){
+            return $this->json([
+                'message'=>'Invite tracking id not given',
+                'status' => false
+            ]);        
+        }
+      
+        $CollaboratedProjectInvitetracking = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findOneById($inviteId);
+      
+
+        if(!empty($CollaboratedProjectInvitetracking)){
+            if($status == 1){
+            $CollaboratedProjectInvitetracking->setInvitationStatus("Declined");
+            $CollaboratedProjectInvitetracking->setIsRemoved(1);
+            $em->persist($CollaboratedProjectInvitetracking);
+            $em->flush();
+            return $this->json([
+                'message'=>'Declined successfully',
+                'status' => true
+            ]);
+            }elseif($status == 0){
+            $CollaboratedProjectInvitetracking->setInvitationStatus("Accepted");
+            $CollaboratedProjectInvitetracking->setIsRemoved(0);
+            $em->persist($CollaboratedProjectInvitetracking);
+            $em->flush();
+            return $this->json([
+                'message'=>'Accepted successfully',
+                'status' => true
+            ]);
+            }else{
+                return $this->json([
+                    'message'=>'Status not accepted',
+                    'status' => false
+                ]); 
+            }           
+        }else{
+            return $this->json([
+                'message'=>'Unable to find invite tracking details',
+                'status' => false
+            ]);
+        }
 
     }
 

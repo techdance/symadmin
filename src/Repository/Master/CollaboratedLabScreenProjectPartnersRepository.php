@@ -12,12 +12,12 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method CollaboratedLabScreenProjectPartners[]    findAll()
  * @method CollaboratedLabScreenProjectPartners[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CollaboratedLabScreenProjectPartnersRepository extends ServiceEntityRepository
+class CollaboratedLabScreenProjectPartnersRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, CollaboratedLabScreenProjectPartners::class);
-    }
+    // public function __construct(ManagerRegistry $registry)
+    // {
+    //     parent::__construct($registry, CollaboratedLabScreenProjectPartners::class);
+    // }
 
     // /**
     //  * @return CollaboratedLabScreenProjectPartners[] Returns an array of CollaboratedLabScreenProjectPartners objects

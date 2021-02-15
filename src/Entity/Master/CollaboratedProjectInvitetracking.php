@@ -3,6 +3,7 @@
 namespace App\Entity\Master;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Master\CollaboratedProfileAreaofInterest;
 
 /**
  * @ORM\Table(name="sym_api_admin_user_master.collaborated_projectinvitetracking")
@@ -30,9 +31,10 @@ class CollaboratedProjectInvitetracking
      * @ORM\Column(name="modifiedDate", type="datetime", nullable=true)
      */
     private $modifiedDate;
-
+  
     /**
-     * @ORM\Column(type="integer", name="interestId", length=20, nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Master\CollaboratedProfileAreaofInterest")
+     * @ORM\JoinColumn(name="interestId", referencedColumnName="id", nullable=true)
      */
     private $interestId;
 
@@ -101,18 +103,6 @@ class CollaboratedProjectInvitetracking
     public function setModifiedDate(?\DateTimeInterface $modifiedDate): self
     {
         $this->modifiedDate = $modifiedDate;
-
-        return $this;
-    }
-
-    public function getProjectId(): ?int
-    {
-        return $this->projectId;
-    }
-
-    public function setProjectId(?int $projectId): self
-    {
-        $this->projectId = $projectId;
 
         return $this;
     }
@@ -213,5 +203,15 @@ class CollaboratedProjectInvitetracking
         return $this;
     }
 
+    public function getInterestId(): ?CollaboratedProfileAreaofInterest
+    {
+        return $this->interestId;
+    }
 
+    public function setInterestId(?CollaboratedProfileAreaofInterest $interestId): self
+    {
+        $this->interestId = $interestId;
+
+        return $this;
+    }
 }

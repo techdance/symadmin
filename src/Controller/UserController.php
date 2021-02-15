@@ -164,6 +164,7 @@ class UserController extends AbstractController
         $MasterInstitutionLocationInfo->setInstitutedepartment($entity->getDepartment());
         $MasterInstitutionLocationInfo->setInstitutestate($institution_location->getState());
         $MasterInstitutionLocationInfo->setInstitutetimezone($institution_location->getTimezone());
+        $MasterInstitutionLocationInfo->setFounded($profile->getFounded());
  
         $em->persist($MasterInstitutionLocationInfo);
         $em->flush();
@@ -2163,7 +2164,7 @@ class UserController extends AbstractController
         if(!empty($MasterInstitutionLocationInfo)){
         $result = array(
             'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
-            'duration'=>'',
+            'duration'=>$MasterInstitutionLocationInfo->getFounded(),
             'location' => $MasterInstitutionLocationInfo->getInstitutecity().','.     $MasterInstitutionLocationInfo->getInstitutestate(),
             'institutecountry' => $MasterInstitutionLocationInfo->getInstitutecountry(),
             'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone()

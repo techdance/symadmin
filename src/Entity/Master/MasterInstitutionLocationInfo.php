@@ -52,6 +52,11 @@ class MasterInstitutionLocationInfo
      */
     private $institutetimezone;
 
+     /**
+     * @ORM\Column(type="string", length=75, nullable=true)
+     */
+    private $founded;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +142,18 @@ class MasterInstitutionLocationInfo
     public function setInstitutetimezone(?string $institutetimezone): self
     {
         $this->institutetimezone = $institutetimezone;
+
+        return $this;
+    }
+
+    public function getFounded(): ?string
+    {
+        return $this->founded;
+    }
+
+    public function setFounded(?string $founded): self
+    {
+        $this->founded = $founded;
 
         return $this;
     }

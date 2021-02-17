@@ -153,6 +153,20 @@ class CollaboratedProfileAreaofInterest
      */
     private $groupName;
 
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="startDate", type="datetime", nullable=true)
+     */
+    private $startDate;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="endDate", type="datetime", nullable=true)
+     */
+    private $endDate;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -458,6 +472,30 @@ class CollaboratedProfileAreaofInterest
         return $this;
     }
 
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(?\DateTimeInterface $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?\DateTimeInterface $endDate): self
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
     public function getUserId(): ?FosUser
     {
         return $this->userId;
@@ -469,6 +507,4 @@ class CollaboratedProfileAreaofInterest
 
         return $this;
     }
-
-
 }

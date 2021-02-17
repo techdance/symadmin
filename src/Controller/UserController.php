@@ -9,6 +9,7 @@ use App\Entity\Master\FosUser;
 use App\Entity\Master\MasterLanguage;
 use App\Entity\Master\CommunicationPreferences;
 use App\Entity\Master\CollaboratedProfileAreaofInterest;
+use App\Entity\Master\Collaboratedlabscreenprojectoverview;
 use App\Entity\Master\CollaboratedProjectInvitetracking;
 use App\Entity\Master\Collaborateduserprofessionalbio;
 use App\Entity\Master\Collaboratedusercredential;
@@ -794,6 +795,166 @@ class UserController extends AbstractController
 
     }
 
+    /**
+     * @Route("/api/CollaboratedlabscreenprojectoverviewSave", name="api_Colla_lab_projectoverview_Save", methods={"POST"})
+     */
+    public function CollaboratedlabscreenprojectoverviewSave(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectOwnedId  = $request->query->get("projectOwnedId");
+        $projectDescription  = $request->query->get("projectDescription");
+        $projectName  = $request->query->get("projectName");
+        $projectType  = $request->query->get("projectType");
+        $projectDiscipline1  = $request->query->get("projectDiscipline1");
+        $projectDiscipline2  = $request->query->get("projectDiscipline2");
+        $projectDiscipline3  = $request->query->get("projectDiscipline3");
+        $role  = $request->query->get("role");
+        $projectStartDate  = $request->query->get("projectStartDate");
+        $projectEndDate  = $request->query->get("projectEndDate");
+        $projectDocumentId  = $request->query->get("projectDocumentId");
+        $percentage  = $request->query->get("percentage");
+        $interestId  = $request->query->get("interestId");
+        $projectStatus  = $request->query->get("projectStatus");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectOwnedId  = $request->request->get("projectOwnedId");
+            $projectDescription  = $request->request->get("projectDescription");
+            $projectName  = $request->request->get("projectName");
+            $projectType  = $request->request->get("projectType");
+            $projectDiscipline1  = $request->request->get("projectDiscipline1");
+            $projectDiscipline2  = $request->request->get("projectDiscipline2");
+            $projectDiscipline3  = $request->request->get("projectDiscipline3");
+            $role  = $request->request->get("role");
+            $projectStartDate  = $request->request->get("projectStartDate");
+            $projectEndDate  = $request->request->get("projectEndDate");
+            $projectDocumentId  = $request->request->get("projectDocumentId");
+            $percentage  = $request->request->get("percentage");
+            $interestId  = $request->request->get("interestId");
+            $projectStatus  = $request->request->get("projectStatus");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+        $projectStartDate = new DateTime($projectStartDate);
+        $projectEndDate = new DateTime($projectEndDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+      
+        $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneBy([
+            'interestId' => $interestId
+        ]);
+
+        if(empty($Collaboratedlabscreenprojectoverview)){
+            $Collaboratedlabscreenprojectoverview = new Collaboratedlabscreenprojectoverview();
+        } 
+
+        $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneById($interestId);
+
+
+            $Collaboratedlabscreenprojectoverview->setUserId($Muser);
+            $Collaboratedlabscreenprojectoverview->setCreateDate($createDate);
+            $Collaboratedlabscreenprojectoverview->setModifiedDate($modifiedDate);
+            $Collaboratedlabscreenprojectoverview->setProjectOwnedId($projectOwnedId);
+            $Collaboratedlabscreenprojectoverview->setProjectDescription($projectDescription);
+            $Collaboratedlabscreenprojectoverview->setProjectName($projectName);
+            $Collaboratedlabscreenprojectoverview->setProjectType($projectType);
+            $Collaboratedlabscreenprojectoverview->setProjectDiscipline1($projectDiscipline1);
+            $Collaboratedlabscreenprojectoverview->setProjectDiscipline2($projectDiscipline2);
+            $Collaboratedlabscreenprojectoverview->setProjectDiscipline3($projectDiscipline3);
+            $Collaboratedlabscreenprojectoverview->setRole($role);
+            $Collaboratedlabscreenprojectoverview->setProjectStartDate($projectStartDate);
+            $Collaboratedlabscreenprojectoverview->setProjectEndDate($projectEndDate);
+            $Collaboratedlabscreenprojectoverview->setProjectDocumentId($projectDocumentId);
+            $Collaboratedlabscreenprojectoverview->setPercentage($percentage);
+            $Collaboratedlabscreenprojectoverview->setProjectStatus($projectStatus);
+            $Collaboratedlabscreenprojectoverview->setInterestId($CollaboratedProfileAreaofInterest);
+            $em->persist($Collaboratedlabscreenprojectoverview);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Collaborated project overview saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+    /**
+     * @Route("/api/getInviteFlag", name="api_get_Invite_Flag", methods={"GET"})
+     */
+    public function getInviteFlag(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $interestId  = $request->query->get("interestId");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        $CollaboratedProjectInvitetracking = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findOneBy(['interestId' => $interestId,'invitationStatus'=>'Accepted']); 
+        
+        if(!empty($CollaboratedProjectInvitetracking)){
+
+            $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneBy(['interestId' => $interestId]); 
+
+            if(!empty($Collaboratedlabscreenprojectoverview)){
+                return $this->json([
+                    'flag'=>3,
+                    'message'=>'Project Created',
+                    'status' => true
+                ]);
+            }else{
+                return $this->json([
+                    'flag'=>2,
+                    'message'=>'Start Project',
+                    'status' => true
+                ]);
+            }
+
+        }else{
+            return $this->json([
+                'flag'=>0,
+                'message'=>'Find matches',
+                'status' => true
+            ]);
+        }
+
+    }
+
     function getUserImage($user_id)
     {
         $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
@@ -1084,6 +1245,8 @@ class UserController extends AbstractController
         $rangeMonthEnd  = $request->query->get("rangeMonthEnd");
         $universityName  = $request->query->get("universityName");
         $groupName  = $request->query->get("groupName");
+        $startDate  = $request->query->get("startDate");
+        $endDate  = $request->query->get("endDate");
 
         if(empty($token)){
             $token  = $request->request->get("token");
@@ -1112,9 +1275,12 @@ class UserController extends AbstractController
             $rangeMonthEnd  = $request->request->get("rangeMonthEnd");
             $universityName  = $request->request->get("universityName");
             $groupName  = $request->request->get("groupName");
+            $startDate  = $request->request->get("startDate");
+            $endDate  = $request->request->get("endDate");
         }
 
         
+
         if($this->validateDate($createDate) == false){
             $field_name = str_replace( '$', '', '$createDate' );
             return $this->json([
@@ -1176,6 +1342,9 @@ class UserController extends AbstractController
         //     'userId' => $Muser->getId()
         // ]);
 
+        $startDate = new DateTime($startDate);
+        $endDate = new DateTime($endDate);
+
         if(empty($CollaboratedProfileAreaofInterest)){
             $CollaboratedProfileAreaofInterest = new CollaboratedProfileAreaofInterest();
         } 
@@ -1205,6 +1374,8 @@ class UserController extends AbstractController
             $CollaboratedProfileAreaofInterest->setRangeMonthEnd($rangeMonthEnd);
             $CollaboratedProfileAreaofInterest->setUniversityName($universityName);
             $CollaboratedProfileAreaofInterest->setGroupName($groupName);
+            $CollaboratedProfileAreaofInterest->setStartDate($startDate);
+            $CollaboratedProfileAreaofInterest->setEndDate($endDate);
 
             $em->persist($CollaboratedProfileAreaofInterest);
             $em->flush();
@@ -1285,6 +1456,8 @@ class UserController extends AbstractController
                     'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
                     'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
                     'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
+                    'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
+                    'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
                     'status' => true
                 ];
             }
@@ -1520,6 +1693,8 @@ class UserController extends AbstractController
                      'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
                      'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
                      'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
+                     'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
+                    'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
                      'status' => true
                  ];
           
@@ -1541,6 +1716,107 @@ class UserController extends AbstractController
             'status' => false
         ]);
         }
+    }
+
+
+
+
+
+    /**
+     * @Route("/api/getProfilePercentageDetails", name="api_get_profile_percentage_Details", methods={"GET"})
+     */
+    public function getProfilePercentageDetails(Request $request)
+    {   $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+       
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        } 
+
+        $percentage = 0;
+        
+        $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
+            'userId' => $Muser->getId()
+        ]);
+        if($CollaboratedUserProfileimage) {         
+            if(!empty($CollaboratedUserProfileimage->getBlobData())){
+                $percentage += 10;    
+            }
+        }
+
+        if($Muser) {   
+            if(!empty($Muser->getFirstName())){
+                $percentage += 10;    
+            }
+            if(!empty($Muser->getLastName())){
+                $percentage += 10;    
+            }
+        }
+        $institution_code = $Muser->getInstitutionCode();
+        $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+        ]);
+
+        if($MasterInstitutionLocationInfo) {           
+      
+            if(!empty($MasterInstitutionLocationInfo->getInstitutename())){
+                $percentage += 10;    
+            }
+        }
+
+        if($MasterInstitutionLocationInfo) {           
+      
+            if(!empty($MasterInstitutionLocationInfo->getInstitutedepartment())){
+                $percentage += 10;    
+            }
+        }
+
+        $CommunicationPreferences = $this->getDoctrine()->getRepository(CommunicationPreferences::class)->findOneBy([
+            'userId' => $Muser->getId()
+        ]);
+        if($CommunicationPreferences) {     
+            if(!empty($CommunicationPreferences->getPrimaryLanguageId())){
+                $percentage += 10;    
+            }
+            if(!empty($CommunicationPreferences->getEmailAddress())){
+                $percentage += 10;    
+            }
+        }
+
+        $Collaborateduserprofessionalbio = $this->getDoctrine()->getRepository(Collaborateduserprofessionalbio::class)->findOneBy([
+            'userId' => $Muser->getId()
+        ]);
+        if($Collaborateduserprofessionalbio) {   
+            if(!empty($Collaborateduserprofessionalbio->getBioDiscipline())){
+                $percentage += 10;    
+            }
+            if(!empty($Collaborateduserprofessionalbio->getBiodescription())){
+                $percentage += 10;    
+            }
+        }            
+     
+        $Collaboratedusercredential = $this->getDoctrine()->getRepository(Collaboratedusercredential::class)->findOneBy([
+            'userId' => $Muser->getId()
+        ]);
+        if($Collaboratedusercredential) {    
+            if(!empty($Collaboratedusercredential->getEducationallevel())){
+                $percentage += 10;    
+            }
+        }  
+  
+        return $this->json([
+            'percentage'=>$percentage,
+            'status' => true
+        ]);
     }
 
 
@@ -1715,6 +1991,8 @@ class UserController extends AbstractController
                     'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
                     'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
                     'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
+                    'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
+                    'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
                     'status' => true
                 ];
           
@@ -2179,6 +2457,7 @@ class UserController extends AbstractController
         }
         
     }
+    
 
     /**
      * @Route("/api/getUserDetails", name="api_getUserDetails", methods={"GET"})

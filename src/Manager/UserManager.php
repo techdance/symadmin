@@ -39,25 +39,27 @@ class UserManager
 
 
             // // Get cURL resource
-            $curl = curl_init();
+        //    -- $curl = curl_init();
             // Set some options - we are passing in a useragent too here
-            curl_setopt($curl, CURLOPT_ENCODING, ''); 
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 400);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-            ));
-            curl_setopt_array($curl, [
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => "http://137.117.70.79/local/profileupdate/client/client.php?user=${userNameToken}",
-                CURLOPT_USERAGENT => 'Codular Sample cURL Request',
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4 
-            ]);
+        //    -- curl_setopt($curl, CURLOPT_ENCODING, ''); 
+        //    -- curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+        //     --curl_setopt($curl, CURLOPT_TIMEOUT, 400);
+        //     --curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        //         'Content-Type: application/json',
+        //    -- ));
+        //    -- curl_setopt_array($curl, [
+        //     --    CURLOPT_RETURNTRANSFER => 1,
+        //     --    CURLOPT_URL => "http://137.117.70.79/local/profileupdate/client/client.php?user=${userNameToken}",
+        //     --    CURLOPT_USERAGENT => 'Codular Sample cURL Request',
+        //     --    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //      --   CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4 
+        //    -- ]);
             // Send the request & save response to $resp
-            $response = curl_exec($curl);
 
-            $info = curl_getinfo($curl);
+
+            // --$response = curl_exec($curl);
+
+            // --$info = curl_getinfo($curl);
         
 
             // // $curl = curl_init();
@@ -80,9 +82,9 @@ class UserManager
             // $response = curl_exec($curl);
             // $err = curl_error($curl);
             // $info = curl_getinfo($curl);
-            curl_close($curl);
-            dump($info);
-            dd($response);
+            // --curl_close($curl);
+            // --dump($info);
+            // --dd($response);
 
             return [
                 'contentType' => '',
@@ -130,22 +132,22 @@ class UserManager
 
 
             // // Get cURL resource
-            $curl = curl_init();
+        //    -- $curl = curl_init();
             // Set some options - we are passing in a useragent too here
-            curl_setopt($curl, CURLOPT_ENCODING, ''); 
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 400);
-            curl_setopt_array($curl, [
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => "https://reqres.in/api/users?page=2",
-                CURLOPT_USERAGENT => 'Sample Request',
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4 
-            ]);
+        //    -- curl_setopt($curl, CURLOPT_ENCODING, ''); 
+        //    -- curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+        //   --  curl_setopt($curl, CURLOPT_TIMEOUT, 400);
+        //   --  curl_setopt_array($curl, [
+        //    --     CURLOPT_RETURNTRANSFER => 1,
+        //    --     CURLOPT_URL => "https://reqres.in/api/users?page=2",
+        //    --     CURLOPT_USERAGENT => 'Sample Request',
+        //    --     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //   --      CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4 
+        //   --  ]);
             // Send the request & save response to $resp
-            $response = curl_exec($curl);
+        //  --   $response = curl_exec($curl);
 
-            $info = curl_getinfo($curl);
+        //  --   $info = curl_getinfo($curl);
         
 
             // // $curl = curl_init();
@@ -168,9 +170,9 @@ class UserManager
             // $response = curl_exec($curl);
             // $err = curl_error($curl);
             // $info = curl_getinfo($curl);
-            curl_close($curl);
-            dump($info);
-            dd($response);
+        // --    curl_close($curl);
+        // --    dump($info);
+        // --    dd($response);
 
             return [
                 'contentType' => '',
@@ -224,21 +226,23 @@ class UserManager
         $userNameToken = base64_encode(rand(1000000000, 9999999999) . $user->getUsername());
 
 
-        $curl = curl_init();
+    //    -- $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL,"http://137.117.70.79/local/profileupdate/client/client.php?user=${userNameToken}");
-        curl_setopt($curl, CURLOPT_ENCODING, ''); 
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 400);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    //    -- curl_setopt($curl, CURLOPT_URL,"http://137.117.70.79/local/profileupdate/client/client.php?user=${userNameToken}");
+    //   --  curl_setopt($curl, CURLOPT_ENCODING, ''); 
+    //  --   curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+    //  --   curl_setopt($curl, CURLOPT_TIMEOUT, 400);
+    //   --  curl_setopt($curl, CURLOPT_POST, 1);
+    //    -- curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
+    //    -- curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        $output = curl_exec($curl);
+    //   --  $output = curl_exec($curl);
 
-        curl_close ($curl);
+    //   --  curl_close ($curl);
 
-        return $output;
+    //  --   return $output;
+
+     return true;
 
     }
 

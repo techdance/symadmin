@@ -278,7 +278,7 @@ class FosUser
     /**
      * @var bool
      *
-     * @ORM\Column(name="onlineStatus", type="boolean", nullable=false)
+     * @ORM\Column(name="onlineStatus", type="boolean", nullable=true)
      */
     private $onlineStatus;
 

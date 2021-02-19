@@ -165,6 +165,7 @@ class UserController extends AbstractController
         $MasterInstitutionLocationInfo->setInstitutedepartment($entity->getDepartment());
         $MasterInstitutionLocationInfo->setInstitutestate($institution_location->getState());
         $MasterInstitutionLocationInfo->setInstitutetimezone($institution_location->getTimezone());
+        $MasterInstitutionLocationInfo->setAcademicCalendar($profile->getAcademicCalendar());
         $MasterInstitutionLocationInfo->setFounded($profile->getFounded());
  
         $em->persist($MasterInstitutionLocationInfo);
@@ -254,10 +255,14 @@ class UserController extends AbstractController
         $token  = $request->query->get("token");
         $thought  = $request->query->get("thought");
         $onlinestatus  = $request->query->get("onlinestatus");
+        $prefix  = $request->query->get("prefix");
+        $suffix  = $request->query->get("suffix");
         if(empty($token)){
             $token  = $request->request->get("token");
             $thought  = $request->request->get("thought");
             $onlinestatus  = $request->request->get("onlinestatus");
+            $prefix  = $request->request->get("prefix");
+            $suffix  = $request->request->get("suffix");
         }
         $token_error= $this->tokenVerificationCheck($token);
         if($token_error['status'] == false){
@@ -272,6 +277,8 @@ class UserController extends AbstractController
         if ($Muser) {
             $Muser->setThoughts($thought);
             $Muser->setOnlineStatus($onlinestatus);
+            $Muser->setPrefix($prefix);
+            $Muser->setSuffix($suffix);
             $em->persist($Muser);
             $em->flush();
 
@@ -1930,7 +1937,7 @@ class UserController extends AbstractController
                 'status' => false
             ]);        
         }    
-        $sql = "SELECT ia.id as interest_pk,ia.universityName, ur.first_name,ur.position, ln.inst_name,ln.inst_city,ln.inst_state,ln.inst_state  FROM sym_api_admin_user_master.collaborated_profileareaofinterest as ia  join sym_api_admin_user_master.fos_user as ur on ur.id = ia.userId 
+        $sql = "SELECT ia.id as interest_pk, ia.universityName, ur.institution_name, ur.department, ur.first_name,ur.position, ln.inst_name,ln.inst_city,ln.inst_state,ln.inst_state, ln.inst_country  FROM sym_api_admin_user_master.collaborated_profileareaofinterest as ia  join sym_api_admin_user_master.fos_user as ur on ur.id = ia.userId 
         join sym_api_admin_user_master.institution_location_info as ln on ur.institution_name  = ln.inst_code WHERE (ia. projectType  = :projectType) or (ia.discipline1  = :disciplineA ) or (ia.location1 = :locationA )
         or (ia.language = :language) or (ia. 	collaborationType = :collaborationType)";
         $params['projectType'] = $projectType;
@@ -1961,6 +1968,9 @@ class UserController extends AbstractController
                     'inst_name'=>$result_data['inst_name'],
                     'inst_city'=>$result_data['inst_city'],
                     'inst_state'=>$result_data['inst_state'],
+                    'inst_country'=>$result_data['inst_country'],
+                    'institution_name'=>$result_data['institution_name'],
+                    'department'=>$result_data['department'],
                     'status' => true
                 ];
             }
@@ -2297,6 +2307,8 @@ class UserController extends AbstractController
                 'position'=>$Muser->getPosition(),
                 'department'=>$Muser->getDepartment(),
                 'thoughts'=>$Muser->getThoughts(),
+                'prefix'=>$Muser->getPrefix(),
+                'suffix'=>$Muser->getSuffix(),
                 'status' => true
             ]);
         }else{
@@ -2338,7 +2350,8 @@ class UserController extends AbstractController
             'duration'=>$MasterInstitutionLocationInfo->getFounded(),
             'location' => $MasterInstitutionLocationInfo->getInstitutecity().','.     $MasterInstitutionLocationInfo->getInstitutestate(),
             'institutecountry' => $MasterInstitutionLocationInfo->getInstitutecountry(),
-            'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone()
+            'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone(),
+            'academicCalendar' => $MasterInstitutionLocationInfo->getAcademicCalendar()
               );
 
         return $this->json([

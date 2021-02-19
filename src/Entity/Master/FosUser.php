@@ -124,6 +124,13 @@ class FosUser
     /**
      * @var string
      *
+     * @ORM\Column(name="suffix", type="string", length=20, nullable=true)
+     */
+    private $suffix;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="institution_name", type="string", length=150, nullable=false)
      */
     private $institutionName;
@@ -749,6 +756,18 @@ class FosUser
     public function setOnlineStatus(bool $onlineStatus): self
     {
         $this->onlineStatus = $onlineStatus;
+
+        return $this;
+    }
+
+    public function getSuffix(): ?string
+    {
+        return $this->suffix;
+    }
+
+    public function setSuffix(?string $suffix): self
+    {
+        $this->suffix = $suffix;
 
         return $this;
     }

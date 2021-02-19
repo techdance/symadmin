@@ -48,6 +48,11 @@ class MasterInstitutionLocationInfo
     private $institutestate;
 
     /**
+     * @ORM\Column(type="string",name="academic_calendar", length=50, nullable=true)
+     */
+    private $academicCalendar;
+
+    /**
      * @ORM\Column(type="string", name="inst_timezone", length=150, nullable=true)
      */
     private $institutetimezone;
@@ -130,6 +135,18 @@ class MasterInstitutionLocationInfo
     public function setInstitutestate(?string $institutestate): self
     {
         $this->institutestate = $institutestate;
+
+        return $this;
+    }
+
+    public function getAcademicCalendar(): ?string
+    {
+        return $this->academicCalendar;
+    }
+
+    public function setAcademicCalendar(?string $academicCalendar): self
+    {
+        $this->academicCalendar = $academicCalendar;
 
         return $this;
     }

@@ -1441,7 +1441,8 @@ class UserController extends AbstractController
             'institutecountry' => $MasterInstitutionLocationInfo->getInstitutecountry(),
             'institutedepartment' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
             'institutestate' => $MasterInstitutionLocationInfo->getInstitutestate(),
-            'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone()
+            'institutetimezone' => $MasterInstitutionLocationInfo->getInstitutetimezone(),
+            'founded' => $MasterInstitutionLocationInfo->getFounded()
             ];
         }else{
             $main_array['MasterInstitutionLocationInfo']=[
@@ -1474,12 +1475,12 @@ class UserController extends AbstractController
                 'userId'=>$CommunicationPreferences->getUserId(),
                 'createDate'=>$CommunicationPreferences->getCreateDate(),
                 'modifiedDate'=>$CommunicationPreferences->getModifiedDate(),
-                'primaryLanguageId'=>$CommunicationPreferences->getPrimaryLanguageId(),
-                'primaryLanguageName'=>$CommunicationPreferences->getPrimaryLanguageName(),
-                'secondaryLanguageId'=>$CommunicationPreferences->getSecondaryLanguageId(),
-                'secondaryLanguageName'=>$CommunicationPreferences->getSecondaryLanguageName(),
-                'tertiaryLanguageId'=>$CommunicationPreferences->getTertiaryLanguageId(),
-                'tertiaryLanguageName'=>$CommunicationPreferences->getTertiaryLanguageName(),
+                'language'=> ['primary'=>['LanguageId'=>$CommunicationPreferences->getPrimaryLanguageId(),
+                              'LanguageName'=>$CommunicationPreferences->getPrimaryLanguageName()],
+                             'secondary'=>['LanguageId'=>$CommunicationPreferences->getSecondaryLanguageId(),
+                              'LanguageName'=>$CommunicationPreferences->getSecondaryLanguageName()],
+                              'tertiary'=>['LanguageId'=>$CommunicationPreferences->getTertiaryLanguageId(),
+                'LanguageName'=>$CommunicationPreferences->getTertiaryLanguageName()]],
                 'emailAddress'=>$CommunicationPreferences->getEmailAddress(),
                 'phoneNumber'=>$CommunicationPreferences->getPhoneNumber(),
                 'website'=>$CommunicationPreferences->getWebsite(),
@@ -1521,9 +1522,9 @@ class UserController extends AbstractController
                 'userId'=>$Collaborateduserprofessionalbio->getUserId(),
                 'createDate'=>$Collaborateduserprofessionalbio->getCreateDate(),
                 'modifiedDate'=>$Collaborateduserprofessionalbio->getModifiedDate(),
-                'areaofexpertise1'=>$Collaborateduserprofessionalbio->getAreaofexpertiseA(),
+                'expertise'=>['areaofexpertise1'=>$Collaborateduserprofessionalbio->getAreaofexpertiseA(),
                 'areaofexpertise2'=>$Collaborateduserprofessionalbio->getAreaofexpertiseB(),
-                'areaofexpertise3'=>$Collaborateduserprofessionalbio->getAreaofexpertiseC(),
+                'areaofexpertise3'=>$Collaborateduserprofessionalbio->getAreaofexpertiseC()],
                 'experienceyears'=>$Collaborateduserprofessionalbio->getExperienceyears(),
                 'cvlink'=>$Collaborateduserprofessionalbio->getCvlink(),
                 'biodescription'=>$Collaborateduserprofessionalbio->getBiodescription(),
@@ -1546,13 +1547,13 @@ class UserController extends AbstractController
                 'userId'=>$Collaboratedusercredential->getUserId(),
                 'createDate'=>$Collaboratedusercredential->getCreateDate(),
                 'modifiedDate'=>$Collaboratedusercredential->getModifiedDate(),
-                'membership1'=>$Collaboratedusercredential->getMembership1(),
+                'membership'=>['membership1'=>$Collaboratedusercredential->getMembership1(),
                 'membership2'=>$Collaboratedusercredential->getMembership2(),
-                'membership3'=>$Collaboratedusercredential->getMembership3(),
+                'membership3'=>$Collaboratedusercredential->getMembership3()],
                 'educationallevel'=>$Collaboratedusercredential->getEducationallevel(),
-                'certificate1'=>$Collaboratedusercredential->getCertificate1(),
+                'certificate'=>['certificate1'=>$Collaboratedusercredential->getCertificate1(),
                 'certificate2'=>$Collaboratedusercredential->getCertificate2(),
-                'certificate3'=>$Collaboratedusercredential->getCertificate3(),
+                'certificate3'=>$Collaboratedusercredential->getCertificate3()],
                 'status' => true
             ];
         }else{
@@ -1565,7 +1566,7 @@ class UserController extends AbstractController
          if ($CollaboratedProfileAreaofInterest_data) { 
  
  
-            $main_array['Collaborateduserprofessionalbio']= [
+            $main_array['CollaboratedProfileAreaofInterest_data']= [
                      'userId'=>$CollaboratedProfileAreaofInterest_data->getUserId()->getId(),
                      'pkId'=>$CollaboratedProfileAreaofInterest_data->getId(),
                      'createDate'=>$CollaboratedProfileAreaofInterest_data->getCreateDate(),
@@ -1599,7 +1600,7 @@ class UserController extends AbstractController
                  ];
           
          }else{
-            $main_array['Collaborateduserprofessionalbio']=[
+            $main_array['CollaboratedProfileAreaofInterest_data']=[
                  'message'=>'User data not found',
                  'status' => false
              ];
@@ -1756,8 +1757,11 @@ class UserController extends AbstractController
 
         if ($Muser) {           
             $main_array['personalInformations']=[
+                'userId'=>$Muser->getId(),
                 'name'=> $Muser->getPrefix().". ".$Muser->getFirstName()." ".$Muser->getMiddleName()." ".$Muser->getLastName(),
                 'position'=>$Muser->getPosition(),
+                'education_level'=>$Muser->getSuffix(),     
+                'position'=>$Muser->getPosition(),  
                 'status' => true
             ];
         }else{
@@ -1766,6 +1770,26 @@ class UserController extends AbstractController
                 'status' => false
             ];
         }
+
+        $institution_code = $Muser->getInstitutionCode();
+        $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+        ]);
+ 
+        if($MasterInstitutionLocationInfo) { 
+        $main_array['result_institute_array'] = array(
+                'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
+                'inst_city'=> $MasterInstitutionLocationInfo->getInstitutecity(),
+                'inst_state'=>$MasterInstitutionLocationInfo->getInstitutestate(),
+                'inst_country' => $MasterInstitutionLocationInfo->getInstitutecountry(),
+                'department' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
+                  );
+                }
+        else{
+          $main_array['result_institute_array']=[
+                        'message'=>'Institute array not found',
+                        'status' => false
+                    ];
+                }
 
         $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
             'userId' => $Muser->getId()

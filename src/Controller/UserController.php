@@ -535,7 +535,7 @@ class UserController extends AbstractController
                 'emailAddress'=>$CommunicationPreferences->getEmailAddress(),
                 'phoneNumber'=>['landphone'=>$CommunicationPreferences->getPhoneNumber(),
                                 'mobileNumber'=>$CommunicationPreferences->getMobileNumber()],
-                'website'=>parse_url($CommunicationPreferences->getWebsite()),                
+                'website'=>$CommunicationPreferences->getWebsite(),                
                 'status' => true
             ]);
         }else{
@@ -1973,6 +1973,116 @@ class UserController extends AbstractController
                     'department'=>$result_data['department'],
                     'status' => true
                 ];
+            }
+            return $this->json([
+                'result_array'=>$result_array,
+                'status' => true
+            ]);
+        }else{
+            return $this->json([
+                'message'=>'User data not found',
+                'status' => false
+            ]);
+        }
+    }
+
+
+    /**
+     * @Route("/api/getMatchCasesWithInterestPk", name="api_get_MatchCases_WithInterest", methods={"GET"})
+     */
+    public function getMatchCasesWithInterestPk(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $interestpk  = $request->query->get("interestpk");
+
+        $token_error= $this->tokenVerificationCheck($token);        
+     
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        if(empty($interestpk)){
+            return $this->json([
+                'message'=>'Please provide collaborated profile area of interest ID',
+                'status' => false
+            ]);        
+        } 
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }   
+
+        $CollaboratedProfileAreaofInterest_data = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneBy([
+            'id' => $interestpk
+        ]);
+
+       
+        $projectType=  $CollaboratedProfileAreaofInterest_data->getProjectType();
+        $locationA=  $CollaboratedProfileAreaofInterest_data->getLocationA();
+        $disciplineA= $CollaboratedProfileAreaofInterest_data->getDisciplineA();
+        $language=  $CollaboratedProfileAreaofInterest_data->getLanguage();
+        $collaborationType=  $CollaboratedProfileAreaofInterest_data->getCollaborationType();
+
+        
+        $sql = "SELECT ia.id as interest_pk, ia.userId, ia.universityName, ur.institution_name, ur.department, ur.first_name,ur.position, ln.inst_name,ln.inst_city,ln.inst_state,ln.inst_state, ln.inst_country  FROM sym_api_admin_user_master.collaborated_profileareaofinterest as ia  join sym_api_admin_user_master.fos_user as ur on ur.id = ia.userId 
+        join sym_api_admin_user_master.institution_location_info as ln on ur.institution_name  = ln.inst_code WHERE (ia. projectType  = :projectType) or (ia.discipline1  = :disciplineA ) or (ia.location1 = :locationA )
+        or (ia.language = :language) or (ia. 	collaborationType = :collaborationType)";
+        $params['projectType'] = $projectType;
+        $params['locationA'] = $locationA;
+        $params['projectType'] = $projectType;
+        $params['disciplineA'] = $disciplineA;
+        $params['language'] = $language;
+        $params['collaborationType'] = $collaborationType;
+        $stmt =$this->getDoctrine()->getConnection()->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetchAll();
+
+        if(empty($result)){
+            return $this->json([
+                'message'=>'No data found',
+                'status' => false
+            ]);        
+        }        
+        if ($result) {             
+            $result_array = array();
+            foreach($result as $result_data){
+
+                $user_details = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+                    'id' => $result_data['userId']
+                ]);
+
+                $institution_code = $user_details->getInstitutionCode();
+                $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+                ]);
+         
+
+                $result_user_array = [
+                    'interest_pk'=>$result_data['interest_pk'],
+                    'image'=>$this->getUserImage($user_details->getId()),
+                    'universityName'=>$result_data['universityName'],
+                    'first_name'=>$user_details->getFirstName(),
+                    'education_level'=>$user_details->getSuffix(),     
+                    'position'=>$user_details->getPosition(),  
+                ];
+
+                
+                    $result_institute_array = array(
+                        'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
+                        'inst_city'=> $MasterInstitutionLocationInfo->getInstitutecity(),
+                        'inst_state'=>$MasterInstitutionLocationInfo->getInstitutestate(),
+                        'inst_country' => $MasterInstitutionLocationInfo->getInstitutecountry(),
+                        'department' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
+                          );
+                        
+
+                $result_array[] = ['result_user_array'=>$result_user_array,'MasterInstitutionLocationInfo'=>$result_institute_array];
             }
             return $this->json([
                 'result_array'=>$result_array,

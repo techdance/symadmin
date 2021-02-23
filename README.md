@@ -1,1 +1,1 @@
-# inspsymfony
+# Symfony Admin system

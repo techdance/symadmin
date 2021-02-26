@@ -11,7 +11,9 @@ use App\Entity\Master\CommunicationPreferences;
 use App\Entity\Master\CollaboratedProfileAreaofInterest;
 use App\Entity\Master\Collaboratedlabscreenprojectoverview;
 use App\Entity\Master\CollaboratedProjectInvitetracking;
+use App\Entity\Master\Collaboratedlabdetailedlearningenvironments;
 use App\Entity\Master\Collaborateduserprofessionalbio;
+use App\Entity\Master\Collaboratedlabdetailedcoursetopics;
 use App\Entity\Master\Collaboratedusercredential;
 use App\Entity\Master\CollaboratedLanguagePreferences;
 use App\Entity\Master\CollaboratedLabScreenProjectPartners;
@@ -476,6 +478,739 @@ class ProjectApiController extends AbstractController
     }
 
 
+    /**
+     * @Route("/api/CollaboratedlabdetailedcourseresourcesSave", name="api_Collaborated_labdetailedcourse_resources_Save", methods={"POST"})
+     */
+    public function CollaboratedlabdetailedcourseresourcesSave(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectId  = $request->query->get("projectId");
+        $textbokTitle  = $request->query->get("textbokTitle");
+        $publisherName  = $request->query->get("publisherName");
+        $author  = $request->query->get("author");
+        $isbn  = $request->query->get("isbn");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectId  = $request->request->get("projectId");
+            $textbokTitle  = $request->request->get("textbokTitle");
+            $publisherName  = $request->request->get("publisherName");
+            $author  = $request->request->get("author");
+            $isbn  = $request->request->get("isbn");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabscreenprojectoverview)){
+            return $this->json([
+                'message'=>'Unable to find project informations',
+                'status' => false
+            ]);        
+        }
+      
+        $Collaboratedlabdetailedcourseresources = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcourseresources::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabdetailedcourseresources)){
+            $Collaboratedlabdetailedcourseresources = new Collaboratedlabdetailedcourseresources();
+        } 
+            $Collaboratedlabdetailedcourseresources->setUserId($Muser);
+            $Collaboratedlabdetailedcourseresources->setCreateDate($createDate);
+            $Collaboratedlabdetailedcourseresources->setModifiedDate($modifiedDate);
+            $Collaboratedlabdetailedcourseresources->setTextbokTitle($textbokTitle);
+            $Collaboratedlabdetailedcourseresources->setPublisherName($publisherName);
+            $Collaboratedlabdetailedcourseresources->setAuthor($author);
+            $Collaboratedlabdetailedcourseresources->setIsbn($isbn);
+            $Collaboratedlabdetailedcourseresources->setProjectId($Collaboratedlabscreenprojectoverview);
+            $em->persist($Collaboratedlabdetailedcourseresources);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Collaborated labdetailed course resources saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+
+    /**
+     * @Route("/api/getCollaboratedlabdetailedcourseresources", name="api_get_Collaboratedlab_detailedcoursehours", methods={"GET"})
+     */
+    public function getCollaboratedlabdetailedcourseresources(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        $pk_project= $request->query->get("pk_project");
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        if(empty($pk_project)){
+            return $this->json([
+                'message'=>'Unable to find primary id information',
+                'status' => false
+            ]);        
+        }
+        $Collaboratedlabdetailedcourseresources = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcourseresources::class)->findOneBy([
+           'id'=>$pk_project
+        ]);
+
+      
+        
+        if ($Collaboratedlabdetailedcourseresources) { 
+
+
+                $Collaboratedlabdetailedcourseresources_data = [
+                    'userId'=>$Collaboratedlabdetailedcourseresources->getUserId()->getId(),
+                    'textbokTitle'=>$Collaboratedlabdetailedcourseresources->getTextbokTitle(),
+                    'publisherName'=>$Collaboratedlabdetailedcourseresources->getPublisherName(),
+                    'author'=>$Collaboratedlabdetailedcourseresources->getAuthor(),
+                    'isbn'=>$Collaboratedlabdetailedcourseresources->getIsbn(),
+                    'status' => true
+                ];
+          
+            
+            return $this->json([
+                'Collaboratedlabdetailedcoursehours'=>$Collaboratedlabdetailedcourseresources_data,
+                'status' => true
+            ]);
+        }else{
+            return $this->json([
+                'message'=>'Data not found',
+                'status' => false
+            ]);
+        }
+    }
+
+
+    /**
+     * @Route("/api/CollaboratedlabdetailedinstructorqualificationSave", name="api_Collaborated_labdetailed_instructorqualification_Save", methods={"POST"})
+     */
+    public function CollaboratedlabdetailedinstructorqualificationSave(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectId  = $request->query->get("projectId");
+        $instructor1Qualification  = $request->query->get("instructor1Qualification");
+        $instructor2Qualification  = $request->query->get("instructor2Qualification");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectId  = $request->request->get("projectId");
+            $instructor1Qualification  = $request->request->get("instructor1Qualification");
+            $instructor2Qualification  = $request->request->get("instructor2Qualification");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabscreenprojectoverview)){
+            return $this->json([
+                'message'=>'Unable to find project informations',
+                'status' => false
+            ]);        
+        }
+      
+        $Collaboratedlabdetailedinstructorqualification = $this->getDoctrine()->getRepository(Collaboratedlabdetailedinstructorqualification::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabdetailedinstructorqualification)){
+            $Collaboratedlabdetailedinstructorqualification = new Collaboratedlabdetailedinstructorqualification();
+        } 
+            $Collaboratedlabdetailedinstructorqualification->setUserId($Muser);
+            $Collaboratedlabdetailedinstructorqualification->setCreateDate($createDate);
+            $Collaboratedlabdetailedinstructorqualification->setModifiedDate($modifiedDate);
+            $Collaboratedlabdetailedinstructorqualification->setInstructor1Qualification($instructor1Qualification);
+            $Collaboratedlabdetailedinstructorqualification->setInstructor2Qualification($instructor2Qualification);
+            $Collaboratedlabdetailedinstructorqualification->setProjectId($Collaboratedlabscreenprojectoverview);
+            $em->persist($Collaboratedlabdetailedinstructorqualification);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Collaborated lab detailed instructor qualification saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+
+    /**
+     * @Route("/api/getCollaboratedlabdetailedinstructorqualification", name="api_get_Collaboratedlabdetailed_instructorqualification", methods={"GET"})
+     */
+    public function getCollaboratedlabdetailedinstructorqualification(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        $pk_project= $request->query->get("pk_project");
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        if(empty($pk_project)){
+            return $this->json([
+                'message'=>'Unable to find primary id information',
+                'status' => false
+            ]);        
+        }
+        $Collaboratedlabdetailedinstructorqualification = $this->getDoctrine()->getRepository(Collaboratedlabdetailedinstructorqualification::class)->findOneBy([
+           'id'=>$pk_project
+        ]);
+
+      
+        
+        if ($Collaboratedlabdetailedinstructorqualification) { 
+
+
+                $Collaboratedlabdetailedinstructorqualification_data = [
+                    'userId'=>$Collaboratedlabdetailedinstructorqualification->getUserId()->getId(),
+                    'instructor1Qualification'=>$Collaboratedlabdetailedinstructorqualification->getInstructor1Qualification(),
+                    'instructor2Qualification'=>$Collaboratedlabdetailedinstructorqualification->getInstructor2Qualification(),
+                    'status' => true
+                ];
+          
+            
+            return $this->json([
+                'Collaboratedlabdetailedcoursehours'=>$Collaboratedlabdetailedinstructorqualification_data,
+                'status' => true
+            ]);
+        }else{
+            return $this->json([
+                'message'=>'Data not found',
+                'status' => false
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/api/labdetailedcoursetopicsSaveOne", name="api_Collaborated_labdetailed_course_topics_Save_one", methods={"POST"})
+     */
+    public function labdetailedcoursetopicsSaveOne(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectId  = $request->query->get("projectId");
+        $courseTopic  = $request->query->get("courseTopic");
+        $courseId  = $request->query->get("courseId");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectId  = $request->request->get("projectId");
+            $courseTopic  = $request->request->get("courseTopic");
+            $courseId  = $request->request->get("courseId");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabscreenprojectoverview)){
+            return $this->json([
+                'message'=>'Unable to find project informations',
+                'status' => false
+            ]);        
+        }
+
+        if(empty($courseId)){
+            return $this->json([
+                'message'=>'Course Id is required',
+                'status' => false
+            ]);        
+        }
+      
+        $Collaboratedlabdetailedcoursetopics_data_cnt = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcoursetopics::class)->findBy(['projectId'=>$projectId]);
+
+        if(count($Collaboratedlabdetailedcoursetopics_data_cnt) >= 53){
+            return $this->json([
+                'message'=>'Data exceeds limit 52',
+                'status' => false
+            ]);        
+        }
+    
+            $Collaboratedlabdetailedcoursetopics = new Collaboratedlabdetailedcoursetopics();
+
+            $Collaboratedlabdetailedcoursetopics->setUserId($Muser);
+            $Collaboratedlabdetailedcoursetopics->setCreateDate($createDate);
+            $Collaboratedlabdetailedcoursetopics->setModifiedDate($modifiedDate);
+            $Collaboratedlabdetailedcoursetopics->setCourseTopic($courseTopic);
+            $Collaboratedlabdetailedcoursetopics->setCourseId($courseId);
+            $Collaboratedlabdetailedcoursetopics->setProjectId($Collaboratedlabscreenprojectoverview);
+         
+            $em->persist($Collaboratedlabdetailedcoursetopics);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Collaborated lab detailed course topics saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+
+    /**
+     * @Route("/api/labdetailedlearningenvironmentsSaveOne", name="api_Collaborated_labdetailed_learning_environments_Save", methods={"POST"})
+     */
+    public function labdetailedlearningenvironmentsSaveOne(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectId  = $request->query->get("projectId");
+        $learningEnvironment  = $request->query->get("learningEnvironment");
+        $courseId  = $request->query->get("courseId");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectId  = $request->request->get("projectId");
+            $learningEnvironment  = $request->request->get("learningEnvironment");
+            $courseId  = $request->request->get("courseId");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneById($projectId);
+
+        if(empty($Collaboratedlabscreenprojectoverview)){
+            return $this->json([
+                'message'=>'Unable to find project informations',
+                'status' => false
+            ]);        
+        }
+
+        if(empty($courseId)){
+            return $this->json([
+                'message'=>'Course Id is required',
+                'status' => false
+            ]);        
+        }
+      
+        $Collaboratedlabdetailedlearningenvironments_data_cnt = $this->getDoctrine()->getRepository(Collaboratedlabdetailedlearningenvironments::class)->findBy(['projectId'=>$projectId]);
+
+        if(count($Collaboratedlabdetailedlearningenvironments_data_cnt) >= 53){
+            return $this->json([
+                'message'=>'Data exceeds limit 52',
+                'status' => false
+            ]);        
+        }
+    
+            $Collaboratedlabdetailedlearningenvironments = new Collaboratedlabdetailedlearningenvironments();
+
+            $Collaboratedlabdetailedlearningenvironments->setUserId($Muser);
+            $Collaboratedlabdetailedlearningenvironments->setCreateDate($createDate);
+            $Collaboratedlabdetailedlearningenvironments->setModifiedDate($modifiedDate);
+            $Collaboratedlabdetailedlearningenvironments->setLearningEnvironment($learningEnvironment);
+            $Collaboratedlabdetailedlearningenvironments->setCourseId($courseId);
+            $Collaboratedlabdetailedlearningenvironments->setProjectId($Collaboratedlabscreenprojectoverview);
+
+         
+            $em->persist($Collaboratedlabdetailedlearningenvironments);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Collaborated lab detailed learning environments saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+    /**
+     * @Route("/api/labdetailedcoursetopicsSaveAll", name="api_Collaborated_labdetailed_course_topics_Save", methods={"POST"})
+     */
+    public function labdetailedcoursetopicsSaveAll(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+      
+        $topicData  = $request->query->get("topicData");
+
+        if(empty($topicData)){
+            return $this->json([
+                'message'=>'Please enter data',
+                'status' => false
+            ]);        
+        }
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+       
+        foreach($topicData as $topicData_details){
+            
+            $pk  = $topicData_details["pk"];
+            if(empty($pk)){
+                return $this->json([
+                    'message'=>'Interest ID required',
+                    'status' => false
+                ]);        
+            }
+
+            $Collaboratedlabdetailedcoursetopics = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcoursetopics::class)->findOneById($pk);
+            if(empty($Collaboratedlabdetailedcoursetopics)){
+                return $this->json([
+                    'message'=>'Unable to find topic informations',
+                    'status' => false
+                ]);        
+            }
+
+            $topic  = $topicData_details["topic"];            
+            $modifiedDate  = $topicData_details["modifiedDate"];
+            $modifiedDate = new DateTime($modifiedDate);
+            $Collaboratedlabdetailedcoursetopics->setModifiedDate($modifiedDate);
+            $Collaboratedlabdetailedcoursetopics->setCourseTopic($topic);
+       
+            $em->persist($Collaboratedlabdetailedcoursetopics);
+            $em->flush();
+        }  
+            return $this->json([
+                'message'=>'Collaborated lab detailed course topics saved successfully',
+                'status' => true
+            ]);            
+
+    }
+
+    /**
+     * @Route("/api/labdetailedcoursetopicsremoveSingle", name="api_labdetailed_course_topics_removeSingle", methods={"POST"})
+     */
+    public function labdetailedcoursetopicsremoveSingle(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+        $createDate  = $request->query->get("createDate");
+        $modifiedDate  = $request->query->get("modifiedDate");
+        $projectId  = $request->query->get("projectId");
+        $pkTopicId  = $request->query->get("pkTopicId");
+
+        if(empty($token)){
+            $token  = $request->request->get("token");
+            $createDate  = $request->request->get("createDate");
+            $modifiedDate  = $request->request->get("modifiedDate");
+            $projectId  = $request->request->get("projectId");
+            $pkTopicId  = $request->request->get("pkTopicId");
+        }
+
+        $createDate = new DateTime($createDate);
+        $modifiedDate = new DateTime($modifiedDate);
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        if(empty($projectId)){
+            return $this->json([
+                'message'=>'Project Id is required',
+                'status' => false
+            ]);        
+        }
+
+        if(empty($pkTopicId)){
+            return $this->json([
+                'message'=>'Topic Id is required',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabdetailedcoursetopics = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcoursetopics::class)->findOneBy(array('projectId'=>$projectId,'id'=>$pkTopicId));
+
+        if(empty($Collaboratedlabdetailedcoursetopics)){
+            return $this->json([
+                'message'=>'Unable to find data record',
+                'status' => false
+            ]);        
+        }
+     
+            $em->remove($Collaboratedlabdetailedcoursetopics);
+            $em->flush();
+
+            return $this->json([
+                'message'=>'Data deleted successfully',
+                'status' => true
+            ]);            
+
+    }
+
+    /**
+     * @Route("/api/labdetailedcoursetopicsremoveAll", name="api_Collaborated_labdetailed_course_topics_all", methods={"POST"})
+     */
+    public function labdetailedcoursetopicsremoveAll(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token  = $request->query->get("token");
+     
+
+        $pk_project  = $request->query->get("pk_project");
+        if(empty($pk_project)){
+            return $this->json([
+                'message'=>'Project ID required',
+                'status' => false
+            ]);        
+        }
+
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        if(empty($user)){
+            return $this->json([
+                'message'=>'Please enter user id',
+                'status' => false
+            ]);        
+        }
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $Collaboratedlabdetailedcoursetopics = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcoursetopics::class)->findBy(['projectId'=>$pk_project]);
+
+        if(empty($Collaboratedlabdetailedcoursetopics)){
+            return $this->json([
+                'message'=>'Topic details not required',
+                'status' => false
+            ]);        
+        }
+
+  
+        foreach($Collaboratedlabdetailedcoursetopics as $Collaboratedlabdetailedcoursetopics_details){
+            
+            $em->remove($Collaboratedlabdetailedcoursetopics_details);
+            $em->flush();
+
+        }  
+            return $this->json([
+                'message'=>'All data deleted successfully',
+                'status' => true
+            ]);            
+
+    }
+
+    /**
+     * @Route("/api/getCollaboratedlabdetailedcoursetopics", name="api_get_Collaboratedlab_detailedcoursehours", methods={"GET"})
+     */
+    public function getCollaboratedlabdetailedcoursetopics(Request $request)
+    {
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        $pk_project= $request->query->get("pk_project");
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+        if(empty($pk_project)){
+            return $this->json([
+                'message'=>'Unable to find primary id information',
+                'status' => false
+            ]);        
+        }
+        $Collaboratedlabdetailedcoursetopics = $this->getDoctrine()->getRepository(Collaboratedlabdetailedcoursetopics::class)->findBy(['projectId'=>$pk_project]);
+
+        if(empty($Collaboratedlabdetailedcoursetopics)){
+            return $this->json([
+                'message'=>'Topic details not required',
+                'status' => false
+            ]);        
+        }
+      
+        
+        if ($Collaboratedlabdetailedcoursetopics) { 
+
+            $Collaboratedlabdetailedcoursetopics_array = [];
+
+            foreach($Collaboratedlabdetailedcoursetopics as $Collaboratedlabdetailedcoursetopics_details){
+                $Collaboratedlabdetailedcoursetopics_array[] = [
+                    'userId'=>$Collaboratedlabdetailedcoursetopics_details->getUserId()->getId(),
+                    'courseTopic'=>$Collaboratedlabdetailedcoursetopics_details->getCourseTopic(),
+                    'status' => true
+                ];
+          
+            }
+
+            return $this->json([
+                'Collaboratedlabdetailedcoursetopics_array'=>$Collaboratedlabdetailedcoursetopics_array,
+                'status' => true
+            ]);
+        }else{
+            return $this->json([
+                'message'=>'Data not found',
+                'status' => false
+            ]);
+        }
+    }
 
     private function tokenVerificationCheck($token)
     {            

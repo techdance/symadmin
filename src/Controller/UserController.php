@@ -670,8 +670,10 @@ class UserController extends AbstractController
                 
                 $message_received[] = [
                 'image'=>$this->getUserImage($Invitetracking_data->getInviteFrom()),
+                'suffix'=>$this->getSuffix($Invitetracking_data->getInviteFrom()),
                 'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
-                'full_name'=>$Muser->getFirstName(),
+                'full_name'=>$this->getUserFullName($Invitetracking_data->getInviteFrom()),
+                'institutedepartment' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
                 'projectType'=>$CollaboratedProfileAreaofInterest->getProjectType(),
                 'description'=>$CollaboratedProfileAreaofInterest->getDescription(),
                 'discipline1'=>$CollaboratedProfileAreaofInterest->getDisciplineA(),
@@ -679,6 +681,7 @@ class UserController extends AbstractController
                 'location1'=>$CollaboratedProfileAreaofInterest->getLocationA(),
                 'messageTitle'=>$Invitetracking_data->getMessageTitle(),
                 'messageContent'=>$Invitetracking_data->getMessageContent(),
+                'invitationStatus'=>$Invitetracking_data->getInvitationStatus(),
                 'invite_received'=>$Invitetracking_data->getCreateDate()
                  ];
             }
@@ -702,8 +705,10 @@ class UserController extends AbstractController
 
             $message_send[] = [
             'image'=>$this->getUserImage($Invitetracking_send_data->getInviteTo()),
+            'suffix'=>$this->getSuffix($Invitetracking_data->getInviteFrom()),
             'institutionName' => $MasterInstitutionLocationInfo->getInstitutename(),
-            'full_name'=>$Muser->getFirstName(),
+            'full_name'=>$this->getUserFullName($Invitetracking_send_data->getInviteFrom()),
+            'institutedepartment' => $MasterInstitutionLocationInfo->getInstitutedepartment(),
             'projectType'=>$CollaboratedProfileAreaofInterest->getProjectType(),
             'description'=>$CollaboratedProfileAreaofInterest->getDescription(),
             'discipline1'=>$CollaboratedProfileAreaofInterest->getDisciplineA(),
@@ -711,7 +716,8 @@ class UserController extends AbstractController
             'location1'=>$CollaboratedProfileAreaofInterest->getLocationA(),
             'messageTitle'=>$Invitetracking_send_data->getMessageTitle(),
             'messageContent'=>$Invitetracking_send_data->getMessageContent(),
-            'invite_send'=>$Invitetracking_data->getCreateDate()
+            'invitationStatus'=>$Invitetracking_send_data->getInvitationStatus(),
+            'invite_send'=>$Invitetracking_send_data->getCreateDate()
                 ];
         }
         } 
@@ -720,6 +726,95 @@ class UserController extends AbstractController
             return $this->json([
                 'message_received'=>['data'=>$message_received,'count'=>count($message_received)],
                 'message_send'=>['data'=>$message_send,'count'=>count($message_send)],
+                'status' => true
+            ]);
+
+        }else{
+            return $this->json([
+                'message'=>'No data not found',
+                'status' => false
+            ]);
+        }
+
+
+    }
+
+    /**
+     * @Route("/api/getMessageIcon", name="api_get_message_data", methods={"GET"})
+     */
+    public function getMessageIcon(Request $request)
+    {
+
+        $token  = $request->query->get("token");
+        $token_error= $this->tokenVerificationCheck($token);
+        if($token_error['status'] == false){
+            return $this->json($token_error);
+        }
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneByApiToken($token);
+        $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'localFosId' => $user->getId(),'institutionCode' => $user->getInstitutionName()
+        ]);
+        if(empty($Muser)){
+            return $this->json([
+                'message'=>'Unable to find user informations',
+                'status' => false
+            ]);        
+        }
+
+        $CollaboratedProjectInvitetracking_received = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteTo' => $Muser->getId(),'isRead'=>1],['createDate'=>'DESC']); 
+     
+        $message_array = [];
+        if (!empty($CollaboratedProjectInvitetracking_received)) {            
+                 
+            foreach($CollaboratedProjectInvitetracking_received as $Invitetracking_data){
+
+                $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+                'id' => $Invitetracking_data->getInviteFrom() ]);
+                $institution_code = $Muser->getInstitutionCode();
+                $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+                ]);
+
+                $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneBy([
+                    'id' => $Invitetracking_data->getInterestId()
+                ]);               
+                
+                $message_array[] = [               
+                'full_name'=>$this->getUserFullName($Invitetracking_data->getInviteFrom()),
+                'messageTitle'=>$Invitetracking_data->getMessageTitle(),
+                'messageContent'=>$Invitetracking_data->getMessageContent(),
+                'time'=>$Invitetracking_data->getCreateDate()
+                 ];
+            }
+            
+        }
+
+        $CollaboratedProjectInvitetracking_send = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteFrom' => $Muser->getId(),'isRead'=>1],['createDate'=>'DESC']);   
+    
+  
+        if ($CollaboratedProjectInvitetracking_send) {          
+        foreach($CollaboratedProjectInvitetracking_send as $Invitetracking_send_data){
+            $Muser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'id' => $Invitetracking_data->getInviteTo() ]);
+            $institution_code = $Muser->getInstitutionCode();
+            $MasterInstitutionLocationInfo = $this->getDoctrine()->getRepository(MasterInstitutionLocationInfo::class)->findOneBy(['institutecode' => $institution_code
+            ]);
+
+            $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findOneBy([
+                'id' => $Invitetracking_data->getInterestId()
+            ]);  
+
+            $message_array[] = [
+            'full_name'=>$this->getUserFullName($Invitetracking_send_data->getInviteFrom()),
+            'messageTitle'=>$Invitetracking_send_data->getMessageTitle(),
+            'messageContent'=>$Invitetracking_send_data->getMessageContent(),
+            'time'=>$Invitetracking_send_data->getCreateDate()
+                ];
+        }
+        } 
+
+        if (!empty($message_array)) {
+            return $this->json([
+                'message_array'=>['data'=>$message_array,'count'=>count($message_array)],
                 'status' => true
             ]);
 
@@ -760,13 +855,15 @@ class UserController extends AbstractController
         $CollaboratedProjectInvitetracking_received = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteTo' => $Muser->getId(),'isRemoved'=>4],['createDate'=>'DESC']);    
        
             
-            $message_received = [];
+            $notification_array = [];
             if ($CollaboratedProjectInvitetracking_received) {          
             foreach($CollaboratedProjectInvitetracking_received as $Invitetracking_data){
-                $message_received[] = [
+                $notification_array[] = [
                 'image'=>$this->getUserImage($Invitetracking_data->getInviteFrom()),
+                'userName'=>$this->getUserFullName($Invitetracking_data->getInviteFrom()),
                 'messageTitle'=>$Invitetracking_data->getMessageTitle(),
-                'messageContent'=>$Invitetracking_data->getMessageContent()
+                'messageContent'=>$Invitetracking_data->getMessageContent(),
+                'time'=>$Invitetracking_data->getCreateDate()
                  ];
             }
             }
@@ -774,33 +871,47 @@ class UserController extends AbstractController
         $CollaboratedProjectInvitetracking_send = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteFrom' => $Muser->getId(),'isRemoved'=>0],['createDate'=>'DESC']);    
     
         
-        $message_send = [];
+       
         if ($CollaboratedProjectInvitetracking_send) {          
         foreach($CollaboratedProjectInvitetracking_send as $Invitetracking_send_data){
-            $message_send[] = [
+            $notification_array[] = [
             'image'=>$this->getUserImage($Invitetracking_send_data->getInviteTo()),
+            'userName'=>$this->getUserFullName($Invitetracking_send_data->getInviteTo()),
             'messageTitle'=>$Invitetracking_send_data->getMessageTitle(),
-            'messageContent'=>$Invitetracking_send_data->getMessageContent()
+            'messageContent'=>$Invitetracking_send_data->getMessageContent(),
+            'time'=>$Invitetracking_send_data->getCreateDate()
                 ];
         }
-        }    
+        } 
+        
+        $CollaboratedProjectInvitetracking_send_1 = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findBy(['inviteFrom' => $Muser->getId(),'isRemoved'=>1],['createDate'=>'DESC']);    
+    
+        
+       
+        if($CollaboratedProjectInvitetracking_send_1) {          
+        foreach($CollaboratedProjectInvitetracking_send_1 as $Invitetracking_send_data_1){
+            $notification_array[] = [
+            'image'=>$this->getUserImage($Invitetracking_send_data_1->getInviteTo()),
+            'userName'=>$this->getUserFullName($Invitetracking_send_data_1->getInviteTo()),
+            'messageTitle'=>$Invitetracking_send_data_1->getMessageTitle(),
+            'messageContent'=>$Invitetracking_send_data_1->getMessageContent(),
+            'time'=>$Invitetracking_send_data_1->getCreateDate()
+                ];
+        }
+        } 
 
-        if (!empty($message_received)||!empty($message_send)) { 
+        if (!empty($notification_array)){ 
             return $this->json([
-                'message_received'=>['data'=>$message_received,'count'=>count($message_received)],
-                'message_send'=>['data'=>$message_send,'count'=>count($message_send)],
-                'message_count'=>count($message_received),
+                'notification_array'=>['data'=>$notification_array,'count'=>count($notification_array)],
                 'status' => true
             ]);
-
         }else{
             return $this->json([
                 'message'=>'No data not found',
                 'status' => false
             ]);
         }
-
-    }
+        }
 
  
 
@@ -855,6 +966,32 @@ class UserController extends AbstractController
 
     }
 
+    function getUserFullName($user_id)
+    {
+        $FosUser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'id' => $user_id
+        ]);
+
+        if ($FosUser) { 
+         return ($FosUser->getFirstName().''.$FosUser->getLastName());
+        }else{
+         return '';  
+        }
+    }
+
+    function getSuffix($user_id)
+    {
+        $FosUser = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
+            'id' => $user_id
+        ]);
+
+        if ($FosUser) { 
+         return ($FosUser->getSuffix());
+        }else{
+         return '';  
+        }
+    }
+
     function getUserImage($user_id)
     {
         $CollaboratedUserProfileimage = $this->getDoctrine()->getRepository(CollaboratedUserProfileimage::class)->findOneBy([
@@ -867,7 +1004,7 @@ class UserController extends AbstractController
          return '';  
         }
     }
-
+    
 
     /**
      * @Route("/api/getLoginData", name="api_get_login_data", methods={"GET"})
@@ -1328,6 +1465,32 @@ class UserController extends AbstractController
 
             foreach($CollaboratedProfileAreaofInterest as $CollaboratedProfileAreaofInterest_data){
 
+
+                $CollaboratedProjectInvitetracking = $this->getDoctrine()->getRepository(CollaboratedProjectInvitetracking::class)->findOneBy(['interestId' => $CollaboratedProfileAreaofInterest_data->getId(),'invitationStatus'=>'Accepted']); 
+        
+                if(!empty($CollaboratedProjectInvitetracking)){
+        
+                    $Collaboratedlabscreenprojectoverview = $this->getDoctrine()->getRepository(Collaboratedlabscreenprojectoverview::class)->findOneBy(['interestId' => $CollaboratedProfileAreaofInterest_data->getId()]); 
+        
+                    if(!empty($Collaboratedlabscreenprojectoverview)){
+                        $flag_data = [
+                            'flag'=>3,
+                            'message'=>'Project Created'
+                        ];
+                    }else{
+                        $flag_data =[
+                            'flag'=>2,
+                            'message'=>'Start Project'
+                        ];
+                    }
+        
+                    }else{
+                        $flag_data =[
+                            'flag'=>0,
+                            'message'=>'Find matches'
+                        ];
+                    }
+
                 $CollaboratedProfileAreaofInterest_array[] = [
                     'userId'=>$CollaboratedProfileAreaofInterest_data->getUserId()->getId(),
                     'pkId'=>$CollaboratedProfileAreaofInterest_data->getId(),
@@ -1358,6 +1521,7 @@ class UserController extends AbstractController
                     'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
                     'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
                     'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
+                    'flag_data'=>$flag_data,
                     'status' => true
                 ];
             }
@@ -1562,42 +1726,62 @@ class UserController extends AbstractController
                 'status' => false
             ];
         }
-         
-         if ($CollaboratedProfileAreaofInterest_data) { 
+
+
+
+
+        $CollaboratedProfileAreaofInterest = $this->getDoctrine()->getRepository(CollaboratedProfileAreaofInterest::class)->findBy([
+            'userId' => $Muser->getId()
+        ]);
+
+      
+     
+         if ($CollaboratedProfileAreaofInterest) { 
  
  
-            $main_array['CollaboratedProfileAreaofInterest_data']= [
-                     'userId'=>$CollaboratedProfileAreaofInterest_data->getUserId()->getId(),
-                     'pkId'=>$CollaboratedProfileAreaofInterest_data->getId(),
-                     'createDate'=>$CollaboratedProfileAreaofInterest_data->getCreateDate(),
-                     'modifiedDate'=>$CollaboratedProfileAreaofInterest_data->getModifiedDate(),
-                     'projectType'=>$CollaboratedProfileAreaofInterest_data->getProjectType(),
-                     'description'=>$CollaboratedProfileAreaofInterest_data->getDescription(),
-                     'discipline1'=>$CollaboratedProfileAreaofInterest_data->getDisciplineA(),
-                     'language'=>$CollaboratedProfileAreaofInterest_data->getLanguage(),
-                     'location1'=>$CollaboratedProfileAreaofInterest_data->getLocationA(),
-                     'campus'=>$CollaboratedProfileAreaofInterest_data->getCampus(),
-                     'programLevel'=>$CollaboratedProfileAreaofInterest_data->getProgramLevel(),
-                     'programLength'=>$CollaboratedProfileAreaofInterest_data->getProgramLength(),
-                     'deliveryMethod'=>$CollaboratedProfileAreaofInterest_data->getDeliveryMethod(),
-                     'credits'=>$CollaboratedProfileAreaofInterest_data->getCredits(),
-                     'collaborationType'=>$CollaboratedProfileAreaofInterest_data->getCollaborationType(),
-                     'discipline2'=>$CollaboratedProfileAreaofInterest_data->getDisciplineB(),
-                     'location2'=>$CollaboratedProfileAreaofInterest_data->getLocationB(),
-                     'discipline3'=>$CollaboratedProfileAreaofInterest_data->getDisciplineC(),
-                     'location3'=>$CollaboratedProfileAreaofInterest_data->getLocationC(),
-                     'discipline4'=>$CollaboratedProfileAreaofInterest_data->getDisciplineD(),
-                     'location4'=>$CollaboratedProfileAreaofInterest_data->getLocationD(),
-                     'rangeYearStart'=>$CollaboratedProfileAreaofInterest_data->getRangeYearStart(),
-                     'rangeYearEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeYearEnd(),
-                     'rangeMonthStart'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthStart(),
-                     'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
-                     'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
-                     'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
-                     'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
+            $CollaboratedProfileAreaofInterest_array = array();
+
+
+            foreach($CollaboratedProfileAreaofInterest as $CollaboratedProfileAreaofInterest_data){
+
+                $CollaboratedProfileAreaofInterest_array[] = [
+                    'userId'=>$CollaboratedProfileAreaofInterest_data->getUserId()->getId(),
+                    'pkId'=>$CollaboratedProfileAreaofInterest_data->getId(),
+                    'createDate'=>$CollaboratedProfileAreaofInterest_data->getCreateDate(),
+                    'modifiedDate'=>$CollaboratedProfileAreaofInterest_data->getModifiedDate(),
+                    'projectType'=>$CollaboratedProfileAreaofInterest_data->getProjectType(),
+                    'description'=>$CollaboratedProfileAreaofInterest_data->getDescription(),
+                    'discipline1'=>$CollaboratedProfileAreaofInterest_data->getDisciplineA(),
+                    'language'=>$CollaboratedProfileAreaofInterest_data->getLanguage(),
+                    'location1'=>$CollaboratedProfileAreaofInterest_data->getLocationA(),
+                    'campus'=>$CollaboratedProfileAreaofInterest_data->getCampus(),
+                    'programLevel'=>$CollaboratedProfileAreaofInterest_data->getProgramLevel(),
+                    'programLength'=>$CollaboratedProfileAreaofInterest_data->getProgramLength(),
+                    'deliveryMethod'=>$CollaboratedProfileAreaofInterest_data->getDeliveryMethod(),
+                    'credits'=>$CollaboratedProfileAreaofInterest_data->getCredits(),
+                    'collaborationType'=>$CollaboratedProfileAreaofInterest_data->getCollaborationType(),
+                    'discipline2'=>$CollaboratedProfileAreaofInterest_data->getDisciplineB(),
+                    'location2'=>$CollaboratedProfileAreaofInterest_data->getLocationB(),
+                    'discipline3'=>$CollaboratedProfileAreaofInterest_data->getDisciplineC(),
+                    'location3'=>$CollaboratedProfileAreaofInterest_data->getLocationC(),
+                    'discipline4'=>$CollaboratedProfileAreaofInterest_data->getDisciplineD(),
+                    'location4'=>$CollaboratedProfileAreaofInterest_data->getLocationD(),
+                    'rangeYearStart'=>$CollaboratedProfileAreaofInterest_data->getRangeYearStart(),
+                    'rangeYearEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeYearEnd(),
+                    'rangeMonthStart'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthStart(),
+                    'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
+                    'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
+                    'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
+                    'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
                     'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
-                     'status' => true
-                 ];
+                    'status' => true
+                ];               
+                }
+
+                 $main_array['CollaboratedProfileAreaofInterest_data']=[
+                    'data_array'=>$CollaboratedProfileAreaofInterest_array,
+                    'status' => false
+                ];
           
          }else{
             $main_array['CollaboratedProfileAreaofInterest_data']=[
@@ -1810,17 +1994,37 @@ class UserController extends AbstractController
         
         if ($CollaboratedProfileAreaofInterest_data) { 
 
-            $main_array['Collaborateduserprofessionalbio']= [
+            $main_array['CollaboratedProfileAreaofInterest_data']= [        
                     'userId'=>$CollaboratedProfileAreaofInterest_data->getUserId()->getId(),
                     'pkId'=>$CollaboratedProfileAreaofInterest_data->getId(),
+                    'createDate'=>$CollaboratedProfileAreaofInterest_data->getCreateDate(),
+                    'modifiedDate'=>$CollaboratedProfileAreaofInterest_data->getModifiedDate(),
                     'projectType'=>$CollaboratedProfileAreaofInterest_data->getProjectType(),
                     'description'=>$CollaboratedProfileAreaofInterest_data->getDescription(),
                     'discipline1'=>$CollaboratedProfileAreaofInterest_data->getDisciplineA(),
+                    'language'=>$CollaboratedProfileAreaofInterest_data->getLanguage(),
                     'location1'=>$CollaboratedProfileAreaofInterest_data->getLocationA(),
+                    'campus'=>$CollaboratedProfileAreaofInterest_data->getCampus(),
+                    'programLevel'=>$CollaboratedProfileAreaofInterest_data->getProgramLevel(),
                     'programLength'=>$CollaboratedProfileAreaofInterest_data->getProgramLength(),
                     'deliveryMethod'=>$CollaboratedProfileAreaofInterest_data->getDeliveryMethod(),
+                    'credits'=>$CollaboratedProfileAreaofInterest_data->getCredits(),
                     'collaborationType'=>$CollaboratedProfileAreaofInterest_data->getCollaborationType(),
-                    'status' => true
+                    'discipline2'=>$CollaboratedProfileAreaofInterest_data->getDisciplineB(),
+                    'location2'=>$CollaboratedProfileAreaofInterest_data->getLocationB(),
+                    'discipline3'=>$CollaboratedProfileAreaofInterest_data->getDisciplineC(),
+                    'location3'=>$CollaboratedProfileAreaofInterest_data->getLocationC(),
+                    'discipline4'=>$CollaboratedProfileAreaofInterest_data->getDisciplineD(),
+                    'location4'=>$CollaboratedProfileAreaofInterest_data->getLocationD(),
+                    'rangeYearStart'=>$CollaboratedProfileAreaofInterest_data->getRangeYearStart(),
+                    'rangeYearEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeYearEnd(),
+                    'rangeMonthStart'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthStart(),
+                    'rangeMonthEnd'=>$CollaboratedProfileAreaofInterest_data->getRangeMonthEnd(),
+                    'universityName'=>$CollaboratedProfileAreaofInterest_data->getUniversityName(),
+                    'groupName'=>$CollaboratedProfileAreaofInterest_data->getGroupName(),
+                    'startDate'=>$CollaboratedProfileAreaofInterest_data->getStartDate(),
+                    'endDate'=>$CollaboratedProfileAreaofInterest_data->getEndDate(),
+
                 ];
          
         }else{
@@ -2057,12 +2261,13 @@ class UserController extends AbstractController
         
         $sql = "SELECT ia.id as interest_pk, ia.userId, ia.universityName, ur.institution_name, ur.department, ur.first_name,ur.position, ln.inst_name,ln.inst_city,ln.inst_state,ln.inst_state, ln.inst_country  FROM sym_api_admin_user_master.collaborated_profileareaofinterest as ia  join sym_api_admin_user_master.fos_user as ur on ur.id = ia.userId 
         join sym_api_admin_user_master.institution_location_info as ln on ur.institution_name  = ln.inst_code WHERE (ia. projectType  = :projectType) or (ia.discipline1  = :disciplineA ) or (ia.location1 = :locationA )
-        or (ia.language = :language) or (ia. 	collaborationType = :collaborationType)";
+        or (ia.language = :language) or (ia. 	collaborationType = :collaborationType) and (ia.userId != :userId)";
         $params['projectType'] = $projectType;
         $params['locationA'] = $locationA;
         $params['projectType'] = $projectType;
         $params['disciplineA'] = $disciplineA;
         $params['language'] = $language;
+        $params['userId'] = $Muser->getId();
         $params['collaborationType'] = $collaborationType;
         $stmt =$this->getDoctrine()->getConnection()->prepare($sql);
         $stmt->execute($params);
@@ -2073,9 +2278,10 @@ class UserController extends AbstractController
                 'message'=>'No data found',
                 'status' => false
             ]);        
-        }        
+        }  
+        $result_array = array();      
         if ($result) {             
-            $result_array = array();
+            
             foreach($result as $result_data){
 
                 $user_details = $this->getDoctrine()->getRepository(FosUser::class)->findOneBy([
